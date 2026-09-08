@@ -3,7 +3,6 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "semgrep@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true
   }
 }

@@ -9,3 +9,6 @@ coverage/
 .env*.local
 .DS_Store
 .pnpm-store/
+
+# Local Claude development tools
+.claude/tools/
