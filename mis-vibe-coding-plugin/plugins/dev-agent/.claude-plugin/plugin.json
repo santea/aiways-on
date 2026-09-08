@@ -1,0 +1,6 @@
+{
+  "name": "dev-agent",
+  "description": "MIS 경량 CI 파이프라인 - 보안/품질 점검, git push, 보고서+메일을 서브에이전트로 병렬 처리 (토큰 최적화)",
+  "version": "1.0.0",
+  "keywords": ["pipeline", "security", "quality", "git", "mis", "productivity"]
+}

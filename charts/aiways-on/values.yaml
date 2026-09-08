@@ -1,0 +1,63 @@
+# 배포 형상 — U1(PlatformOps) 단독 소유 (UOW-7).
+# 각 유닛은 애플리케이션 코드와 자기 Dockerfile 만 소유하고, chart·values 는 여기 모인다.
+# 그래야 AD-5 의 ConfigMap 단일 합의점과 Secret·RBAC 정책이 한 곳에 남는다.
+
+namespace: bia-systems
+
+image:
+  registry: ""            # 개발은 공용 레지스트리, 배포 시 사내 미러로 전환 (Q12=B)
+  pullPolicy: IfNotPresent
+  tag: "0.1.0"
+
+portal:
+  name: portal-sdlc
+  # NFR-02 — stateless 수평 확장. 장수명 연결은 절대 여기 두지 않는다.
+  replicas: 2
+  port: 3000
+  repository: aiways-on/portal
+  resources:
+    requests: { cpu: "250m", memory: "512Mi" }
+    limits: { cpu: "1000m", memory: "1Gi" }
+
+slackGateway:
+  name: portal-sdlc-slack-gateway
+  # ⚠️ 1 고정. Socket Mode 는 replica 수만큼 중복 수신하므로 늘리면 같은 피드백이 여러 번 처리된다.
+  replicas: 1
+  repository: aiways-on/slack-gateway
+  resources:
+    requests: { cpu: "50m", memory: "128Mi" }
+    limits: { cpu: "200m", memory: "256Mi" }
+
+memoryMcp:
+  name: portal-sdlc-memory-mcp
+  replicas: 1
+  port: 58002
+  repository: aiways-on/memory-mcp
+  resources:
+    requests: { cpu: "100m", memory: "256Mi" }
+    limits: { cpu: "500m", memory: "512Mi" }
+
+n8n:
+  name: portal-sdlc-n8n
+  enabled: true
+  replicas: 1
+  port: 5678
+  image: n8nio/n8n:latest      # 공식 이미지 — Dockerfile 없음
+
+podRunner:
+  # per-SR 동적 생성이므로 Deployment 가 아니다. Pod spec 은 U3 의 PodOrchestrator 가 만든다.
+  repository: aiways-on/pod-runner
+  serviceAccount: portal-sdlc
+
+cronjobs:
+  reconcile:
+    enabled: true
+    schedule: "*/5 * * * *"
+  improvementScan:
+    enabled: true
+    schedule: "17 3 * * *"     # 정각을 피해 부하를 분산한다
+
+secrets:
+  # 평문을 매니페스트에 넣지 않는다 (NFR-10). 이미 만들어 둔 Secret 을 참조한다.
+  existingSecret: sdlc-secrets
+  create: false

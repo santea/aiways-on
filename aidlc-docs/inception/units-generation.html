@@ -1,0 +1,647 @@
+<title>AIways-On Unit Decomposition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#0b0f17; --s1:#111827; --s2:#131e2e; --s3:#1f2937; --s4:#2d3748;
+  --ink:#dfe2ee; --ink-dim:#bcc9cd; --ink-faint:#869397;
+  --blade:#4cd7f6; --blade-deep:#06b6d4; --blade-wash:rgba(6,182,212,.13);
+  --ok:#4edea3; --ok-wash:rgba(78,222,163,.13);
+  --warn:#f5b74b; --warn-wash:rgba(245,183,75,.13);
+  --bad:#ff8a80; --bad-wash:rgba(255,138,128,.13);
+  --font-d:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-b:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}}
+:root[data-theme="light"]{
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-d);text-wrap:balance;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--font-m)}
+code{font-size:11.5px;color:var(--ink-faint)}
+.shell{display:grid;grid-template-columns:13.5rem minmax(0,1fr);min-height:100vh;align-items:start}
+.rail{position:sticky;top:0;height:100vh;background:var(--s1);padding:1.5rem 0;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+.brand{padding:0 1.25rem;display:flex;flex-direction:column;gap:.3rem}
+.brand b{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.brand span{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade)}
+.nav{display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;gap:.55rem;padding:.45rem 1.25rem;color:var(--ink-dim);text-decoration:none;font-size:13px;border-left:3px solid transparent}
+.nav a .n{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--ink-faint);width:1rem;font-style:normal}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.on{background:var(--s3);color:var(--ink);border-left-color:var(--blade-deep);box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.nav a.on .n{color:var(--blade)}
+.nav a:focus-visible{outline:2px solid var(--blade);outline-offset:-2px}
+.railfoot{margin-top:auto;padding:0 1.25rem;color:var(--ink-faint);font-size:11px;line-height:1.55}
+.canvas{padding:2.25rem 2rem 4rem;max-width:78rem}
+section.top{margin-bottom:2.5rem}
+.sec{margin-bottom:3rem;scroll-margin-top:1rem}
+.eyebrow{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade);margin-bottom:.45rem}
+h1{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+h2{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+.lede{color:var(--ink-dim);max-width:64ch;margin-top:.6rem}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:1px;background:var(--ground);margin-top:1.5rem;border-radius:8px;overflow:hidden}
+.strip div{background:var(--s2);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.strip dt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.strip dd{margin:0;font-family:var(--font-d);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.b{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .38rem;border-radius:4px;white-space:nowrap}
+.b::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.b.ok{background:var(--ok-wash);color:var(--ok)}
+.b.go{background:var(--blade-wash);color:var(--blade)}
+.b.wa{background:var(--warn-wash);color:var(--warn)}
+.b.no{background:var(--bad-wash);color:var(--bad)}
+figure{margin:1.25rem 0 0;background:var(--s2);border-radius:8px;padding:1.25rem 1.25rem 1rem;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;color:var(--ink-dim);margin:0 auto}
+figcaption{margin-top:.85rem;color:var(--ink-faint);font-size:12px;line-height:1.6;max-width:72ch}
+figcaption b{color:var(--ink-dim);font-weight:600}
+.svg-label{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;fill:currentColor}
+.svg-sub{font-family:"Inter",sans-serif;font-size:10.5px;fill:currentColor;opacity:.72}
+.svg-edge{font-family:"Inter",sans-serif;font-size:10px;fill:currentColor;opacity:.78}
+.svg-title{font-family:"Manrope",sans-serif;font-size:12px;font-weight:700;fill:currentColor}
+.ad{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));margin-top:1rem}
+.adcard{background:var(--s2);border-radius:8px;padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.45rem}
+.adcard.key{background:var(--s3);box-shadow:0 8px 32px -4px var(--blade-wash)}
+.adtop{display:flex;align-items:center;gap:.5rem}
+.adid{font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--blade)}
+.adcard h3{font-size:.9rem;font-weight:600;letter-spacing:-.01em}
+.adcard p{color:var(--ink-dim);font-size:12.5px;line-height:1.55}
+.ublock{background:var(--s2);border-radius:8px;padding:.9rem 1rem;margin-bottom:.7rem}
+.ublock.hot{background:var(--s3);box-shadow:inset 3px 0 0 var(--warn)}
+.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.6rem}
+.uhead h3{font-size:.95rem;font-weight:700;letter-spacing:-.015em;display:flex;align-items:baseline;gap:.5rem}
+.ucode{font-size:.8rem;font-weight:700;color:var(--blade)}
+.ucount{font-size:11px;font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.urow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.7rem;align-items:baseline}
+.uresp{color:var(--ink-dim);font-size:12.5px;line-height:1.55}
+.ubadges{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.batch{display:flex;gap:.3rem;margin-top:.55rem;height:6px;border-radius:3px;overflow:hidden;background:var(--s4)}
+.batch i{display:block;height:6px}
+.batch i.m{background:var(--blade-deep)}
+.batch i.s{background:var(--warn)}
+.tw{overflow-x:auto;border-radius:8px;background:var(--s2);margin-top:1rem}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:34rem}
+th{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:.6rem .85rem;background:var(--s3);white-space:nowrap}
+td{padding:.55rem .85rem;vertical-align:top;color:var(--ink-dim)}
+tbody tr:nth-child(even){background:var(--s1)}
+td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-weight:700;white-space:nowrap}
+td strong{color:var(--ink);font-weight:600}
+td.num{font-variant-numeric:tabular-nums;text-align:right}
+.note{background:var(--s2);border-radius:8px;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;margin-top:1rem}
+.note.calm{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.note.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.note.bad{box-shadow:inset 3px 0 0 var(--bad)}
+.note h3{font-size:.92rem}
+.note p{color:var(--ink-dim);font-size:12.5px;max-width:72ch}
+.tl{display:flex;flex-direction:column;gap:1px;margin-top:1rem;background:var(--ground);border-radius:8px;overflow:hidden}
+.tlrow{display:grid;grid-template-columns:7rem minmax(0,1fr);gap:1rem;background:var(--s2);padding:.75rem 1rem;align-items:baseline}
+.tlrow.key{background:var(--s3)}
+.tlwhen{font-family:var(--font-m);font-size:10.5px;font-weight:700;color:var(--blade);letter-spacing:.03em}
+.tlwhat{color:var(--ink-dim);font-size:12.5px;line-height:1.55}
+.tlwhat b{color:var(--ink);font-weight:600}
+.foot{color:var(--ink-faint);font-size:11.5px;line-height:1.7;padding-top:1.5rem}
+@media (max-width:900px){
+ .shell{grid-template-columns:1fr}
+ .rail{position:static;height:auto;padding:1.15rem 0}
+ .nav{flex-direction:row;flex-wrap:wrap;padding:0 .9rem;gap:.25rem}
+ .nav a{border-left:0;border-radius:4px;padding:.3rem .55rem}
+ .nav a.on{box-shadow:inset 0 -2px 0 var(--blade-deep)}
+ .railfoot{display:none}
+ .canvas{padding:1.6rem 1.1rem 3rem}
+ h1{font-size:1.5rem}
+ .urow{grid-template-columns:1fr;gap:.35rem}
+ .ubadges{justify-content:flex-start}
+ .tlrow{grid-template-columns:1fr;gap:.25rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <div class="brand"><b>AIways-On</b><span>Unit Decomposition</span></div>
+  <div class="nav">
+    <a href="#top" class="on"><em class="n mono">01</em>결과</a>
+    <a href="#dag"><em class="n mono">02</em>2층 의존</a>
+    <a href="#dec"><em class="n mono">03</em>결정 9건</a>
+    <a href="#units"><em class="n mono">04</em>유닛 6</a>
+    <a href="#track"><em class="n mono">05</em>U3 3트랙</a>
+    <a href="#pr1"><em class="n mono">06</em>PR #1 · 타임라인</a>
+    <a href="#stub"><em class="n mono">07</em>테스트 더블</a>
+    <a href="#find"><em class="n mono">08</em>발견 3건</a>
+    <a href="#ver"><em class="n mono">09</em>검증</a>
+  </div>
+  <div class="railfoot">
+    Units Generation<br>산출물 3종<br>2026-09-08
+  </div>
+</nav>
+
+<main class="canvas">
+
+<section class="top" id="top">
+  <p class="eyebrow">Inception / Units Generation</p>
+  <h1>6명이 서로를 기다리지 않게 만드는 일</h1>
+  <p class="lede">
+    유닛의 개수와 이름은 이미 정해져 있었다. 이 단계가 실제로 결정한 것은 <strong>하나의 리포·하나의
+    Next.js 앱에서 6명이 동시에 일할 수 있게 만드는 경계 조건</strong>이다. 의존을 컴파일 타임과 통합 시점
+    두 층으로 나눠 보니, 착수를 막는 층은 U1 하나만을 선행으로 갖는 DAG였다.
+  </p>
+  <dl class="strip">
+    <div><dt>유닛</dt><dd>6</dd></div>
+    <div><dt>스토리 배정</dt><dd>56 / 56</dd></div>
+    <div><dt>컴포넌트</dt><dd>31 / 31</dd></div>
+    <div><dt>분해 결정</dt><dd>9</dd></div>
+    <div><dt>컴파일 의존</dt><dd>U1뿐</dd></div>
+    <div><dt>순환</dt><dd>0</dd></div>
+  </dl>
+</section>
+
+<section class="sec" id="dag">
+  <p class="eyebrow">핵심 결과</p>
+  <h2>착수를 막는 의존과, 나중에 연결되는 의존</h2>
+  <p class="lede">
+    컴포넌트 설계도는 U2와 U3 사이에 양방향 화살표를 보여준다. 그것을 그대로 착수 순서로 읽으면
+    두 유닛이 서로를 기다리는 것처럼 보이지만, 실제로 빌드를 막는 것은 <code>import</code> 하는 것뿐이다.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 262" role="img" aria-label="왼쪽 패널은 컴파일 타임 의존으로 U1 공용 기반에서 U2부터 U6까지 다섯 갈래 화살표만 있고 유닛들 사이에는 화살표가 없다. 오른쪽 패널은 통합 시점 의존으로 U2와 U4와 U5 세 유닛이 모두 U3 트랙1의 Factory 구현을 향하며 이 지점이 B-1이라는 최초 임계점이다">
+      <defs>
+        <marker id="uah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="currentColor"/>
+        </marker>
+        <marker id="uahKey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--blade)"/>
+        </marker>
+        <marker id="uahWarn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--warn)"/>
+        </marker>
+      </defs>
+
+      <text class="svg-title" x="16" y="24">컴파일 타임 — 착수를 막는 것</text>
+
+      <rect x="96" y="46" width="216" height="50" rx="6" fill="none" stroke="var(--blade)" stroke-width="1.8"/>
+      <text class="svg-label" x="112" y="68" fill="var(--blade)">U1 · 공용 기반</text>
+      <text class="svg-sub" x="112" y="85">packages/contracts + packages/lib</text>
+
+      <line x1="204" y1="96" x2="56" y2="176" stroke="var(--blade)" stroke-width="1.5" marker-end="url(#uahKey)"/>
+      <line x1="204" y1="96" x2="130" y2="176" stroke="var(--blade)" stroke-width="1.5" marker-end="url(#uahKey)"/>
+      <line x1="204" y1="96" x2="204" y2="176" stroke="var(--blade)" stroke-width="1.5" marker-end="url(#uahKey)"/>
+      <line x1="204" y1="96" x2="278" y2="176" stroke="var(--blade)" stroke-width="1.5" marker-end="url(#uahKey)"/>
+      <line x1="204" y1="96" x2="352" y2="176" stroke="var(--blade)" stroke-width="1.5" marker-end="url(#uahKey)"/>
+
+      <rect x="20" y="182" width="72" height="42" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="46" y="203">U2</text>
+      <text class="svg-sub" x="30" y="218">관리</text>
+      <rect x="94" y="182" width="72" height="42" rx="5" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+      <text class="svg-label" x="120" y="203" fill="var(--warn)">U3</text>
+      <text class="svg-sub" x="102" y="218">진행 · 18건</text>
+      <rect x="168" y="182" width="72" height="42" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="194" y="203">U4</text>
+      <text class="svg-sub" x="178" y="218">장애</text>
+      <rect x="242" y="182" width="72" height="42" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="268" y="203">U5</text>
+      <text class="svg-sub" x="250" y="218">자체개선</text>
+      <rect x="316" y="182" width="72" height="42" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="342" y="203">U6</text>
+      <text class="svg-sub" x="326" y="218">규정</text>
+
+      <text class="svg-edge" x="216" y="140" fill="var(--blade)">타입 · 인증 · 스키마 · 토큰</text>
+      <text class="svg-edge" x="20" y="250">유닛 사이 간선 0개 — 2계층 DAG</text>
+
+      <line x1="430" y1="16" x2="430" y2="246" stroke="currentColor" stroke-width="1" opacity=".22"/>
+
+      <text class="svg-title" x="466" y="24">통합 시점 — 최초 임계점은 B-1</text>
+
+      <rect x="466" y="52" width="104" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="482" y="70">U2 · 접수</text>
+      <text class="svg-sub" x="482" y="85">RequestIntake</text>
+      <rect x="466" y="108" width="104" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="482" y="126">U4 · 승격</text>
+      <text class="svg-sub" x="482" y="141">Incident</text>
+      <rect x="466" y="164" width="104" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="482" y="182">U5 · 승격</text>
+      <text class="svg-sub" x="482" y="197">Finding</text>
+
+      <line x1="570" y1="72" x2="686" y2="112" stroke="var(--warn)" stroke-width="1.6" marker-end="url(#uahWarn)"/>
+      <line x1="570" y1="128" x2="686" y2="128" stroke="var(--warn)" stroke-width="1.6" marker-end="url(#uahWarn)"/>
+      <line x1="570" y1="184" x2="686" y2="146" stroke="var(--warn)" stroke-width="1.6" marker-end="url(#uahWarn)"/>
+      <text class="svg-edge" x="600" y="105" fill="var(--warn)" font-weight="700">B-1</text>
+
+      <rect x="692" y="92" width="186" height="76" rx="6" fill="none" stroke="var(--warn)" stroke-width="1.8"/>
+      <text class="svg-label" x="708" y="116" fill="var(--warn)">U3 · T1</text>
+      <text class="svg-sub" x="708" y="133">SdlcRequestFactory 구현</text>
+      <text class="svg-sub" x="708" y="150">시그니처는 U1이 소유</text>
+
+      <text class="svg-edge" x="466" y="232">T1이 밀리면 3유닛이 함께 밀린다</text>
+      <text class="svg-edge" x="466" y="250">— 전체 일정의 임계 경로</text>
+    </svg>
+    <figcaption>
+      <b>왼쪽</b>이 착수 가능 여부를 결정한다. AD-1(Port 인터페이스를 U1으로)과 UOW-6(Factory 시그니처를
+      U1으로)이 한 일은 <b>유닛 간 구현 의존을 전부 오른쪽 층으로 밀어낸 것</b>이다. 그 결과 왼쪽에는
+      U1에서 나가는 간선 5개만 남고, 유닛끼리는 서로를 전혀 참조하지 않는다.
+    </figcaption>
+  </figure>
+
+  <div class="note calm">
+    <h3>팀 제약이 문자 그대로 충족됐다</h3>
+    <p>
+      착수 조건은 “공용 유닛이 유일한 공통 선행인 의존 그래프”였다. U1을 그래프에서 지우면 나머지
+      5유닛 사이에 남는 간선은 <strong>0개</strong>다. PR #1 머지 후 5명은 서로를 기다리지 않는다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="dec">
+  <p class="eyebrow">UOW-1 ~ UOW-9</p>
+  <h2>분해 결정 9건</h2>
+  <p class="lede">
+    각 결정은 User Stories와 Application Design이 남긴 실제 결함에 대응한다. 임의로 만든 항목은 없다.
+  </p>
+
+  <div class="ad">
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-1</span><span class="b go">Q1=A</span></div>
+      <h3>6유닛 · 1인 1유닛</h3>
+      <p>U3만 내부 3트랙으로 나눠 한 사람이 순차 진행. 유닛 수와 배정을 건드리지 않는 가장 작은 조치.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-2</span><span class="b go">Q2=A</span></div>
+      <h3>배치1 / 배치2 구분</h3>
+      <p>Must 46을 배치1, Should 10을 배치2로. Could가 0건이라 절삭 후보를 지금 표시해두지 않으면 마감 직전에 판단하게 된다.</p>
+    </div>
+    <div class="adcard key">
+      <div class="adtop"><span class="adid mono">UOW-3</span><span class="b go">Q3=A</span></div>
+      <h3>인터페이스 전용 PR #1</h3>
+      <p>U1이 타입·인증 시그니처·스키마·스캐폴딩만 담은 PR을 먼저 머지한다. <strong>이 머지가 5유닛의 착수 신호</strong>다.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-4</span><span class="b wa">CQ1=A</span></div>
+      <h3>최소 stub으로 착수</h3>
+      <p>고정값을 반환하는 손 stub으로 시작하고 계약 테스트 스위트는 만들지 않는다. <strong>TDD와 커버리지 게이트는 그대로</strong> — D-20은 수정되지 않았다.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-5</span><span class="b go">Q5=A</span></div>
+      <h3>CODEOWNERS로 소유권 강제</h3>
+      <p>Portal 하나에 5유닛 23컴포넌트가 들어간다. 디렉토리 경계에 소유자를 걸어 타 유닛 수정 시 리뷰가 강제되게 한다.</p>
+    </div>
+    <div class="adcard key">
+      <div class="adtop"><span class="adid mono">UOW-6</span><span class="b go">Q6=C</span></div>
+      <h3>Factory 시그니처를 U1으로</h3>
+      <p>구현은 U3에 남긴다. Port 3종에 쓴 해법을 <strong>세 유닛을 동시에 막던</strong> Factory에도 똑같이 적용했다.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-7</span><span class="b go">Q7=C</span></div>
+      <h3>Dockerfile은 유닛, chart는 U1</h3>
+      <p>Portal 이미지만 예외로 U1이 소유한다 — 5유닛 코드를 담으므로. chart·values·Secret·RBAC·ConfigMap은 전부 U1.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-8</span><span class="b go">Q8=B</span></div>
+      <h3>스키마 파일만 분할</h3>
+      <p>유닛별 파일로 나눠 머지 충돌 면적을 줄이되, <strong>소유권은 U1</strong>. 배럴·공유 테이블·FK 규약 변경은 U1 승인.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">UOW-9</span><span class="b wa">CQ2=A · CQ3=B</span></div>
+      <h3>경량 워크스페이스</h3>
+      <p>앱 1개 + <code>packages/contracts</code> + <code>packages/lib</code>. 유닛은 <code>features/</code> 디렉토리와 라우트 그룹으로 나뉜다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="units">
+  <p class="eyebrow">유닛 정의</p>
+  <h2>유닛 6개 — 책임과 비책임</h2>
+  <p class="lede">
+    각 유닛에는 “하지 않는 것”을 함께 적었다. 병렬 개발에서 실제로 사고가 나는 지점은
+    두 사람이 같은 것을 각자 구현할 때이기 때문이다. 막대는 배치1(Must)과 배치2(Should) 비율이다.
+  </p>
+
+  <section class="ublock">
+    <div class="uhead">
+      <h3><span class="ucode mono">U1</span> 공용 기반</h3>
+      <span class="ucount mono">스토리 10 · 컴포넌트 5</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">공유 타입·Port·Factory 시그니처, 인증 전체, 스키마 배럴, 디자인 토큰, Helm·CI.
+        <br><span style="opacity:.75">비책임 — 도메인 로직 없음. Port 구현체를 쓰지 않는다. 스캔 엔드포인트를 정의하지 않는다.</span></p>
+      <div class="ubadges"><span class="b go">차단 해제</span><span class="b ok">stub 0</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:9"></i><i class="s" style="flex:1"></i></div>
+  </section>
+
+  <section class="ublock">
+    <div class="uhead">
+      <h3><span class="ucode mono">U2</span> 코어SDLC (관리)</h3>
+      <span class="ucount mono">스토리 8 · 컴포넌트 5</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">SR 접수·조회, GitHubPort 구현, 관리 화면, 목업 이미지 서빙.
+        <br><span style="opacity:.75">비책임 — 상태 전이를 직접 하지 않는다. SR을 직접 INSERT 하지 않는다.</span></p>
+      <div class="ubadges"><span class="b wa">경계 3</span><span class="b wa">stub 3</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:6"></i><i class="s" style="flex:2"></i></div>
+  </section>
+
+  <section class="ublock hot">
+    <div class="uhead">
+      <h3><span class="ucode mono">U3</span> 코어SDLC (진행)</h3>
+      <span class="ucount mono">스토리 18 · 컴포넌트 9</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">정책 각인, 전이·CAS·멱등, 단계 진입 작업, 보상, Pod lifecycle, 메시징, n8n. 독립 배포 3개.
+        <br><span style="opacity:.75">비책임 — PR을 직접 만들지 않는다. 4→9에서 프로파일을 재판정하지 않는다. Runner는 stage를 모른다.</span></p>
+      <div class="ubadges"><span class="b no">최대 부하</span><span class="b go">PBT 3</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:16"></i><i class="s" style="flex:2"></i></div>
+  </section>
+
+  <section class="ublock">
+    <div class="uhead">
+      <h3><span class="ucode mono">U4</span> 장애 대응</h3>
+      <span class="ucount mono">스토리 7 · 컴포넌트 4</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">트리거 수집·fail-closed, incident SR 승격, 장애 화면군, 템플릿 관리.
+        <br><span style="opacity:.75">비책임 — 자동머지 금지 규칙을 구현하지 않는다. Factory가 각인한다.</span></p>
+      <div class="ubadges"><span class="b wa">stub 1</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:5"></i><i class="s" style="flex:2"></i></div>
+  </section>
+
+  <section class="ublock">
+    <div class="uhead">
+      <h3><span class="ucode mono">U5</span> 자체개선</h3>
+      <span class="ucount mono">스토리 6 · 컴포넌트 4</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">스캔 트리거 정의·fail-closed, finding 저장·검토, SR·규정 승격, 개선 화면군.
+        <br><span style="opacity:.75">비책임 — 스캔은 읽기 전용. repo에 쓰지 않는다. CronJob 배포는 U1.</span></p>
+      <div class="ubadges"><span class="b wa">stub 2</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:5"></i><i class="s" style="flex:1"></i></div>
+  </section>
+
+  <section class="ublock">
+    <div class="uhead">
+      <h3><span class="ucode mono">U6</span> 개발 규정</h3>
+      <span class="ucount mono">스토리 7 · 컴포넌트 4</span>
+    </div>
+    <div class="urow">
+      <p class="uresp">규정 CRUD·개정 이력, MCP 서빙, 토큰 발급·폐기, 규정 화면군.
+        <br><span style="opacity:.75">비책임 — Pod에 MCP를 주입하지 않는다. Service DNS로 서빙만 한다.</span></p>
+      <div class="ubadges"><span class="b ok">stub 0 · 가장 독립적</span></div>
+    </div>
+    <div class="batch"><i class="m" style="flex:5"></i><i class="s" style="flex:2"></i></div>
+  </section>
+</section>
+
+<section class="sec" id="track">
+  <p class="eyebrow">UOW-1</p>
+  <h2>U3의 18건을 3트랙으로 갈랐다</h2>
+  <p class="lede">
+    트랙 경계가 정확히 6 / 6 / 6으로 나뉘고, T3는 n8n 배포 이후에 착수한다는 기존 결정(D-18)에 따라
+    자연히 뒤로 밀린다. 한 사람이 순차 처리해도 앞 트랙이 뒤 트랙에 막히지 않는 이유다.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>트랙</th><th>담는 것</th><th>스토리</th><th class="num">건</th><th>착수 조건</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>T1</td>
+          <td><strong>상태 · SR생성</strong><br>Factory · StateMachine · EntryActions · 보상</td>
+          <td>US-U3-01 · 02 · 03 · 04 · 05 · 06</td>
+          <td class="num">6</td>
+          <td><strong>최우선</strong> — U2·U4·U5가 대기</td>
+        </tr>
+        <tr>
+          <td>T2</td>
+          <td><strong>Pod · Runner</strong><br>PodOrchestrator · FastAPI Runner · Pod 이미지</td>
+          <td>US-U3-07 · 08 · 09 · 11 · 17 · 18</td>
+          <td class="num">6</td>
+          <td>T1과 병행 가능</td>
+        </tr>
+        <tr>
+          <td>T3</td>
+          <td><strong>Slack · n8n</strong><br>SlackAdapter · Gateway · 워크플로우 A·B·C</td>
+          <td>US-U3-10 · 12 · 13 · 14 · 15 · 16</td>
+          <td class="num">6</td>
+          <td>n8n 배포 이후 (D-18)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note warn">
+    <h3>다만 총량은 줄지 않았다</h3>
+    <p>
+      트랙 분할은 <strong>순서를 정리했을 뿐 18건이라는 총량은 그대로</strong>다. R-03은 남아 있다.
+      완화 수단은 둘 — ① T3를 뒤로 미루고 배치2 2건을 절삭, ② stub이 하나도 필요 없는 U6 담당자가
+      T3를 분담. 판단 시점은 T1 완료 시점이 적절하다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="pr1">
+  <p class="eyebrow">UOW-3</p>
+  <h2>PR #1에 무엇이 들어가는가</h2>
+  <p class="lede">
+    이 PR이 머지되는 순간 5유닛이 동시에 착수한다. 그래서 내용을 미리 확정했다.
+    구현은 들어가지 않고 시그니처와 타입만 들어간다.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>파일</th><th>내용</th><th>기다리는 유닛</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>contracts/stage.ts</td><td>Stage(1·2·3·4·9만) · ChannelType · PipelineProfile</td><td>전부</td></tr>
+        <tr><td>contracts/ports.ts</td><td>GitHubPort · MessagingPort · PodPort</td><td>U2 · U3</td></tr>
+        <tr><td>contracts/factory.ts</td><td><strong>Factory 시그니처</strong> — UOW-6</td><td><strong>U2 · U4 · U5</strong></td></tr>
+        <tr><td>contracts/state.ts</td><td>getSubStage · setSubStage · getTransitions</td><td>U2</td></tr>
+        <tr><td>lib/auth/</td><td>AuthGuard 7함수 시그니처</td><td>전부</td></tr>
+        <tr><td>lib/db/schema/</td><td>6파일 + 배럴, 공유 테이블 확정</td><td>전부</td></tr>
+        <tr><td>lib/ui/</td><td>디자인 토큰 (다크 · 라이트)</td><td>UI를 가진 4유닛</td></tr>
+        <tr><td>스캐폴딩</td><td>workspace · tsconfig · CODEOWNERS · CI</td><td>전부</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-top:1rem">
+    동결은 “수정 금지”가 아니라 <strong>“단독 수정 금지”</strong>다. 머지 후 변경하려면 U1 승인이 필요하고,
+    5유닛 전체에 영향을 주므로 PR 설명에 영향 범위를 적는다.
+  </p>
+
+  <div class="tl">
+    <div class="tlrow key">
+      <span class="tlwhen">선행</span>
+      <span class="tlwhat"><b>D1 · U1 인터페이스 PR #1</b> — 스토리 4건(US-U1-02·03·04·06)이 이 PR을 구성한다. 머지 = 착수 신호</span>
+    </div>
+    <div class="tlrow">
+      <span class="tlwhen">병렬 착수</span>
+      <span class="tlwhat"><b>D2·D3·D4·D5·D6 동시</b> — U3는 T1부터. U2는 stub 3종, U4는 1종, U5는 2종, <b>U6는 stub 없이</b> 끝까지 독립</span>
+    </div>
+    <div class="tlrow key">
+      <span class="tlwhen">T1 완료</span>
+      <span class="tlwhat"><b>B-1 해제</b> — U2·U4·U5 셋이 Factory stub을 실제 구현으로 교체. 최초이자 가장 큰 임계점</span>
+    </div>
+    <div class="tlrow">
+      <span class="tlwhen">n8n 배포 후</span>
+      <span class="tlwhat">U3 T3 착수 (D-18) — Slack·워크플로우 A·B·C</span>
+    </div>
+    <div class="tlrow">
+      <span class="tlwhen">경계 연결</span>
+      <span class="tlwhat">B-1 → B-2 → B-3 → B-4 → B-5 → B-7 → <b>B-6</b>. 마지막 B-6(U5→U6)은 양쪽 완성 후 연결해도 된다</span>
+    </div>
+    <div class="tlrow">
+      <span class="tlwhen">마무리</span>
+      <span class="tlwhat">통합 → Build and Test</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="stub">
+  <p class="eyebrow">UOW-4</p>
+  <h2>테스트 더블 8건 — 그리고 그중 2건의 필수 조건</h2>
+  <p class="lede">
+    각 유닛이 착수 시점에 손으로 만들 stub이다. 고정값을 반환하는 수준이면 충분하다.
+    다만 두 개는 조건이 붙는다. 그 조건이 빠지면 stub이 설계를 조용히 무력화한다.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>유닛</th><th>stub</th><th>최소 동작</th><th>교체 시점</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>U2</td><td>SdlcRequestFactory · PodPort · StateMachine</td><td>고정 SR 객체 · 성공 응답 · 고정 stage</td><td>U3 T1 · T2 완료 후</td></tr>
+        <tr><td>U3</td><td>GitHubPort · MessagingPort</td><td>고정 URL 반환 · 고정 채널 ID</td><td>U2 완료 후 · U3 T3 완료 후</td></tr>
+        <tr><td>U4</td><td>SdlcRequestFactory</td><td>incident 각인 객체</td><td>U3 T1 완료 후</td></tr>
+        <tr><td>U5</td><td>SdlcRequestFactory · MemoryRegistry</td><td>improvement 각인 객체 · 고정 ID</td><td>U3 T1 · U6 완료 후</td></tr>
+        <tr><td>U6</td><td><strong>없음</strong></td><td>—</td><td>—</td></tr>
+        <tr><td>U1</td><td><strong>없음</strong></td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note bad">
+    <h3>stub에 반드시 넣어야 하는 두 가지</h3>
+    <p>
+      <strong>① GitHubPortStub의 <code>null</code> 반환 경로</strong> — commit 이력이 없으면 PR을 만들지 않는다는
+      규약(B-2)은 stub이 그 경로를 재현하지 않으면 통합 때까지 아무도 구현하지 않는다.
+    </p>
+    <p>
+      <strong>② SdlcRequestFactoryStub의 정책 각인 필드</strong> — 각인된 <code>metadata</code>를 반환하지 않으면
+      U4 담당자가 자기도 모르게 프로파일을 재판정하는 코드를 쓰게 되고, incident 자동머지 금지를
+      데이터에 각인해 지키려던 AD-3이 무력화된다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="find">
+  <p class="eyebrow">이번 단계에서 나온 것</p>
+  <h2>발견 3건</h2>
+
+  <div class="note warn">
+    <h3>1 · 워크스페이스가 새 위험을 만들었다</h3>
+    <p>
+      명세와 컴포넌트 설계는 Slack Gateway가 Portal과 <strong>코드·타입을 공유하지 않는다</strong>고 못 박는다
+      (replicas 1 고정 · 원본 봉투 그대로 전달). 그런데 워크스페이스에서는 <code>packages/contracts</code>를
+      import 하는 것이 한 줄이면 되는 일이 된다. <strong>이 위험은 명세의 평면 구조에서는 없었고 UOW-9가 만든 것</strong>이다.
+      대응으로 Gateway에 워크스페이스 의존을 선언하지 않고, CI가 이를 검사하도록 U1의 품질 게이트에 넣었다.
+    </p>
+  </div>
+
+  <div class="note calm">
+    <h3>2 · 명세 이탈을 되돌릴 수 있게 남겼다</h3>
+    <p>
+      요구사항 문서는 루트 <code>src/</code> 단일 앱을 명시한다. UOW-9는 이를 <code>apps/portal/src/</code> +
+      <code>packages/*</code>로 바꾼다. 요구사항이 단일 진실 공급원이므로, 경로별 매핑과
+      <strong>되돌리는 방법</strong>을 문서에 함께 적었다. 유닛 경계는 <code>features/</code> 디렉토리에 있어
+      되돌려도 깨지지 않는다.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <h3>3 · PBT 대상이 트랙을 가로질러 갈렸다</h3>
+    <p>
+      속성 기반 테스트 대상 3건이 전부 U3에 있는데, T1에 2건 · T3에 1건으로 나뉜다.
+      한쪽 트랙의 완료 정의에만 적으면 다른 쪽에서 누락되므로 <strong>두 트랙 모두의 DoD에 넣었다.</strong>
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="ver">
+  <p class="eyebrow">검증</p>
+  <h2>주장이 아니라 실행한 결과</h2>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>항목</th><th>방법</th><th>결과</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>스토리 배정</td><td>원본 헤딩과 대조 · 유닛별 개별 확인</td><td><span class="b ok">56 / 56</span></td></tr>
+        <tr><td>MoSCoW 보존</td><td>원본과 등급 비교</td><td><span class="b ok">Must 46 · Should 10</span></td></tr>
+        <tr><td>컴포넌트 배정</td><td>components.md 대조</td><td><span class="b ok">31 / 31</span></td></tr>
+        <tr><td>FR 커버리지</td><td>유닛 배정 후 재확인</td><td><span class="b ok">45 / 45</span></td></tr>
+        <tr><td>순환 의존</td><td>컴파일 그래프 위상 정렬</td><td><span class="b ok">0건 · 2계층</span></td></tr>
+        <tr><td>U3 트랙 배분</td><td>합계 검사</td><td><span class="b ok">6 · 6 · 6</span></td></tr>
+        <tr><td>다이어그램</td><td>노드 · 간선 · style 참조 검사</td><td><span class="b ok">6노드 5간선 · 미참조 0</span></td></tr>
+        <tr><td>경계 커버리지</td><td>B-1~B-7 ↔ 통합 의존 목록</td><td><span class="b ok">7 / 7</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note calm">
+    <h3>확장 규칙</h3>
+    <p>
+      이 단계에 적용되는 8개 규칙(접근제어 · 공급망 · 보안설계 · 자격증명 · 무결성 · 핵심워크로드 ·
+      변경관리 · 배포롤백 · 속성테스트 식별) 전부 준수. 나머지는 코드·매니페스트 수준 규칙이라
+      분해 산출물에 판정 대상이 없어 해당 없음이며, 복원력 테스트 2건은 사용자 승인 예외로 이미 기록돼 있다.
+    </p>
+  </div>
+
+  <p class="foot">
+    산출물 — <code>unit-of-work.md</code> · <code>unit-of-work-dependency.md</code> · <code>unit-of-work-story-map.md</code><br>
+    AIways-On · AI-DLC Inception / Units Generation · 2026-09-08 · 승인 대기
+  </p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  if(!('IntersectionObserver' in window))return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      var i=secs.indexOf(e.target);
+      if(i<0)return;
+      links.forEach(function(a){a.classList.remove('on');});
+      links[i].classList.add('on');
+    });
+  },{rootMargin:'-10% 0px -75% 0px'});
+  secs.forEach(function(s){if(s)io.observe(s);});
+})();
+</script>

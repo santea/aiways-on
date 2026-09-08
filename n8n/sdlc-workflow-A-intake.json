@@ -1,0 +1,770 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sdlc-intake",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "84bb16de-b00c-44c9-8c94-a1e119bb183a",
+      "name": "SDLC Intake 수신",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2672,
+        784
+      ],
+      "webhookId": "9db1af91-9343-4aa2-a742-b6f0a62f77d2"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\"sr-md\":\"완성된 Vibe-PI Interview Intake 마크다운 문서 전체\"}",
+        "autoFix": true
+      },
+      "id": "199590ff-110a-42c7-9d55-e894466846cc",
+      "name": "문서 출력 파서",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1952,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "requestId",
+              "type": "string",
+              "value": "={{ $json.body.requestId }}"
+            },
+            {
+              "id": "2",
+              "name": "requestNo",
+              "type": "string",
+              "value": "={{ $json.body.requestNo }}"
+            },
+            {
+              "id": "3",
+              "name": "requestSystem",
+              "type": "string",
+              "value": "={{ $json.body.requestSystem }}"
+            },
+            {
+              "id": "4",
+              "name": "module",
+              "type": "string",
+              "value": "={{ $json.body.module }}"
+            },
+            {
+              "id": "5",
+              "name": "srTitle",
+              "type": "string",
+              "value": "={{ $json.body.metadata.title }}"
+            },
+            {
+              "id": "6",
+              "name": "podEndpoint",
+              "type": "string",
+              "value": "={{ $json.body.podEndpoint }}"
+            },
+            {
+              "id": "7",
+              "name": "callbackToken",
+              "type": "string",
+              "value": "={{ $json.body.callbackToken }}"
+            },
+            {
+              "id": "8",
+              "name": "availableRepos",
+              "type": "array",
+              "value": "={{ $json.body.availableRepos }}"
+            },
+            {
+              "id": "9",
+              "name": "channelIds",
+              "type": "object",
+              "value": "={{ $json.body.channelIds }}"
+            },
+            {
+              "id": "10",
+              "name": "portalBase",
+              "type": "string",
+              "value": "={{ $json.body.portalBaseUrl ?? \"https://portal.bia-dev.domain.net\" }}"
+            },
+            {
+              "id": "a2b78dab-3431-4935-aaee-987f390b32e6",
+              "name": "srMetadata",
+              "value": "={{ $json.body.metadata }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e5036b2-e64c-44c5-a57a-534e0afe2304",
+      "name": "Extract Intake Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2480,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=SR\nrequestNo: {{ $json.requestNo }}\nmodule: {{ $json.module }}\nsrTitle: {{ $json.srTitle }}\nsrMetadata: {{ JSON.stringify($json.srMetadata) }}\navailableRepos:\n{{ JSON.stringify($json.availableRepos) }}\n\nnewBranch 이름 규칙: sdlc/{requestNo}-{srTitle을 소문자+하이픈으로 정제(공백은 -, 영숫자와 한글 외 제거)}\n예) sdlc/SR-20260629-001-테스트기능\n예) sdlc/SR-20260629-002-fix-login-bug\n\n출력 JSON: { \"repos\": [{ \"url\": \"...\", \"branch\": \"<defaultBranch>\", \"newBranch\": \"sdlc/<slug>\", \"pat\": \"...\", \"gitUserEmail\": \"...\", \"gitUserName\": \"...\", \"forcedClone\": true, \"isUi\": true, \"playwrightEnabled\": true, \"devServerUrl\": \"...\" }] }",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "SDLC 오케스트레이터. availableRepos 중에서 **요청 내용(시스템명·모듈·문제 설명)과 관련 가능성 있는 repo를 모두 선택**한다(1~N개).\n\n선택 기준:\n- repo의 forcedClone값이 true인경우는 반드시 포함한다\n- 각 repo의 description 한 줄을 보고 요청과 조금이라도 관련 가능성 있으면 포함한다 (넘치게 포함 > 누락).\n- 명백히 무관한 repo만 제외한다.\n- 0개 선택은 지양한다. 애매하면 가장 관련성 높은 repo 최소 1개는 고른다.\n\n\n선택된 repo만 출력 JSON의 repos 배열에 담는다. 출력 JSON 한 덩어리만.\n"
+        }
+      },
+      "id": "97e43067-10b9-452f-99f0-27caf35de084",
+      "name": "Pick Repo and Branch",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2288,
+        784
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.portalBase }}/api/v1/sdlc/advance",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $(\"Extract Intake Payload\").item.json.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ requestNo: $(\"Extract Intake Payload\").item.json.requestNo,\nfrom: $('SDLC Intake 수신').item.json.body.status, to: \"2_REQUIREMENTS_IN_PROGRESS\", actor: \"n8n-agent\", idempotencyKey: $(\"Extract Intake Payload\").item.json.requestNo + \"->2_REQUIREMENTS_IN_PROGRESS\" }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "a4d244df-c328-4bbe-8492-ddff6039f9f4",
+      "name": "Advance to 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -400,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: `/sdlc:user-deep-interview 사용자의 초기 요구사항을 구체화 시켜줘.\\n 요청한 사용자는 IT 에 대해 하나도 모르는 사람이야 일반적인 중학생 수준이야.\\n인터뷰를 통해 요구사항을 구체화한 문서를 만들어서 requirement_interview.md에 저장해줘.\\n\\n초기 요구사항은 아래와 같아\\n\\n${$json.output}${ ($(\"Merge Repo Options\").item.json.repos || []).some(r => r.isUi) ? '\\n\\n[UI 안내] 대상 repo 중 UI(Frontend) 로 표시된 repo가 있다.  화면 목업(Before/After)은 이 단계가 아니라 요구사항 텍스트 정의가 끝난 뒤 별도 목업 단계에서 진행하므로, 지금은 스크린샷을 캡처하지 말고 요구사항 텍스트 인터뷰에만 집중해줘.' : '' }`, call_webhook: true, resume: false, timeout_seconds: 1800 }) }}",
+        "options": {
+          "timeout": 1900000
+        }
+      },
+      "id": "1f3d44d2-f3ad-41ac-a15c-ebfdd7311799",
+      "name": "Run Requirements",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        784
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "GaussO4.1-260330",
+          "mode": "list",
+          "cachedResultName": "GaussO4.1-260330"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2288,
+        656
+      ],
+      "id": "d9e9fba4-275c-4b56-83b1-0ccf25b0d39b",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "BkaEoWMzwHuvvZzT",
+          "name": "bia-prd-llm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ \"다음 SDLC 인테이크 데이터를 기반으로 Vibe-PI Interview Intake 문서를 작성해주세요.\\n\\n\" + \"SR ID: \" + $json.requestNo + \"\\n\" + \"Initial Title: \" + ($json.srTitle || '') + \"\\n\" + \"Request Date: \" + ($json.srMetadata.requestDate || '') + \"\\n\" + \"Due Date: \" + ($json.srMetadata.dueDate || '') + \"\\n\" + \"Requester Name: \" + $json.srMetadata.submitter + \"\\n\" + \"Requester Department: \" + ($json.srMetadata.submitterDepartment || '') + \"\\n\" + \"Target Department: \" + ($json.srMetadata.department || '') + \"\\n\" + \"PI Operator: \" + ($json.srMetadata.piManager || '') + \"\\n\" + \"Related System: \" + ($json.srMetadata.requestSystem || '') + \"\\n\" + \"Related System ID: \" + ($json.srMetadata.systemId || '') + \"\\n\" + \"App ID (AA): \" + ($json.srMetadata.aa || '') + \"\\n\" + \"Related Menu Path: \" + ($json.module || '') + \"\\n\" + \"Target Sites: \" + ($json.srMetadata.requestSite || '') + \"\\n\" + \"Dev Type: \" + ($json.devType || '') + \"\\n\" + \"GitHub Repos: \" + ($json.availableRepos ? JSON.stringify($json.availableRepos) : 'none') + \"\\n\\n\" + \"[문제점 및 개발의뢰 내용]\\n\" + ($json.srMetadata.problemDescription || '') + \"\\n\\n\" + \"[개선 후 기대효과]\\n\" + ($json.srMetadata.expectedEffect || '') + \"\\n\\n\" + \"[Test 시나리오]\\n\" + ($json.srMetadata.testScenario || '') }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "당신은 SDLC 인테이크 문서 작성 전문가입니다.\n주어진 데이터를 아래 템플릿에 정확히 채워 완성된 마크다운 문서만 반환하십시오. 추가 설명, 코드블록 래핑 없이 마크다운 원문만 반환하십시오.\n\n## 작성 규칙\n1. **Target Sites**: requestSite 값을 그대로 기재.\n2. **Due Date**: dueDate 값 그대로. 없으면 공백.\n3. **App ID (AA)**: aa 값 그대로.\n4. **Operator's Initial Understanding**: `-` 로 비워둠.\n5. **Initial Notes**: `-` 로 비워둠.\n6. **Known Attachments**: 기본값 `attachments/` 유지.\n7. **Requester Department**: submitterDepartment 값을 받은 그대로 기재. 띄어쓰기, 공백, 포맷 변경 절대 금지.\n8. **Target Department**: department 값을 받은 그대로 기재. 띄어쓰기, 공백, 포맷 변경 절대 금지.\n9. **GitHub Repo**: availableRepos 배열이 있으면 각 repo의 description을 보고 요청 내용(시스템명, 모듈, 문제 설명)과 관련 가능성 있는 repo를 **모두 선택(1~N개)**하여 각각 `[description](repoUrl)` 형식으로 줄바꿈하여 전부 기재. 배열이 없거나 비어있으면 `-` 로 비워둠. 애매하면 넘치게 포함(누락보다 낫다).\n\n## 출력 템플릿\n\n# Vibe-PI Interview Intake\n\n## Metadata\n\n- SR ID: \n- Initial Title: \n- Request Date: \n- Due Date: \n- Requester Name: \n- Requester Department: \n- Target Department: \n- PI Operator: \n- Related System: \n- Related System ID: \n- App ID (AA): \n- Related Menu Path: \n- Target Sites: \n- GitHub Repo: \n\n## Raw Request\n\n### 문제점 및 개발의뢰 내용\n\n{problemDescription}\n\n### 개선 후 기대효과\n\n{expectedEffect}\n\n### Test 시나리오\n\n{testScenario}\n\n## Operator's Initial Understanding\n\n-\n\n## Known Attachments\n\n- `attachments/`\n\n## Initial Notes\n\n-"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2288,
+        512
+      ],
+      "id": "580217ab-35dd-48f8-a8aa-0366e92c9d2a",
+      "name": "SR intake document generator",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"repos\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url\": { \"type\": \"string\" },\n          \"branch\": { \"type\": \"string\" },\n          \"newBranch\": { \"type\": \"string\" },\n          \"autoPrMerge\": { \"type\": \"boolean\" },\n          \"pat\": { \"type\": \"string\" },\n          \"gitUserName\": { \"type\": \"string\" },\n          \"gitUserEmail\": { \"type\": \"string\" },\n          \"forcedClone\": { \"type\": \"boolean\" },\n          \"isUi\": { \"type\": \"boolean\" },\n          \"playwrightEnabled\": { \"type\": \"boolean\" },\n          \"devServerUrl\": { \n            \"type\": [\"string\", \"null\"] \n          }\n        },\n        \"required\": [\n          \"url\", \"branch\", \"newBranch\", \"autoPrMerge\", \n          \"pat\", \"gitUserName\", \"gitUserEmail\", \n          \"forcedClone\", \"isUi\", \"playwrightEnabled\", \n          \"devServerUrl\"\n        ]\n      }\n    }\n  },\n  \"required\": [\"repos\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -2144,
+        1008
+      ],
+      "id": "0cfb2b69-2e3d-4b10-9d2f-2e8dd8769508",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "workspace_claude_md",
+              "type": "string",
+              "value": "=# Job Context\n\nrequestNo: {{ $(\"Extract Intake Payload\").item.json.requestNo }}\nsrTitle: {{ $(\"Extract Intake Payload\").item.json.srTitle }}\nmodule: {{ $(\"Extract Intake Payload\").item.json.module }}\n\n## 작업 대상 Repos\n| repo | url | local path | work branch (head) | base branch (PR 대상) | auto PR merge | runnable | isUi | playwrightEnabled | dev server URL |\n|------|-----|-----------|--------|--------|--------|--------|--------|--------|--------|\n{{ $json.repos.map(r => { const name = r.url.replace(/\\/$/, '').split('/').pop(); return `| ${name} | ${r.url} | /workspaces/session/${name} | ${r.newBranch ?? r.branch} | ${r.branch} | ${r.autoPrMerge ?? false} | ${r.runnable ?? '-'} | ${r.isUi ?? '-'} | ${r.playwrightEnabled ?? '-'} | ${r.devServerUrl ?? '-'} |`; }).join('\\n') }}\n\n- **work branch (head)**: 작업·커밋·push 대상 브랜치 (sdlc/...)\n- **base branch (PR 대상)**: PR을 병합할 기준 브랜치. gh pr create --base 에 반드시 이 값 사용 (master 아님)\n- **auto PR merge**: true면 PR 생성 후 즉시 squash merge, false면 PR만 생성하고 사람의 수동 merge 대기\n- **dev server URL**: 배포 QA 검수 대상 서버 주소. '-' 이면 해당 repo는 QA 검수 대상이 아님\n\n## GitHub Issues\n*(clone 후 채워짐)*\n"
+            },
+            {
+              "id": "2",
+              "name": "repos",
+              "type": "array",
+              "value": "={{ $json.repos }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f8ab7fb3-86c1-44c7-813b-426d8122118e",
+      "name": "Build workspace CLAUDE.md",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1776,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/clone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ repos: $json.repos.map(r => ({ url: r.url, branch: r.newBranch ?? r.branch, base_branch: r.branch, pat: r.pat, description: r.description ?? '', git_user_name: r.gitUserName, git_user_email: r.gitUserEmail, forced_clone: r.forcedClone ?? false, runnable: r.runnable ?? false, is_ui: r.isUi ?? false, playwright_enabled: r.playwrightEnabled ?? false, dev_server_url: r.devServerUrl ?? null, files: (r.files || []).map(f => ({ relative_path: f.relativePath, content: f.content })), env_vars: (r.envVars || []).map(e => ({ key: e.key, value: e.value })) })), request_no: $(\"Extract Intake Payload\").item.json.requestNo, workspace_claude_md: $json.workspace_claude_md }) }}",
+        "options": {
+          "timeout": 600000
+        }
+      },
+      "id": "36b3ecba-167c-4aab-92a3-25c784c698c7",
+      "name": "POST sessions clone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1584,
+        784
+      ],
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "notesInFlow": false,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -208,
+        784
+      ],
+      "id": "834324e4-cb6a-4b57-acbc-fe288761b586",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: `CLAUDE.md 의 두 섹션을 아래 내용으로 정확히 교체해줘. 파일: /workspaces/session/CLAUDE.md\\n\\n수정 1: '작업 대상 Repos' 테이블의 branch 값을 실제 체크아웃된 branch 이름으로 수정(git branch --show-current 또는 git log 이용).\\n\\n수정 2: '## GitHub Issues' 섹션 전체를 아래로 교체:\\n## GitHub Issues\\n| repo | issue |\\n|------|-------|\\n${$json.issues.map(i => `| ${i.repo} | #${i.number} |`).join('\\n')}\\n\\n두 수정 완료 후 COMPLETE.`, resume: true, timeout_seconds: 120 }) }}",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "id": "e9f4f8f0-65ab-46ed-bd38-73dd0298b54b",
+      "name": "Update CLAUDE.md Issues",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1200,
+        784
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const picked = $json.output.repos || [];\nconst available = $(\"Extract Intake Payload\").item.json.availableRepos || [];\nconst byUrl = new Map(available.map(r => [r.repoUrl.replace(/\\/$/, ''), r]));\nconst merged = picked.map(p => {\n  const src = byUrl.get(p.url.replace(/\\/$/, '')) || {};\n  return {\n    ...p,\n    newBranch: (p.newBranch ?? '').replace(/\\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, ''),\n    forcedClone: src.forcedClone ?? false,\n    runnable: src.runnable ?? false,\n    isUi: src.isUi ?? false,\n    playwrightEnabled: src.playwrightEnabled ?? false,\n    devServerUrl: src.devServerUrl ?? null,\n    files: src.files || [],\n    envVars: src.envVars || [],\n  };\n});\nreturn [{ json: { repos: merged } }];"
+      },
+      "id": "374154be-0415-42a1-a800-36c975b4dec2",
+      "name": "Merge Repo Options",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1968,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Extract Intake Payload').item.json.portalBase }}/api/v1/sdlc/requests/{{ $('Extract Intake Payload').item.json.requestId }}/issues",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Extract Intake Payload').item.json.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ repos: $('POST sessions clone').item.json.cloned_repos.map(r => { const norm = u => u.replace(/\\.git$/, '').replace(/\\/$/, ''); const m = r.url.match(/github\\.domain\\.net\\/([^/]+)\\/([^/]+?)(?:\\.git)?(?:\\/|$)/); const repoSlug = m[1] + '/' + m[2]; const match = ($('Merge Repo Options').item.json.repos || []).find(rr => norm(rr.url) === norm(r.url)); const branch = match && match.newBranch ? match.newBranch : r.branch; return { repo: repoSlug, branch: branch }; }), title: '[SDLC] ' + $('Extract Intake Payload').item.json.requestNo + ' ' + $('Extract Intake Payload').item.json.srTitle, body: '<!-- sdlc:' + $('Extract Intake Payload').item.json.requestId + ' -->\\n' + $('Extract Intake Payload').item.json.requestNo + ' SDLC 작업' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1392,
+        784
+      ],
+      "id": "97ca82c7-96f7-4ed8-922b-fb34e2937afd",
+      "name": "[Portal] Create Issues"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Extract Intake Payload').item.json.portalBase }}/api/v1/sdlc/requests/{{ $('Extract Intake Payload').item.json.requestId }}/github-links",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Extract Intake Payload').item.json.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  JSON.stringify({\n    \"issues\": $json.issues.map(i => ({\n      \"issueNumber\": i.number,\n      \"repo\": i.repo\n    }))\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1200,
+        512
+      ],
+      "id": "2de3003b-3d23-463e-abf2-df93b827bdf2",
+      "name": "[portal] github issue link1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: `작업 대상 repo들을 위한 conda 가상환경을 구성하고, 요구사항 인터뷰 중 to-be 화면 캡처(playwright)와 이후 개발·테스트·서버구동이 가능하도록 각 repo에 dev 의존성을 추가한다.\nbuild 가능한 repo는 build하며 OOM이 발생하지 않게 주의한다.\nbuild 전 호환성 체크 Node+Vite면 node -e \"typeof crypto.getRandomValues\", Python이면 인터프리터 임포트 체크 등.\n\n1. 환경 존재 확인: /workspaces/session/.conda/conda-meta 디렉토리가 이미 있으면 환경이 이미 구성된 것이므로 생성을 건너뛰고 4번부터 수행한다.\n\n2. repo 분석: /workspaces/session 하위의 각 repo의 (README.md, CLAUDE.md 등) 문서와 매니페스트를 살펴 필요한 빌드환경 & 런타임 종류를 파악한다.\n   - Node: package.json(engines.node), .nvmrc, .node-version\n   - Python: pyproject.toml(requires-python), .python-version, runtime.txt\n   - Java 등 기타: pom.xml, build.gradle 등\n   - gradle : 5.3.1 미만 버전은 conda로 설치가 안되므로 gradle=5.6.4로 설치 후 다음과 같이 wrapper version을 사용하도록 한다 \\`gradle wrapper --gradle-version {TARGET_GRADLE_VERSION}\\`\n   - 각 SW마다 CLAUDE.md나 매니페스트에 **버전이 명시돼 있으면 그 버전을 그대로 기록**한다. 추측하거나 latest·임의 버전을 고르지 않는다. 명시가 없는 SW는 버전 미지정으로 두고 적당한 버전을 골라 설치해도 된다.\n   - repo가 여러 개면 각 repo가 요구하는 런타임을 모두 포괄한다(예: 한 세션에 node repo와 python repo가 java repo 섞여 있으면 셋 다 설치).\n\n3. 환경 생성(prefix 방식, 세션 공용 고정 경로 하나만 사용):\n   conda create -y -p /workspaces/session/.conda python=<버전> nodejs=<버전> gradle=<버전> openjdk=<버전> <그 외 런타임/시스템 패키지>\n   - 반드시 -p /workspaces/session/.conda 경로로 만든다(-n 이름 방식 금지). 이 경로가 아니면 이후 단계에서 자동 활성화되지 않는다.\n\n4. 각 repo 의존성 매니페스트의 dev 섹션에 캡처/테스트 도구를 추가한다(설정 파일을 실제로 편집한다):\n   - node → package.json의 devDependencies에 playwright 테스트 도구 추가(예: @playwright/test). 이미 있으면 건너뛴다.\n   - python → pyproject.toml의 dev 의존성 그룹(그 repo가 쓰는 관행: [dependency-groups] dev 또는 [project.optional-dependencies] dev 등)에 playwright/pytest-playwright 추가. 이미 있으면 건너뛴다.\n   - java → pom.xml에 test scope dependency로 추가.\n   - 그 외 그 프로젝트가 SDLC 진행(테스트/린트/타입체크/화면 캡처)에 필요로 하는 dev 도구도 함께 dev 섹션에 추가한다.\n\n5. 의존성 설치: 매니페스트대로 설치해 방금 추가한 dev 도구까지 실제 사용 가능하게 한다.\n   - node: package-lock.json → npm install(매니페스트 변경 반영), pnpm-lock.yaml → pnpm install, yarn.lock → yarn install\n   - python: pyproject.toml/uv.lock → uv sync, requirements.txt → pip install -r requirements.txt\n   - java: mvn dependency:resolve 등\n   - 멀티 repo면 각 repo 디렉토리에서 각각 수행한다.\n   - 브라우저 다운로드(npx playwright install)는 하지 않는다. 이미지에 chromium이 /usr/bin/chromium 에 이미 있으므로, 이후 캡처 시 playwright launch의 executablePath로 이 경로를 사용한다(air-gapped 환경이라 다운로드하면 실패).\n  - 필요하면 **chromium 심볼릭 링크 설정** 한다.\n\n6. 버전 검증: 2번에서 버전이 명시됐던 항목만, 각 SW의 버전 확인 명령(예: --version, -v 등)을 실제로 실행하고 그 원본 출력을 근거로 명시된 버전과 하나씩 대조한다. 기억이나 설치 로그만으로 버전을 안다고 판단하지 않는다.\n   - 불일치하는 항목이 있으면, 그 SW 생태계의 표준 버전 고정 수단(예: 버전 지정 재설치, wrapper/버전 매니저 스크립트 등)을 사용해 다시 맞추고 재확인한다. 몇 차례 다른 방법으로 시도해서 어떻게든 명시된 버전에 맞춘다.\n   - 명시가 없던 SW는 대조 대상이 아니다.\n   - 최종적으로 명시된 버전 전부에 대한 대조표(요구 버전 vs 실제 실행 결과)를 만들어 출력하고, 환경 경로·수정한 매니페스트·설치 요약과 함께 끝낸다.\n\n7. dev 서버 미리 기동(localhost) — 캡처(Stage 2)에서 곧바로 재사용하도록 지금 띄워둔다.\n   - UI 화면이 있는 repo(node/next/vite, java war 등)의 dev 서버를 **백그라운드로** 기동한다. 이 /run이 끝나도 프로세스가 살아있도록 nohup/&, disown, 또는 pod-runner 백그라운드 기동을 쓴다(foreground로 잡으면 /run 종료 시 같이 죽음).\n   - **https 필수** — repo 루트에 .env.test.sdlc(또는 .env.test.local)가 있고 로그인 화면이 있으면, dev 서버는 반드시 https로 서비스한다(OIDC/ADFS 콜백·Secure 쿠키가 http에선 깨짐). 프로젝트의 https dev 스크립트 사용(예: next dev --experimental-https). http로만 띄워지면 https로 다시 띄운다.\n   - **준비 확정** — 고정 sleep 대기 ❌. curl -ksf https://localhost:<port>(또는 health endpoint)로 1초 간격 폴링해 < 400이면 준비(최대 300초). -k=self-signed 무시, -f=4xx/5xx 실패.\n   - **backend 서버**도 필요하면 같은 방식으로 백그라운드 기동 + curl -ksf 폴링(health endpoint 우선).\n   - 기동 후 curl -ksf 1회로 전 서버 생존을 최종 확인하고, 기동한 서버 목록·포트·https 여부를 요약해 출력한다.\n   - ⚠️ **서버는 죽이지 않는다** — 이 /run이 종료돼도 dev 서버는 살려둔다. 다음 단계(Stage 2 capture-mockup)가 이 서버를 그대로 재사용한다(claude-global.md 'dev 서버 보존 예외'가 Stage 1→2 전환에서 서버를 죽이지 않음). chromium·Gradle 데몬·잔존 node(서버 외)만 정리하고, dev 서버 프로세스(next dev/npm run dev/vite)는 절대 pkill하지 않는다.\n   - ⚠️ **OOM 주의** — Java 빌드 + Node dev 서버 + chromium + Claude CLI 동시 구동은 노드가 감당 못 한다. 메모리 집약 프로세스는 한 번에 하나 — 빌드는 이미 6번에서 끝났으니, 서버 기동 시엔 빌드를 돌리지 않는다. 메모리 여유(free -m)가 부족(800MB 미만)하면 dev 서버 기동을 보류하고 Stage 2에서 기동하도록 둔다.\n\n⚠️ 매니페스트(package.json/pyproject.toml/pom.xml 등) 변경은 여기서 git commit 하지 않는다. 변경 파일을 그대로 워킹트리에 남겨두면 된다(이후 개발 단계에서 함께 커밋된다).\n⚠️ conda 환경은 /workspaces/session/.conda 한 곳만 사용한다(멀티 repo도 공용). 환경 구성 후에는 pod가 이후 모든 단계에서 이 환경을 자동으로 활성화하므로, 다음 단계 프롬프트에서 별도 conda activate나 conda run 접두어를 붙일 필요가 없다.`, resume: true, timeout_seconds: 3600 }) }}",
+        "options": {
+          "timeout": 3700000
+        }
+      },
+      "id": "e0188072-efd8-48cb-a3dc-6d5d617fb090",
+      "name": "Setup Conda",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -688,
+        784
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.portalBase }}/api/v1/sdlc/requests/{{ $(\"Extract Intake Payload\").item.json.requestId }}/audit",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $(\"Extract Intake Payload\").item.json.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: \"clone\", metadata: { sessionId: $(\"POST sessions clone\").item.json.session_id, repos: $(\"POST sessions clone\").item.json.cloned_repos, issues: $json.issues } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "36bb9ec4-95f3-4d7e-908a-5bc23ed11a52",
+      "name": "[portal] Audit clone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -832,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: `CLAUDE.md에 아래 내용 추가로 붙여줘.\\n\\n clone받은 하위 repository 별 각 폴더의 CLAUDE.md와 README.md 를 참고해서 서버 실행방법이나 환경 제약`, resume: true, timeout_seconds: 1200 }) }}",
+        "options": {
+          "timeout": 1200000
+        }
+      },
+      "id": "ed52cc6e-3b23-4e46-a154-a27f2c1d285a",
+      "name": "Update CLAUDE.md (하위 repo 실행 환경 추가)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1008,
+        784
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Intake Payload\").item.json.podEndpoint }}/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: `CLAUDE.md에 아래 내용 추가로 붙여줘.\\n\\n- conda 환경 설정된 gradle, java, nodejs, python 등에 대한 실행 정보`, resume: true, timeout_seconds: 3600 }) }}",
+        "options": {
+          "timeout": 3700000
+        }
+      },
+      "id": "20af4666-b0e0-4e4b-b562-91eed49a9d66",
+      "name": "Update CLAUDE.md (conda 환경 설명)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -544,
+        784
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "2gPK8itobRfqYqBZ",
+          "name": "sdlc-pod-runner"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "SDLC Intake 수신": {
+      "main": [
+        [
+          {
+            "node": "Extract Intake Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "문서 출력 파서": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "SR intake document generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Intake Payload": {
+      "main": [
+        [
+          {
+            "node": "Pick Repo and Branch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SR intake document generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Repo and Branch": {
+      "main": [
+        [
+          {
+            "node": "Merge Repo Options",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Advance to 2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Pick Repo and Branch",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "SR intake document generator",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "문서 출력 파서",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SR intake document generator": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Pick Repo and Branch",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build workspace CLAUDE.md": {
+      "main": [
+        [
+          {
+            "node": "POST sessions clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST sessions clone": {
+      "main": [
+        [
+          {
+            "node": "[Portal] Create Issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Run Requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CLAUDE.md Issues": {
+      "main": [
+        [
+          {
+            "node": "Update CLAUDE.md (하위 repo 실행 환경 추가)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Repo Options": {
+      "main": [
+        [
+          {
+            "node": "Build workspace CLAUDE.md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[Portal] Create Issues": {
+      "main": [
+        [
+          {
+            "node": "[portal] github issue link1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update CLAUDE.md Issues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[portal] github issue link1": {
+      "main": [
+        []
+      ]
+    },
+    "Setup Conda": {
+      "main": [
+        [
+          {
+            "node": "Update CLAUDE.md (conda 환경 설명)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "[portal] Audit clone": {
+      "main": [
+        [
+          {
+            "node": "Setup Conda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CLAUDE.md (하위 repo 실행 환경 추가)": {
+      "main": [
+        [
+          {
+            "node": "[portal] Audit clone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CLAUDE.md (conda 환경 설명)": {
+      "main": [
+        [
+          {
+            "node": "Advance to 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0b66256c0061668c269b0e5736e317d76e53b6e498491a275abc0d218bd504b"
+  }
+}

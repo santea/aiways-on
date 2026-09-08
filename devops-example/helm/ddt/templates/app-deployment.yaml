@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  labels:
+    app: ddt-app
+    {{- include "ddt.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      app: ddt-app
+  template:
+    metadata:
+      labels:
+        app: ddt-app
+    spec:
+      containers:
+        - name: app
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.app.env.DATABASE_URL | quote }}
+            - name: N8N_URL
+              value: {{ .Values.app.env.N8N_URL | quote }}
+            - name: MCP_SERVER_URL
+              value: {{ .Values.app.env.MCP_SERVER_URL | quote }}
+            - name: AUTH_SECRET
+              value: {{ .Values.app.env.AUTH_SECRET | quote }}
+            - name: S3_ENDPOINT
+              value: {{ .Values.app.env.S3_ENDPOINT | quote }}
+            - name: S3_ACCESS_KEY
+              value: {{ .Values.app.env.S3_ACCESS_KEY | quote }}
+            - name: S3_SECRET_KEY
+              value: {{ .Values.app.env.S3_SECRET_KEY | quote }}
+            - name: SDLC_RUNNER_IMAGE
+              value: "{{ .Values.sdlcRunner.image.repository }}:{{ .Values.sdlcRunner.image.tag }}"
+          {{- if .Values.app.resources }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+          {{- end }}

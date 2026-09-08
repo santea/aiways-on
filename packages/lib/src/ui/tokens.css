@@ -1,0 +1,175 @@
+/**
+ * 디자인 토큰 — U1 소유 (C-1.4).
+ *
+ * 근거: design/웹화면-디자인-요구사항_v1.md §2
+ *   - 의미적 토큰만 사용한다. **raw hex 직접 사용 금지.**
+ *   - No-Line: 표·카드 구분을 border 가 아니라 surface 계층의 명도 차이로만 표현한다.
+ *   - 신규 색 토큰을 늘리지 않는다. accent 등급 체계를 재사용한다.
+ *
+ * Q14=C: 라이트를 기본으로 선언하고, `prefers-color-scheme` 으로 자동 전환하며,
+ *        `data-theme` 명시 선택이 양방향 모두에서 우선한다.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* surface 계층 — 숫자가 클수록 위로 올라온 면 */
+  --surface: #eef2f5;
+  --surface-container: #ffffff;
+  --surface-container-2: #f6f9fb;
+  --surface-container-3: #e6edf1;
+  --surface-container-4: #d8e2e8;
+
+  /* 텍스트 */
+  --on-surface: #111c26;
+  --on-surface-variant: #43555f;
+  --on-surface-faint: #6d7f88;
+
+  /* accent 등급 */
+  --accent: #0e7c94;              /* 진행 중 */
+  --accent-strong: #0891b2;
+  --accent-wash: rgba(8, 145, 178, 0.11);
+  --accent-success: #0b7a56;      /* 완료·성공 */
+  --accent-success-wash: rgba(11, 122, 86, 0.11);
+  --accent-warning: #8a5a06;      /* 경고·사람 리뷰 대기 */
+  --accent-warning-wash: rgba(138, 90, 6, 0.12);
+  --accent-error: #b3261e;        /* 실패·치명 */
+  --accent-error-wash: rgba(179, 38, 30, 0.1);
+
+  /* 사이드바 */
+  --sidebar-surface: #ffffff;
+  --sidebar-active: #e6edf1;
+  --sidebar-blade: #0891b2;       /* 좌측 4px cyan blade */
+  --shadow-glow-active: inset 3px 0 12px -4px var(--sidebar-blade);
+
+  /* 타이포 */
+  --font-headline: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono-id: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* 간격 */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --surface: #0b0f17;
+    --surface-container: #111827;
+    --surface-container-2: #131e2e;
+    --surface-container-3: #1f2937;
+    --surface-container-4: #2d3748;
+
+    --on-surface: #dfe2ee;
+    --on-surface-variant: #bcc9cd;
+    --on-surface-faint: #869397;
+
+    --accent: #4cd7f6;
+    --accent-strong: #06b6d4;
+    --accent-wash: rgba(6, 182, 212, 0.13);
+    --accent-success: #4edea3;
+    --accent-success-wash: rgba(78, 222, 163, 0.13);
+    --accent-warning: #f5b74b;
+    --accent-warning-wash: rgba(245, 183, 75, 0.13);
+    --accent-error: #ff8a80;
+    --accent-error-wash: rgba(255, 138, 128, 0.13);
+
+    --sidebar-surface: #111827;
+    --sidebar-active: #1f2937;
+    --sidebar-blade: #06b6d4;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface: #0b0f17;
+  --surface-container: #111827;
+  --surface-container-2: #131e2e;
+  --surface-container-3: #1f2937;
+  --surface-container-4: #2d3748;
+
+  --on-surface: #dfe2ee;
+  --on-surface-variant: #bcc9cd;
+  --on-surface-faint: #869397;
+
+  --accent: #4cd7f6;
+  --accent-strong: #06b6d4;
+  --accent-wash: rgba(6, 182, 212, 0.13);
+  --accent-success: #4edea3;
+  --accent-success-wash: rgba(78, 222, 163, 0.13);
+  --accent-warning: #f5b74b;
+  --accent-warning-wash: rgba(245, 183, 75, 0.13);
+  --accent-error: #ff8a80;
+  --accent-error-wash: rgba(255, 138, 128, 0.13);
+
+  --sidebar-surface: #111827;
+  --sidebar-active: #1f2937;
+  --sidebar-blade: #06b6d4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-headline);
+  text-wrap: balance;
+  margin: 0;
+}
+
+/** 식별자(SR 번호·GitHub username·버전)는 고정폭으로 표시한다. */
+.mono-id {
+  font-family: var(--font-mono-id);
+  font-variant-numeric: tabular-nums;
+}
+
+/** 섹션 헤더·상태 배지 라벨. */
+.label-tech {
+  font-family: var(--font-mono-id);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-surface-faint);
+}
+
+/** No-Line — 카드·표는 테두리 없이 surface 계층 차이로 구분한다. */
+.surface-card {
+  background: var(--surface-container-2);
+  border-radius: var(--radius);
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

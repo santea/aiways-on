@@ -1,0 +1,33 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: aiways-on
+build:
+  local:
+    push: false
+  artifacts:
+    - image: aiways-on/portal
+      context: .
+      docker:
+        dockerfile: apps/portal/Dockerfile
+    # 아래 3개는 코드 소유 유닛이 Dockerfile 을 만든 뒤 활성화한다 (UOW-7).
+    # - image: aiways-on/pod-runner      # U3
+    # - image: aiways-on/slack-gateway   # U3
+    # - image: aiways-on/memory-mcp      # U6
+manifests:
+  helm:
+    releases:
+      - name: aiways-on
+        chartPath: charts/aiways-on
+        namespace: bia-systems
+        createNamespace: true
+        setValueTemplates:
+          image.tag: "{{.IMAGE_TAG}}"
+deploy:
+  helm: {}
+portForward:
+  - resourceType: service
+    resourceName: portal-sdlc
+    namespace: bia-systems
+    port: 3000
+    localPort: 3000

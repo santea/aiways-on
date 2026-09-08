@@ -1,0 +1,11 @@
+{
+  "name": "vibe-coding-setup",
+  "version": "1.0.0",
+  "description": "vibe-coding 준비(문서/구조 최소 요건) 자동 보완",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "vibe-coding",
+    "sdlc"
+  ]
+}

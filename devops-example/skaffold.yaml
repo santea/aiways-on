@@ -1,0 +1,73 @@
+apiVersion: skaffold/v4beta14
+kind: Config
+metadata:
+  name: ddt
+
+build:
+  artifacts:
+    - image: ddt-app
+      context: portal
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "src/**/*.{ts,tsx,js,jsx,css,json}"
+            dest: /app
+          - src: "public/**/*"
+            dest: /app
+    - image: ddt-mcp-server
+      context: mcp-server
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "src/**/*.{ts,js,json}"
+            dest: /app
+    - image: ddt-sdlc-pod-runner
+      context: sdlc-pod-runner
+      docker:
+        dockerfile: Dockerfile
+
+deploy:
+  helm:
+    releases:
+      - name: ddt
+        chartPath: helm/ddt
+        namespace: default
+        valuesFiles:
+          - helm/ddt/values.yaml
+          - helm/ddt/values-dev.yaml
+        setValueTemplates:
+          app.image.repository: "{{.IMAGE_REPO_ddt_app}}"
+          app.image.tag: "{{.IMAGE_TAG_ddt_app}}"
+          mcp.image.repository: "{{.IMAGE_REPO_ddt_mcp_server}}"
+          mcp.image.tag: "{{.IMAGE_TAG_ddt_mcp_server}}"
+          sdlcRunner.image.repository: "{{.IMAGE_REPO_ddt_sdlc_pod_runner}}"
+          sdlcRunner.image.tag: "{{.IMAGE_TAG_ddt_sdlc_pod_runner}}"
+
+
+portForward:
+  - resourceType: service
+    resourceName: ddt-app
+    port: 3000
+    localPort: 3000
+  - resourceType: service
+    resourceName: ddt-postgres
+    port: 5432
+    localPort: 5432
+  - resourceType: service
+    resourceName: ddt-n8n
+    port: 5678
+    localPort: 5678
+  - resourceType: service
+    resourceName: ddt-mcp
+    port: 3001
+    localPort: 3001
+  - resourceType: service
+    resourceName: ddt-minio
+    port: 9000
+    localPort: 9000
+  - resourceType: service
+    resourceName: ddt-minio
+    port: 9001
+    localPort: 9001

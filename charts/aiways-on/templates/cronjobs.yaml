@@ -1,0 +1,81 @@
+# CronJob 2종 — US-U1-09 **[배치2]**
+#
+# ⚠️ 경계 규약: 이 CronJob 들이 호출하는 엔드포인트의 **정의 소유는 U1 이 아니다** (B-5).
+#    - /api/internal/sdlc/reconcile          → 정의 소유 U3
+#    - /api/internal/sdlc/improvement-scan   → 정의 소유 U5
+#    U1 은 호출만 한다. 경로·인증 방식을 바꾸려면 소유 유닛과 합의해야 한다.
+#
+# 절삭 시 영향: 이 스토리를 버리면 US-U3-17(정합성 복구)·US-U5-01(주기 스캔)이
+# 수동 트리거로만 동작한다. 두 스토리도 배치2 이므로 함께 빠지면 일관된다.
+{{- if .Values.cronjobs.reconcile.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: portal-sdlc-reconcile
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: "{{ .Values.cronjobs.reconcile.schedule }}"
+  concurrencyPolicy: Forbid       # 이전 실행이 끝나기 전에 겹쳐 돌지 않는다
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          containers:
+            - name: reconcile
+              image: curlimages/curl:8.11.1
+              env:
+                - name: SDLC_RECONCILE_TOKEN
+                  valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: reconcile-token } }
+                - name: PORTAL_URL
+                  valueFrom: { configMapKeyRef: { name: sdlc-endpoints, key: portalUrl } }
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  curl -fsS -X POST "$PORTAL_URL/api/internal/sdlc/reconcile" \
+                    -H "Authorization: Bearer ${SDLC_RECONCILE_TOKEN}" \
+                    -H "Content-Type: application/json"
+{{- end }}
+{{- if .Values.cronjobs.improvementScan.enabled }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: portal-sdlc-improve-scan
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: "{{ .Values.cronjobs.improvementScan.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          containers:
+            - name: improve-scan
+              image: curlimages/curl:8.11.1
+              env:
+                # 이 경로는 명세가 master key 로 지정한다 (01-auth-github.md §7 표)
+                - name: SDLC_MASTER_KEY
+                  valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: master-key } }
+                - name: PORTAL_URL
+                  valueFrom: { configMapKeyRef: { name: sdlc-endpoints, key: portalUrl } }
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  curl -fsS -X POST "$PORTAL_URL/api/internal/sdlc/improvement-scan" \
+                    -H "Authorization: Bearer ${SDLC_MASTER_KEY}" \
+                    -H "Content-Type: application/json"
+{{- end }}

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const p=require('path'),f=process.env.CLAUDE_TOOL_OUTPUT||'';const ext=p.extname(f);if(['.ts','.tsx','.js','.jsx','.py','.vue'].includes(ext)){process.stdout.write('dev-agent: 소스 파일 변경됨 — /dev-agent:quality-check 실행 고려\\n');}\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

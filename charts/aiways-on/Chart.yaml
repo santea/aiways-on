@@ -1,0 +1,6 @@
+apiVersion: v2
+name: aiways-on
+description: AIways-On SDLC 자동화 플랫폼 — Portal · Pod Runner · Memory MCP · Slack Gateway · n8n
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

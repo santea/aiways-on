@@ -1,0 +1,499 @@
+<title>AIways-On Component Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#0b0f17; --s1:#111827; --s2:#131e2e; --s3:#1f2937; --s4:#2d3748;
+  --ink:#dfe2ee; --ink-dim:#bcc9cd; --ink-faint:#869397;
+  --blade:#4cd7f6; --blade-deep:#06b6d4; --blade-wash:rgba(6,182,212,.13);
+  --ok:#4edea3; --ok-wash:rgba(78,222,163,.13);
+  --warn:#f5b74b; --warn-wash:rgba(245,183,75,.13);
+  --bad:#ff8a80; --bad-wash:rgba(255,138,128,.13);
+  --font-d:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-b:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}}
+:root[data-theme="light"]{
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-d);text-wrap:balance;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--font-m)}
+code{font-size:11.5px;color:var(--ink-faint)}
+.shell{display:grid;grid-template-columns:13.5rem minmax(0,1fr);min-height:100vh;align-items:start}
+.rail{position:sticky;top:0;height:100vh;background:var(--s1);padding:1.5rem 0;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+.brand{padding:0 1.25rem;display:flex;flex-direction:column;gap:.3rem}
+.brand b{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.brand span{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade)}
+.nav{display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;gap:.55rem;padding:.45rem 1.25rem;color:var(--ink-dim);text-decoration:none;font-size:13px;border-left:3px solid transparent}
+.nav a .n{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--ink-faint);width:1rem}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.on{background:var(--s3);color:var(--ink);border-left-color:var(--blade-deep);box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.nav a.on .n{color:var(--blade)}
+.nav a:focus-visible{outline:2px solid var(--blade);outline-offset:-2px}
+.railfoot{margin-top:auto;padding:0 1.25rem;color:var(--ink-faint);font-size:11px;line-height:1.55}
+.canvas{padding:2.25rem 2rem 4rem;max-width:78rem}
+section.top{margin-bottom:2.5rem}
+.sec{margin-bottom:3rem;scroll-margin-top:1rem}
+.eyebrow{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade);margin-bottom:.45rem}
+h1{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+h2{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+.lede{color:var(--ink-dim);max-width:64ch;margin-top:.6rem}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:1px;background:var(--ground);margin-top:1.5rem;border-radius:8px;overflow:hidden}
+.strip div{background:var(--s2);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.strip dt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.strip dd{margin:0;font-family:var(--font-d);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.b{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .38rem;border-radius:4px;white-space:nowrap}
+.b::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.b.ok{background:var(--ok-wash);color:var(--ok)}
+.b.go{background:var(--blade-wash);color:var(--blade)}
+.b.wa{background:var(--warn-wash);color:var(--warn)}
+.b.no{background:var(--bad-wash);color:var(--bad)}
+figure{margin:1.25rem 0 0;background:var(--s2);border-radius:8px;padding:1.25rem 1.25rem 1rem;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;color:var(--ink-dim);margin:0 auto}
+figcaption{margin-top:.85rem;color:var(--ink-faint);font-size:12px;line-height:1.6;max-width:72ch}
+figcaption b{color:var(--ink-dim);font-weight:600}
+.svg-label{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;fill:currentColor}
+.svg-sub{font-family:"Inter",sans-serif;font-size:10.5px;fill:currentColor;opacity:.72}
+.svg-edge{font-family:"Inter",sans-serif;font-size:10px;fill:currentColor;opacity:.78}
+.svg-title{font-family:"Manrope",sans-serif;font-size:12px;font-weight:700;fill:currentColor}
+.ad{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));margin-top:1rem}
+.adcard{background:var(--s2);border-radius:8px;padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.45rem}
+.adcard.key{background:var(--s3);box-shadow:0 8px 32px -4px var(--blade-wash)}
+.adtop{display:flex;align-items:center;gap:.5rem}
+.adid{font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--blade)}
+.adcard h3{font-size:.9rem;font-weight:600;letter-spacing:-.01em}
+.adcard p{color:var(--ink-dim);font-size:12.5px;line-height:1.55}
+.ublock{background:var(--s2);border-radius:8px;padding:.9rem 1rem;margin-bottom:.7rem}
+.ublock.hot{background:var(--s3);box-shadow:inset 3px 0 0 var(--warn)}
+.uhead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.6rem}
+.uhead h3{font-size:.95rem;font-weight:700;letter-spacing:-.015em;display:flex;align-items:baseline;gap:.5rem}
+.ucode{font-size:.8rem;font-weight:700;color:var(--blade)}
+.ucount{font-size:11px;font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.clist{display:flex;flex-direction:column;gap:.3rem}
+.crow{display:grid;grid-template-columns:3.6rem 9.5rem minmax(0,1fr) auto;gap:.7rem;align-items:baseline;padding:.3rem 0;font-size:12.5px}
+.cid{font-size:10.5px;font-weight:700;color:var(--ink-faint)}
+.cname{font-size:11.5px;font-weight:700;color:var(--ink)}
+.cresp{color:var(--ink-dim);line-height:1.5}
+.cbadges{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.tw{overflow-x:auto;border-radius:8px;background:var(--s2);margin-top:1rem}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:34rem}
+th{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:.6rem .85rem;background:var(--s3);white-space:nowrap}
+td{padding:.55rem .85rem;vertical-align:top;color:var(--ink-dim)}
+tbody tr:nth-child(even){background:var(--s1)}
+td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-weight:700;white-space:nowrap}
+td strong{color:var(--ink);font-weight:600}
+.note{background:var(--s2);border-radius:8px;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;margin-top:1rem}
+.note.calm{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.note.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.note h3{font-size:.92rem}
+.note p{color:var(--ink-dim);font-size:12.5px;max-width:72ch}
+.foot{color:var(--ink-faint);font-size:11.5px;line-height:1.7;padding-top:1.5rem}
+@media (max-width:900px){
+ .shell{grid-template-columns:1fr}
+ .rail{position:static;height:auto;padding:1.15rem 0}
+ .nav{flex-direction:row;flex-wrap:wrap;padding:0 .9rem;gap:.25rem}
+ .nav a{border-left:0;border-radius:4px;padding:.3rem .55rem}
+ .nav a.on{box-shadow:inset 0 -2px 0 var(--blade-deep)}
+ .railfoot{display:none}
+ .canvas{padding:1.6rem 1.1rem 3rem}
+ h1{font-size:1.5rem}
+ .crow{grid-template-columns:1fr;gap:.15rem}
+ .cbadges{justify-content:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <div class="brand"><b>AIways-On</b><span>Component Arch</span></div>
+  <div class="nav">
+    <a href="#gap" class="on"><em class="n mono">01</em>메운 공백</a>
+    <a href="#ad1"><em class="n mono">02</em>순환 제거</a>
+    <a href="#ad3"><em class="n mono">03</em>정책 각인</a>
+    <a href="#comps"><em class="n mono">04</em>컴포넌트 31</a>
+    <a href="#svc"><em class="n mono">05</em>서비스 5</a>
+    <a href="#bound"><em class="n mono">06</em>경계 규약 7</a>
+    <a href="#next"><em class="n mono">07</em>착수 영향</a>
+  </div>
+  <div class="railfoot">
+    Application Design<br>산출물 5종 1,163줄<br>2026-09-08
+  </div>
+</nav>
+
+<main class="canvas">
+
+<section class="top" id="gap">
+  <p class="eyebrow">Inception / Application Design</p>
+  <h1>명세가 비워 둔 한 칸</h1>
+  <p class="lede">
+    요구사항 15,033줄은 DB 컬럼과 API 시그니처까지 정해 두었지만, <strong>어느 컴포넌트가 무엇을 소유하고
+    누가 누구를 호출하는가</strong>는 비어 있었다. 6명이 병렬로 착수하기 전에 그 한 칸을 메운 결과다.
+  </p>
+  <dl class="strip">
+    <div><dt>컴포넌트</dt><dd>31</dd></div>
+    <div><dt>배포 서비스</dt><dd>5</dd></div>
+    <div><dt>설계 결정</dt><dd>6</dd></div>
+    <div><dt>경계 규약</dt><dd>7</dd></div>
+    <div><dt>해소한 구조 문제</dt><dd>5/5</dd></div>
+    <div><dt>순환 의존</dt><dd>0</dd></div>
+  </dl>
+</section>
+
+<section class="sec" id="ad1">
+  <p class="eyebrow">AD-1</p>
+  <h2>순환 의존을 타입 의존으로 바꿔 끊었다</h2>
+  <p class="lede">
+    상태머신(U3)이 <code>4→9</code> 전이에서 PR을 만들려면 GitHub 어댑터(U2)가 필요하고,
+    접수(U2)는 프로비저닝(U3)이 필요했다. 양방향 구현 의존은 병렬 개발에서 교착이 된다.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 300" role="img" aria-label="해소 전에는 U2의 GitHubAdapter와 U3의 StageEntryActions가 서로를 구현 수준에서 호출해 순환이 생겼고, 해소 후에는 U3가 U1이 소유한 GitHubPort 인터페이스에만 타입 의존하고 U2의 어댑터가 그것을 구현해 런타임에 주입되므로 컴파일 시점 순환이 사라진다">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="currentColor"/>
+        </marker>
+        <marker id="ahBad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--bad)"/>
+        </marker>
+        <marker id="ahKey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--blade)"/>
+        </marker>
+      </defs>
+
+      <text class="svg-title" x="20" y="26">해소 전 — 구현 의존 양방향</text>
+      <rect x="20" y="52" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="34" y="74">U2 · RequestIntake</text>
+      <text class="svg-sub" x="34" y="91">SR 접수</text>
+      <rect x="20" y="180" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="34" y="202">U2 · GitHubAdapter</text>
+      <text class="svg-sub" x="34" y="219">PR 생성·머지</text>
+      <rect x="250" y="52" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="264" y="74">U3 · Factory</text>
+      <text class="svg-sub" x="264" y="91">SR 생성</text>
+      <rect x="250" y="180" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="264" y="202">U3 · EntryActions</text>
+      <text class="svg-sub" x="264" y="219">4 to 9 전이</text>
+
+      <line x1="190" y1="78" x2="244" y2="78" stroke="var(--bad)" stroke-width="1.8" marker-end="url(#ahBad)"/>
+      <line x1="250" y1="206" x2="196" y2="206" stroke="var(--bad)" stroke-width="1.8" marker-end="url(#ahBad)"/>
+      <text class="svg-edge" x="196" y="70" fill="var(--bad)">호출</text>
+      <text class="svg-edge" x="200" y="226" fill="var(--bad)">호출</text>
+      <text class="svg-edge" x="196" y="145" fill="var(--bad)" font-weight="700">순환</text>
+
+      <line x1="450" y1="40" x2="450" y2="262" stroke="currentColor" stroke-width="1" opacity=".22"/>
+
+      <text class="svg-title" x="490" y="26">해소 후 — 인터페이스를 U1로</text>
+      <rect x="490" y="52" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="504" y="74">U2 · RequestIntake</text>
+      <text class="svg-sub" x="504" y="91">SR 접수</text>
+      <rect x="720" y="52" width="160" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="734" y="74">U3 · Factory</text>
+      <text class="svg-sub" x="734" y="91">SR 생성</text>
+
+      <rect x="605" y="130" width="180" height="50" rx="6" fill="none" stroke="var(--blade)" stroke-width="2"/>
+      <text class="svg-label" x="619" y="151" fill="var(--blade)">U1 · GitHubPort</text>
+      <text class="svg-sub" x="619" y="168" fill="var(--blade)">인터페이스 (타입)</text>
+
+      <rect x="490" y="208" width="170" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="504" y="230">U2 · GitHubAdapter</text>
+      <text class="svg-sub" x="504" y="247">구현체</text>
+      <rect x="720" y="208" width="160" height="52" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+      <text class="svg-label" x="734" y="230">U3 · EntryActions</text>
+      <text class="svg-sub" x="734" y="247">4 to 9 전이</text>
+
+      <line x1="660" y1="78" x2="714" y2="78" stroke="currentColor" stroke-width="1.5" opacity=".6" marker-end="url(#ah)"/>
+      <text class="svg-edge" x="666" y="70">호출</text>
+
+      <line x1="785" y1="215" x2="785" y2="182" stroke="var(--blade)" stroke-width="2" marker-end="url(#ahKey)"/>
+      <text class="svg-edge" x="794" y="202" fill="var(--blade)">타입 의존</text>
+
+      <line x1="575" y1="208" x2="575" y2="182" stroke="currentColor" stroke-width="1.5" opacity=".6" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+      <text class="svg-edge" x="452" y="200">implements</text>
+      <text class="svg-sub" x="490" y="285">런타임 주입 — 컴파일 시점 의존 아님</text>
+    </svg>
+    <figcaption>
+      바뀐 것은 <b>화살표 하나의 성격</b>이다. U3가 U2의 구현이 아니라 U1이 소유한 인터페이스를 향하게 되면서,
+      컴파일 시점 의존은 <code>U3 → U1</code> 하나만 남는다. U2의 어댑터는 런타임에 주입되므로
+      <b>U3 담당자는 U2의 구현 완료를 기다리지 않고 착수한다.</b>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="sec" id="ad3">
+  <p class="eyebrow">AD-3 · 가장 중요한 결정</p>
+  <h2>규칙을 코드가 아니라 데이터에 각인했다</h2>
+  <p class="lede">
+    명세에는 "장애(incident) SR은 repo 설정이 자동머지 허용이어도 <strong>머지하지 않는다</strong>"는 조항이 있다.
+    이 규칙이 U3 상태머신의 조건문으로만 존재하면, U4 담당자가 조항을 모르는 순간
+    <strong>장애 패치가 사람 확인 없이 머지된다.</strong>
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 268" role="img" aria-label="세 유닛의 SR 생성 호출이 모두 U3가 소유한 단일 validator를 거치며, validator가 채널 개수와 자동머지 허용 여부를 결정해 SR 메타데이터에 각인한다. 4에서 9 전이는 각인된 값을 읽기만 하고 프로파일을 재판정하지 않는다">
+      <defs>
+        <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="currentColor"/>
+        </marker>
+        <marker id="ah2Key" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--blade)"/>
+        </marker>
+      </defs>
+
+      <text class="svg-sub" x="20" y="24">호출자 3종</text>
+      <rect x="20" y="36" width="132" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/>
+      <text class="svg-label" x="32" y="60">U2 · feature</text>
+      <rect x="20" y="86" width="132" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/>
+      <text class="svg-label" x="32" y="110">U4 · incident</text>
+      <rect x="20" y="136" width="132" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/>
+      <text class="svg-label" x="32" y="160">U5 · improvement</text>
+
+      <line x1="152" y1="55" x2="222" y2="98" stroke="currentColor" stroke-width="1.3" opacity=".55" marker-end="url(#ah2)"/>
+      <line x1="152" y1="105" x2="222" y2="105" stroke="currentColor" stroke-width="1.3" opacity=".55" marker-end="url(#ah2)"/>
+      <line x1="152" y1="155" x2="222" y2="112" stroke="currentColor" stroke-width="1.3" opacity=".55" marker-end="url(#ah2)"/>
+
+      <rect x="228" y="66" width="176" height="78" rx="6" fill="none" stroke="var(--blade)" stroke-width="2"/>
+      <text class="svg-label" x="242" y="90" fill="var(--blade)">validateAndStamp</text>
+      <text class="svg-sub" x="242" y="108" fill="var(--blade)">U3 소유 · 시스템에 단 하나</text>
+      <text class="svg-sub" x="242" y="126" fill="var(--blade)">입력 검증 + 정책 결정</text>
+
+      <line x1="404" y1="105" x2="474" y2="105" stroke="var(--blade)" stroke-width="2" marker-end="url(#ah2Key)"/>
+      <text class="svg-edge" x="412" y="97" fill="var(--blade)">각인</text>
+
+      <rect x="480" y="60" width="186" height="90" rx="6" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".7"/>
+      <text class="svg-label" x="494" y="84">sdlc_requests.metadata</text>
+      <text class="svg-sub" x="494" y="106">channelTypes</text>
+      <text class="svg-sub" x="494" y="124">autoMergeAllowed</text>
+      <text class="svg-sub" x="494" y="142" fill="var(--blade)">incident → false (강제)</text>
+
+      <line x1="666" y1="105" x2="736" y2="105" stroke="currentColor" stroke-width="1.6" opacity=".7" marker-end="url(#ah2)"/>
+      <text class="svg-edge" x="666" y="97">읽기만</text>
+
+      <rect x="742" y="66" width="140" height="78" rx="6" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".5"/>
+      <text class="svg-label" x="756" y="90">EntryActions</text>
+      <text class="svg-sub" x="756" y="108">4 to 9 전이</text>
+      <text class="svg-sub" x="756" y="126">재판정 없음</text>
+
+      <text class="svg-sub" x="20" y="214">결정 시점 — SR 생성</text>
+      <line x1="20" y1="196" x2="404" y2="196" stroke="var(--blade)" stroke-width="1.2" opacity=".5"/>
+      <text class="svg-sub" x="480" y="214">사용 시점 — 전이</text>
+      <line x1="480" y1="196" x2="882" y2="196" stroke="currentColor" stroke-width="1.2" opacity=".35"/>
+      <text class="svg-sub" x="20" y="244" opacity=".85">프로파일을 아는 유일한 지점</text>
+      <text class="svg-sub" x="480" y="244" opacity=".85">프로파일을 몰라도 규칙이 지켜지는 구간</text>
+    </svg>
+    <figcaption>
+      정책이 결정되는 곳과 사용되는 곳이 분리된다. <b>프로파일을 아는 코드는 validator 하나뿐</b>이고,
+      전이 로직은 각인된 값을 읽을 뿐 프로파일을 다시 판정하지 않는다.
+      U4 담당자가 자동머지 금지 조항의 존재를 몰라도 규칙이 지켜지는 이유다.
+    </figcaption>
+  </figure>
+
+  <div class="note warn">
+    <h3>답변을 그대로 받지 않고 한 번 되물은 지점</h3>
+    <p>
+      원래 답변은 "유닛별 생성 함수 + 단일 공통 validator"였다. 그런데 자동머지 규칙이 적용되는 시점은
+      <b>SR 생성이 아니라 <code>4 → 9</code> 전이</b>다. validator가 생성 입력만 검증하면 규칙은 여전히
+      U3 코드에만 남는다. 이 공백을 확인받아 <b>validator가 정책까지 결정해 각인</b>하는 형태로 확정했다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="adall">
+  <p class="eyebrow">Decisions</p>
+  <h2>설계 결정 6건</h2>
+  <div class="ad">
+    <div class="adcard key">
+      <div class="adtop"><span class="adid mono">AD-1</span><span class="b go">S-1 해소</span></div>
+      <h3>Port 인터페이스를 U1로</h3>
+      <p><code>GitHubPort</code> · <code>MessagingPort</code> · <code>PodPort</code> 3종을 U1이 정의하고 구현은 각 유닛이 소유. 순환 제거.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">AD-2</span><span class="b go">S-2 해소</span></div>
+      <h3>인증 단일 소유</h3>
+      <p>GitHub OAuth + 서버간 인증 4종을 <code>AuthGuard</code> 하나가 제공. 나머지 5개 유닛은 소비만 — 유닛별 강도 편차를 막는다.</p>
+    </div>
+    <div class="adcard key">
+      <div class="adtop"><span class="adid mono">AD-3</span><span class="b go">S-3 해소</span></div>
+      <h3>정책 각인</h3>
+      <p>단일 validator가 채널 개수와 자동머지 허용을 결정해 SR에 각인. 전이 로직은 읽기만 한다.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">AD-4</span><span class="b go">S-4 해소</span></div>
+      <h3>인터페이스 소유자 1명</h3>
+      <p>경계 9건의 실체는 7개 인터페이스. 타입은 U1 공유 패키지에 두되 수정 권한은 소유자만.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">AD-5</span><span class="b go">S-5 해소</span></div>
+      <h3>ConfigMap 키 하나</h3>
+      <p>MCP 주입은 U1·U3·U6 3자 조율. 합의할 것은 <code>sdlc-endpoints.memoryMcpUrl</code> 키 이름 하나, 값은 Service DNS.</p>
+    </div>
+    <div class="adcard">
+      <div class="adtop"><span class="adid mono">AD-6</span></div>
+      <h3>경계 규약 명문화</h3>
+      <p>타입으로 표현되는 계약은 CI가 이미 잡는다. 표현 안 되는 규약(호출 순서·멱등 책임)을 B-1~B-7로 적어 리뷰에서 대조.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="comps">
+  <p class="eyebrow">Inventory</p>
+  <h2>컴포넌트 31개</h2>
+  <p class="lede">U3가 9개로 가장 무겁고, 독립 배포 단위 3개를 함께 진다. Units Generation에서 재분배를 검토할 대상이다.</p>
+<section class="ublock"><div class="uhead"><h3><span class="ucode mono">U1</span> 공용 기반</h3><span class="ucount mono">5</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-1.1</span><span class="cname mono">SharedTypes</span><span class="cresp">Stage enum, ChannelType enum, PipelineProfile, DTO, 어댑터 Port 인터페이스 선언</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-1.2</span><span class="cname mono">AuthGuard</span><span class="cresp">사용자 인증(GitHub OAuth) + 서버간 인증 4종의 단일 검증 지점</span><span class="cbadges"><span class="b go">AD-2</span></span></div>
+<div class="crow"><span class="cid mono">C-1.3</span><span class="cname mono">SchemaRegistry</span><span class="cresp">Drizzle 스키마 전체 + 마이그레이션</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-1.4</span><span class="cname mono">DesignSystem</span><span class="cresp">색·타이포·간격 토큰(다크·라이트), 사이드바 12항목, No-Line 규칙</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-1.5</span><span class="cname mono">PlatformOps</span><span class="cresp">Helm·Skaffold·Conda·K8s Secret·RBAC·ConfigMap·CronJob 2종·GitHub Actions CI</span><span class="cbadges"><span class="b go">AD-5</span></span></div>
+</div></section>
+<section class="ublock"><div class="uhead"><h3><span class="ucode mono">U2</span> 코어SDLC 관리</h3><span class="ucount mono">5</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-2.1</span><span class="cname mono">RequestIntake</span><span class="cresp">POST /intake — 등록 + 즉시 프로비저닝 발화</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-2.2</span><span class="cname mono">RequestQuery</span><span class="cresp">대시보드·SR 상세·목록 조회 API 및 화면</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-2.3</span><span class="cname mono">GitHubAdapter</span><span class="cresp">GitHubPort 인터페이스의 구현. Org·Repo·Credential 관리, Issue·PR 생성·merge</span><span class="cbadges"><span class="b go">AD-1</span></span></div>
+<div class="crow"><span class="cid mono">C-2.4</span><span class="cname mono">AdminConsole</span><span class="cresp">/admin/orgs·/admin/repos 및 나머지 관리 화면의 셸</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-2.5</span><span class="cname mono">ImageProxy</span><span class="cresp">업로드 수신 → 오브젝트 스토리지 저장 → 서명 URL 서빙</span><span class="cbadges"></span></div>
+</div></section>
+<section class="ublock hot"><div class="uhead"><h3><span class="ucode mono">U3</span> 코어SDLC 진행</h3><span class="ucount mono">9</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-3.1</span><span class="cname mono">SdlcRequestFactory</span><span class="cresp">validateAndStampPolicy() — 단일 공통 validator. 입력 검증 + 프로파일 정책 각인</span><span class="cbadges"><span class="b go">AD-3</span></span></div>
+<div class="crow"><span class="cid mono">C-3.2</span><span class="cname mono">StateMachine</span><span class="cresp">Stage 전이 규칙, advance() CAS, 전이 이력 기록</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-3.3</span><span class="cname mono">StageEntryActions</span><span class="cresp">1→2·2→3·3→4·4→9 각 진입 작업 + 채널 스냅샷</span><span class="cbadges"><span class="b go">AD-3</span></span></div>
+<div class="crow"><span class="cid mono">C-3.4</span><span class="cname mono">CompensationHandler</span><span class="cresp">X_FAILED 전환 시 단계별 보상 + 운영자 개입 지점 기록</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-3.5</span><span class="cname mono">PodOrchestrator</span><span class="cresp">K8s API로 Pod·PVC·Service 생성·삭제. PodPort 구현</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-3.6</span><span class="cname mono">SlackAdapter</span><span class="cresp">MessagingPort 구현. 채널 생성·게시·초대·history 스냅샷</span><span class="cbadges"><span class="b go">AD-1</span></span></div>
+<div class="crow"><span class="cid mono">C-3.7</span><span class="cname mono">SlackGateway</span><span class="cresp">Socket Mode 수신 → Portal POST /slack/events 릴레이</span><span class="cbadges"><span class="b ok">독립 배포 · Slack Gateway</span></span></div>
+<div class="crow"><span class="cid mono">C-3.8</span><span class="cname mono">PodRunner</span><span class="cresp">/clone·/run·/git/commit-push·/session·/context·/stage·/notify-channel·/health</span><span class="cbadges"><span class="b ok">독립 배포 · Pod Runner</span></span></div>
+<div class="crow"><span class="cid mono">C-3.9</span><span class="cname mono">WorkflowOrchestration</span><span class="cresp">Workflow A(intake)·B(callback)·C(logging)</span><span class="cbadges"><span class="b ok">독립 배포 · n8n</span></span></div>
+</div></section>
+<section class="ublock"><div class="uhead"><h3><span class="ucode mono">U4</span> 장애 대응</h3><span class="ucount mono">4</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-4.1</span><span class="cname mono">IncidentIngest</span><span class="cresp">POST /incidents/ingest + SDLC_INCIDENT_ENABLED fail-closed</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-4.2</span><span class="cname mono">IncidentPromotion</span><span class="cresp">장애 → incident SR 승격</span><span class="cbadges"><span class="b go">AD-3</span></span></div>
+<div class="crow"><span class="cid mono">C-4.3</span><span class="cname mono">IncidentConsole</span><span class="cresp">/incidents·/incidents/[id]·/incidents/inject + 5단계 상태 레일</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-4.4</span><span class="cname mono">IncidentTemplateAdmin</span><span class="cresp">/admin/incident-templates CRUD</span><span class="cbadges"></span></div>
+</div></section>
+<section class="ublock"><div class="uhead"><h3><span class="ucode mono">U5</span> 자체개선</h3><span class="ucount mono">4</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-5.1</span><span class="cname mono">ImprovementScanTrigger</span><span class="cresp">/api/internal/sdlc/improvement-scan 수신 + SDLC_IMPROVEMENT_ENABLED fail-closed</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-5.2</span><span class="cname mono">FindingRegistry</span><span class="cresp">finding 저장·분류·검토 상태 관리</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-5.3</span><span class="cname mono">FindingPromotion</span><span class="cresp">finding → SR 승격 또는 → 개발규정 승격</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-5.4</span><span class="cname mono">ImprovementConsole</span><span class="cresp">/improvements·/improvements/[id]·/admin/improvement-targets</span><span class="cbadges"></span></div>
+</div></section>
+<section class="ublock"><div class="uhead"><h3><span class="ucode mono">U6</span> 개발 규정</h3><span class="ucount mono">4</span></div><div class="clist">
+<div class="crow"><span class="cid mono">C-6.1</span><span class="cname mono">MemoryRegistry</span><span class="cresp">규정 5종 CRUD + 개정 이력</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-6.2</span><span class="cname mono">MemoryMcpServer</span><span class="cresp">Streamable HTTP :58002, sdlcmem_* Bearer 인증</span><span class="cbadges"><span class="b go">AD-5</span><span class="b ok">독립 배포 · Memory MCP</span></span></div>
+<div class="crow"><span class="cid mono">C-6.3</span><span class="cname mono">MemoryTokenAdmin</span><span class="cresp">MCP 토큰 발급·폐기</span><span class="cbadges"></span></div>
+<div class="crow"><span class="cid mono">C-6.4</span><span class="cname mono">MemoryConsole</span><span class="cresp">/memory·/memory/[systemKey]·/memory/[systemKey]/[category]/[slug] + 전역 검색</span><span class="cbadges"></span></div>
+</div></section></section>
+
+<section class="sec" id="svc">
+  <p class="eyebrow">Deployment</p>
+  <h2>배포 서비스 5개</h2>
+  <div class="tw"><table>
+    <thead><tr><th>서비스</th><th>런타임</th><th>replicas</th><th>담긴 컴포넌트</th></tr></thead>
+    <tbody>
+      <tr><td>Portal</td><td>Next.js 16 / Node 22</td><td><strong>2+</strong></td><td>23개 — 6명 중 5명이 여기에 코드를 넣는다</td></tr>
+      <tr><td>Pod Runner</td><td>FastAPI / Python</td><td>SR당 1개 (동적)</td><td>C-3.8 — stage를 해석하지 않는다</td></tr>
+      <tr><td>Memory MCP</td><td>Node 22 + MCP SDK</td><td>1+</td><td>C-6.2 — Streamable HTTP :58002</td></tr>
+      <tr><td>Slack Gateway</td><td>Node 22 + Socket Mode</td><td><strong>1 고정</strong></td><td>C-3.7 — 스케일 아웃 금지</td></tr>
+      <tr><td>n8n</td><td>공식 이미지</td><td>1</td><td>C-3.9 — 배포 이후 착수 (후행)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note calm">
+    <h3>Slack Gateway를 따로 뗀 이유</h3>
+    <p>
+      Portal은 <code>replicas: 2+</code>다. Socket Mode를 Portal에 내장하면 <b>replica 수만큼 중복 수신</b>되어
+      같은 피드백이 두 번 처리된다. 장수명 연결만 단일 replica 전용 Pod로 분리해 Portal의 무상태성을 지킨다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="bound">
+  <p class="eyebrow">Contracts</p>
+  <h2>경계 규약 7건</h2>
+  <p class="lede">타입으로 표현되지 않는 규약이다. 경계 파일을 고치는 PR은 리뷰에서 이 표와 대조한다.</p>
+  <div class="tw"><table>
+    <thead><tr><th>ID</th><th>경계</th><th>소유자</th><th>핵심 규약</th></tr></thead>
+    <tbody>
+      <tr><td>B-1</td><td>U2 → U3 SR 접수</td><td>U3</td><td>멱등 책임은 <strong>호출자</strong>(dedupKey 생성). Factory 우회 INSERT 금지</td></tr>
+      <tr><td>B-2</td><td>U3 → U2 PR 생성</td><td>인터페이스 <strong>U1</strong> / 구현 U2</td><td>인터페이스 타입으로만 호출. U3는 정책을 읽기만</td></tr>
+      <tr><td>B-3</td><td>U2 ↔ U3 상태 조회</td><td><strong>U3 단독</strong></td><td>U2는 읽기 전용. <code>setSubStage</code> 호출 금지</td></tr>
+      <tr><td>B-4</td><td>U2 ↔ U3 이미지</td><td>U2</td><td>업로드는 MASTER_KEY, 서빙은 서명 검증</td></tr>
+      <tr><td>B-5</td><td>U1 ↔ U5 스캔 트리거</td><td><strong>U5 단독</strong></td><td>U1은 CronJob에서 호출만. fail-closed 플래그</td></tr>
+      <tr><td>B-6</td><td>U5 → U6 규정 승격</td><td>U6</td><td>가장 늦게 필요한 경계. 재승격 시 중복 생성 금지</td></tr>
+      <tr><td>B-7</td><td>U1+U3+U6 MCP 주입</td><td>3자</td><td>ConfigMap 키 1개로 합의. <strong>MCP 미응답이어도 Pod 실행은 성공</strong></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="sec" id="next">
+  <p class="eyebrow">Impact</p>
+  <h2>착수 순서가 바뀌었다</h2>
+
+  <div class="note calm">
+    <h3>차단 구간이 줄었다</h3>
+    <p>
+      이전에는 <b>U1이 끝나야</b> 나머지 5명이 착수할 수 있었다. 이제는 <b>U1의 인터페이스 선언만 끝나면</b> 된다 —
+      U3는 Port 선언만 있으면 전이 로직을 짜기 시작하고, U4·U5는 Factory 시그니처만 확정되면 착수한다.
+      2일 일정에서 이 차이가 크다.
+    </p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>시점</th><th>필요한 것</th></tr></thead>
+    <tbody>
+      <tr><td>U3 착수</td><td>공유 타입의 Port 인터페이스 <strong>선언만</strong> — 구현 불필요</td></tr>
+      <tr><td>U4 · U5 착수</td><td><code>SdlcRequestFactory</code> <strong>시그니처만</strong> 확정 — 구현은 진행 중이어도 됨</td></tr>
+      <tr><td>U2 · U3 통합</td><td><code>GitHubAdapter</code>가 <code>GitHubPort</code>를 구현하는지 typecheck</td></tr>
+      <tr><td>B-6 연결</td><td>가장 늦어도 됨 — U5 · U6 각자 완성 후 마지막에</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note warn">
+    <h3>Units Generation으로 넘길 것</h3>
+    <p>
+      <b>U3 부하</b> — 컴포넌트 9개(전체의 29%)에 독립 배포 3개. 재분배 또는 2인 배정 검토.
+      완화 후보는 n8n 워크플로우로, 배포 이후 착수라 시간축에서 분리할 수 있다.
+      <br><b>Portal 공존</b> — 5개 유닛이 한 서비스에 코드를 넣으므로 디렉토리 경계 규약이 필요하다.
+    </p>
+  </div>
+
+  <p class="foot">
+    출처 · <code>aidlc-docs/inception/application-design/</code> 5개 문서 1,163줄 —
+    components.md · component-methods.md · services.md · component-dependency.md · application-design.md<br>
+    컴포넌트 목록은 원본 마크다운에서 파싱해 생성했다.
+  </p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll(".nav a"));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute("href"));});
+  function sync(){
+    var y=window.scrollY+120,best=0;
+    secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) best=i; });
+    links.forEach(function(a,i){ a.classList.toggle("on",i===best); });
+  }
+  window.addEventListener("scroll",sync,{passive:true});
+  sync();
+})();
+</script>

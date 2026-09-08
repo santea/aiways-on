@@ -1,0 +1,46 @@
+# SVC-4 Slack Gateway — replicas 1 고정.
+#
+# ⚠️ 이 값을 늘리면 안 된다. Socket Mode 는 연결마다 이벤트를 받으므로 replica 수만큼
+#    같은 피드백이 중복 처리된다. Portal 이 replicas 2+ 인데도 소켓을 여기로 뺀 이유다 (NFR-02).
+# ⚠️ 이 서비스는 Portal 과 코드·타입을 공유하지 않는다. Slack 원본 봉투를 가공 없이 릴레이한다.
+#    워크스페이스에서 공유 패키지를 import 하기 쉬우므로 CI 가 의존을 검사한다 (unit-of-work.md §2.5).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.slackGateway.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "aiways-on.labels" (dict "name" .Values.slackGateway.name "root" .) | nindent 4 }}
+spec:
+  replicas: {{ .Values.slackGateway.replicas }}
+  strategy:
+    type: Recreate        # 소켓 중복 연결을 만들지 않기 위해 RollingUpdate 를 쓰지 않는다
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.slackGateway.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.slackGateway.name }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+        - name: gateway
+          image: {{ include "aiways-on.image" (dict "repository" .Values.slackGateway.repository "root" .) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          env:
+            - name: SLACK_APP_TOKEN
+              valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: slack-app-token } }
+            - name: SLACK_BOT_TOKEN
+              valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: slack-bot-token } }
+            - name: SDLC_MASTER_KEY
+              valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: master-key } }
+            - name: PORTAL_URL
+              valueFrom: { configMapKeyRef: { name: sdlc-endpoints, key: portalUrl } }
+          resources:
+            {{- toYaml .Values.slackGateway.resources | nindent 12 }}

@@ -1,0 +1,71 @@
+# CI 품질 게이트 — US-U1-10 (D-20, D-26).
+#
+# R3=D+ 결정에 따라 **CI 까지만** 한다. 자동 배포(CD)는 범위 밖이다.
+# R2=A 에 따라 PR 리뷰 + merge 가 변경관리 절차이므로, 이 워크플로가 그 게이트의 기계적 절반이다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read        # SECURITY-06 — 필요한 최소 권한만
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # SECURITY-10 — lockfile 을 고정해 설치 내용이 PR 마다 달라지지 않게 한다
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm -r typecheck
+
+      - name: Unit tests + coverage gate
+        run: pnpm vitest run --coverage
+
+      # 경계 규약의 기계 검사 — 리뷰가 놓쳐도 여기서 막힌다
+      - name: contracts 런타임 코드 없음
+        run: pnpm verify:contracts-runtime-free
+
+      - name: Slack Gateway 공유 패키지 의존 금지
+        run: pnpm verify:gateway-isolation
+
+      - name: Helm chart lint
+        run: helm lint charts/aiways-on
+
+      - name: Build
+        run: pnpm build
+        env:
+          # 빌드 시점에만 쓰는 자리표시자. 실제 값은 K8s Secret 으로 주입된다.
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          AUTH_SECRET: ci-placeholder-secret
+
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # SECURITY-10 — 알려진 취약점이 있는 의존성을 들여오지 않는다
+      - name: Audit
+        run: pnpm audit --audit-level high

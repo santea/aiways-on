@@ -1,0 +1,17 @@
+{
+  "url": "https://localhost:3000/notices",
+  "outDir": "/workspaces/session/.tmp/mockups/notice-list/notices",
+  "viewport": { "width": 1920, "height": 1080 },
+  "waitFor": "networkidle",
+  "waitForSelector": "main",
+  "storageState": "/workspaces/session/.tmp/mockups/notice-list/session.json",
+  "preAuth": {
+    "signinUrl": "https://localhost:3000/api/auth/signin",
+    "provider": "oidc",
+    "callbackPath": "/notices",
+    "credentials": { "username": "${E2E_USER_ID}", "password": "${E2E_USER_PW}" }
+  },
+  "captures": [
+    { "type": "screenshot", "file": "before.png", "fullPage": true }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sdlc-pod-event",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "8902b389-c7ad-4e7c-9d5b-5a849d4f5b28",
+      "name": "Pod Event Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        64
+      ],
+      "webhookId": "6ff99f48-b08d-40c1-970b-c18ab2dab2c0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "event",
+              "type": "string",
+              "value": "={{ $json.body.event }}"
+            },
+            {
+              "id": "2",
+              "name": "sessionId",
+              "type": "string",
+              "value": "={{ $json.body.session_id }}"
+            },
+            {
+              "id": "3",
+              "name": "requestNo",
+              "type": "string",
+              "value": "={{ $json.body.request_no }}"
+            },
+            {
+              "id": "4",
+              "name": "ts",
+              "type": "string",
+              "value": "={{ $json.body.ts }}"
+            },
+            {
+              "id": "5",
+              "name": "data",
+              "type": "object",
+              "value": "={{ $json.body.data ?? {} }}"
+            },
+            {
+              "id": "6",
+              "name": "portalBase",
+              "type": "string",
+              "value": "={{ $json.body.portalBaseUrl ?? \"https://portal.bia-dev.domain.net\" }}"
+            },
+            {
+              "id": "7",
+              "name": "callbackToken",
+              "type": "string",
+              "value": "={{ $headers[\"x-callback-token\"] ?? $json.body.callbackToken ?? \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "daff9c74-aa76-4b95-8d7a-78c5f33ade7c",
+      "name": "Extract Event",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $(\"Extract Event\").item.json.portalBase }}/api/v1/sdlc/requests?requestNo={{ encodeURIComponent($(\"Extract Event\").item.json.requestNo) }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $(\"Extract Event\").item.json.callbackToken }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "bfca2c2e-638a-45b8-8560-0db69cb0f320",
+      "name": "Lookup requestId by requestNo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $(\"Extract Event\").item.json.portalBase }}/api/v1/sdlc/requests/{{ $json.id }}/audit",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $(\"Extract Event\").item.json.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ action: \"pod.\" + $(\"Extract Event\").item.json.event, metadata: { sessionId: $(\"Extract Event\").item.json.sessionId, ts: $(\"Extract Event\").item.json.ts, data: $(\"Extract Event\").item.json.data } }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "b1bbe592-4d88-4ba1-a196-2b778bb7288d",
+      "name": "Audit Pod Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        464,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=sdlc-feedback",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "636fa345-e59a-44a7-85f2-2d44c0b29bf6",
+      "name": "Feedback Webhook2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        240
+      ],
+      "webhookId": "9e0257f4-7d60-4930-a5e4-65928081c842"
+    }
+  ],
+  "connections": {
+    "Pod Event Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Event": {
+      "main": [
+        [
+          {
+            "node": "Lookup requestId by requestNo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup requestId by requestNo": {
+      "main": [
+        [
+          {
+            "node": "Audit Pod Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "a0b66256c0061668c269b0e5736e317d76e53b6e498491a275abc0d218bd504b"
+  }
+}

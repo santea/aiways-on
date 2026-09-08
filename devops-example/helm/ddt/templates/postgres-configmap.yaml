@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgres-init
+data:
+  init.sql: |
+    SELECT 'CREATE DATABASE n8n'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'n8n')\gexec
+
+    \c ddt
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+    \c n8n
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

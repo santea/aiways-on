@@ -1,0 +1,50 @@
+# SVC-3 Memory MCP — U6 소유 코드, U1 소유 배포 형상 (UOW-7).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.memoryMcp.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "aiways-on.labels" (dict "name" .Values.memoryMcp.name "root" .) | nindent 4 }}
+spec:
+  replicas: {{ .Values.memoryMcp.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.memoryMcp.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.memoryMcp.name }}
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+        - name: mcp
+          image: {{ include "aiways-on.image" (dict "repository" .Values.memoryMcp.repository "root" .) }}
+          ports:
+            - containerPort: {{ .Values.memoryMcp.port }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          env:
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: memory-db-url } }
+            - name: SDLC_MASTER_KEY
+              valueFrom: { secretKeyRef: { name: {{ .Values.secrets.existingSecret }}, key: master-key } }
+            # ⚠️ memory-token-issuer-token 은 주입하지 않는다.
+            #    MCP 서버가 이 토큰을 가지면 침해 시 스스로 read_write 토큰을 발급할 수 있다.
+          resources:
+            {{- toYaml .Values.memoryMcp.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.memoryMcp.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ .Values.memoryMcp.name }}
+  ports:
+    - port: {{ .Values.memoryMcp.port }}
+      targetPort: {{ .Values.memoryMcp.port }}

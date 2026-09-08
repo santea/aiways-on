@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-minio
+  labels:
+    app: minio
+spec:
+  ports:
+    - port: {{ .Values.minio.port }}
+      targetPort: api
+      name: api
+    - port: {{ .Values.minio.consolePort }}
+      targetPort: console
+      name: console
+  selector:
+    app: minio

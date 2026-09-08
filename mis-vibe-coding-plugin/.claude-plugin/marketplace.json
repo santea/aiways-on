@@ -1,0 +1,33 @@
+{
+  "name": "mvc",
+  "owner": {
+    "name": "MIS Team",
+    "email": "santea32@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "dev-agent",
+      "source": "./plugins/dev-agent",
+      "description": "mis team dev-agent plugin",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["dev-agent"]
+    },
+    {
+      "name": "sdlc",
+      "source": "./plugins/sdlc",
+      "description": "mis team sdlc plugin",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["SDLC", "autosr", "mis", "productivity", "interview"]
+    },
+    {
+      "name": "vibe-coding-setup",
+      "source": "./plugins/vibe-coding-setup",
+      "description": "vibe-coding 준비(문서/구조 최소 요건) 자동 보완 - SDLC 파이프라인 clone 직후 점검 결과 기반 문서/구조 생성",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["vibe-coding", "sdlc", "mis", "productivity", "docs"]
+    }
+  ]
+}

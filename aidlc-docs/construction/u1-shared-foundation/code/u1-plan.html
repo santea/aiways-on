@@ -1,0 +1,519 @@
+<title>U1 Shared Foundation Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#0b0f17; --s1:#111827; --s2:#131e2e; --s3:#1f2937; --s4:#2d3748;
+  --ink:#dfe2ee; --ink-dim:#bcc9cd; --ink-faint:#869397;
+  --blade:#4cd7f6; --blade-deep:#06b6d4; --blade-wash:rgba(6,182,212,.13);
+  --ok:#4edea3; --ok-wash:rgba(78,222,163,.13);
+  --warn:#f5b74b; --warn-wash:rgba(245,183,75,.13);
+  --bad:#ff8a80; --bad-wash:rgba(255,138,128,.13);
+  --font-d:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-b:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}}
+:root[data-theme="light"]{
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-d);text-wrap:balance;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--font-m)}
+code{font-size:11.5px;color:var(--ink-faint)}
+.shell{display:grid;grid-template-columns:13.5rem minmax(0,1fr);min-height:100vh;align-items:start}
+.rail{position:sticky;top:0;height:100vh;background:var(--s1);padding:1.5rem 0;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+.brand{padding:0 1.25rem;display:flex;flex-direction:column;gap:.3rem}
+.brand b{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.brand span{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade)}
+.nav{display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;gap:.55rem;padding:.45rem 1.25rem;color:var(--ink-dim);text-decoration:none;font-size:13px;border-left:3px solid transparent}
+.nav a .n{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--ink-faint);width:1rem;font-style:normal}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.on{background:var(--s3);color:var(--ink);border-left-color:var(--blade-deep);box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.nav a.on .n{color:var(--blade)}
+.nav a:focus-visible{outline:2px solid var(--blade);outline-offset:-2px}
+.railfoot{margin-top:auto;padding:0 1.25rem;color:var(--ink-faint);font-size:11px;line-height:1.55}
+.canvas{padding:2.25rem 2rem 4rem;max-width:78rem}
+section.top{margin-bottom:2.5rem}
+.sec{margin-bottom:3rem;scroll-margin-top:1rem}
+.eyebrow{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade);margin-bottom:.45rem}
+h1{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+h2{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+.lede{color:var(--ink-dim);max-width:64ch;margin-top:.6rem}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:1px;background:var(--ground);margin-top:1.5rem;border-radius:8px;overflow:hidden}
+.strip div{background:var(--s2);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.strip dt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.strip dd{margin:0;font-family:var(--font-d);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.b{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .38rem;border-radius:4px;white-space:nowrap}
+.b::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.b.ok{background:var(--ok-wash);color:var(--ok)}
+.b.go{background:var(--blade-wash);color:var(--blade)}
+.b.wa{background:var(--warn-wash);color:var(--warn)}
+.b.no{background:var(--bad-wash);color:var(--bad)}
+figure{margin:1.25rem 0 0;background:var(--s2);border-radius:8px;padding:1.25rem 1.25rem 1rem;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;color:var(--ink-dim);margin:0 auto}
+figcaption{margin-top:.85rem;color:var(--ink-faint);font-size:12px;line-height:1.6;max-width:72ch}
+figcaption b{color:var(--ink-dim);font-weight:600}
+.svg-label{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;fill:currentColor}
+.svg-sub{font-family:"Inter",sans-serif;font-size:10.5px;fill:currentColor;opacity:.72}
+.svg-edge{font-family:"Inter",sans-serif;font-size:10px;fill:currentColor;opacity:.78}
+.svg-title{font-family:"Manrope",sans-serif;font-size:12px;font-weight:700;fill:currentColor}
+.steps{display:flex;flex-direction:column;gap:1px;background:var(--ground);border-radius:8px;overflow:hidden;margin-top:1rem}
+.step{display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;gap:.9rem;background:var(--s2);padding:.75rem 1rem;align-items:baseline}
+.step.key{background:var(--s3);box-shadow:inset 3px 0 0 var(--blade-deep)}
+.stepn{font-family:var(--font-m);font-size:10.5px;font-weight:700;color:var(--blade);font-variant-numeric:tabular-nums}
+.stepb h4{font-size:.88rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.18rem}
+.stepb p{color:var(--ink-dim);font-size:12px;line-height:1.5}
+.stepb code{font-size:11px}
+.sbadges{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.gate{background:var(--s3);padding:.7rem 1rem;display:flex;align-items:center;gap:.6rem;font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--blade);letter-spacing:.03em;box-shadow:inset 0 0 0 1px var(--blade-wash)}
+.tw{overflow-x:auto;border-radius:8px;background:var(--s2);margin-top:1rem}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:34rem}
+th{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:.6rem .85rem;background:var(--s3);white-space:nowrap}
+td{padding:.55rem .85rem;vertical-align:top;color:var(--ink-dim)}
+tbody tr:nth-child(even){background:var(--s1)}
+td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-weight:700;white-space:nowrap}
+td strong{color:var(--ink);font-weight:600}
+.note{background:var(--s2);border-radius:8px;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;margin-top:1rem}
+.note.calm{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.note.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.note.bad{box-shadow:inset 3px 0 0 var(--bad)}
+.note h3{font-size:.92rem}
+.note p{color:var(--ink-dim);font-size:12.5px;max-width:72ch}
+.foot{color:var(--ink-faint);font-size:11.5px;line-height:1.7;padding-top:1.5rem}
+@media (max-width:900px){
+ .shell{grid-template-columns:1fr}
+ .rail{position:static;height:auto;padding:1.15rem 0}
+ .nav{flex-direction:row;flex-wrap:wrap;padding:0 .9rem;gap:.25rem}
+ .nav a{border-left:0;border-radius:4px;padding:.3rem .55rem}
+ .nav a.on{box-shadow:inset 0 -2px 0 var(--blade-deep)}
+ .railfoot{display:none}
+ .canvas{padding:1.6rem 1.1rem 3rem}
+ h1{font-size:1.5rem}
+ .step{grid-template-columns:2.6rem minmax(0,1fr);gap:.6rem}
+ .sbadges{grid-column:1 / -1;justify-content:flex-start;margin-top:.3rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <div class="brand"><b>AIways-On</b><span>U1 · Code Gen</span></div>
+  <div class="nav">
+    <a href="#top" class="on"><em class="n mono">01</em>계획 개요</a>
+    <a href="#f1"><em class="n mono">02</em>F-1 발견</a>
+    <a href="#sat"><em class="n mono">03</em>참조 문서 검증</a>
+    <a href="#pha"><em class="n mono">04</em>Phase A · PR #1</a>
+    <a href="#phb"><em class="n mono">05</em>Phase B · 구현</a>
+    <a href="#story"><em class="n mono">06</em>스토리 추적</a>
+    <a href="#path"><em class="n mono">07</em>코드 위치</a>
+    <a href="#dod"><em class="n mono">08</em>완료 정의</a>
+  </div>
+  <div class="railfoot">
+    Construction<br>Code Generation · 1/6<br>2026-09-08
+  </div>
+</nav>
+
+<main class="canvas">
+
+<section class="top" id="top">
+  <p class="eyebrow">Construction / Code Generation — 유닛 1 / 6</p>
+  <h1>먼저 끝나야 나머지가 시작된다</h1>
+  <p class="lede">
+    U1은 다른 유닛에 아무것도 의존하지 않고 stub도 필요 없다. 대신 <strong>다섯 유닛 전부가 U1을
+    기다린다.</strong> 그래서 계획을 두 단계로 갈랐다 — 앞의 6단계는 계약만 담아 먼저 머지하고,
+    나머지 11단계는 다른 다섯 명이 이미 일하는 동안 진행한다.
+  </p>
+  <dl class="strip">
+    <div><dt>생성 단계</dt><dd>17</dd></div>
+    <div><dt>Phase A</dt><dd>6</dd></div>
+    <div><dt>스토리</dt><dd>10</dd></div>
+    <div><dt>컴포넌트</dt><dd>5</dd></div>
+    <div><dt>막고 있는 유닛</dt><dd>5</dd></div>
+    <div><dt>필요한 stub</dt><dd>0</dd></div>
+  </dl>
+</section>
+
+<section class="sec" id="f1">
+  <p class="eyebrow">F-1 · 승인 전 확인 필요</p>
+  <h2>AuthGuard가 서버간 인증 스킴을 다 덮지 못한다</h2>
+  <p class="lede">
+    AD-2는 AuthGuard를 <strong>모든 인증의 단일 검증 지점</strong>으로 정했고, 컴포넌트 정의는
+    “서버간 인증 4종”을 전제로 7개 함수를 선언했다. 그런데 명세에서 실제로 살아 있는 스킴을
+    세어 보니 그보다 많았다.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>스킴</th><th>쓰이는 곳</th><th>AuthGuard 함수</th><th>상태</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SDLC_MASTER_KEY</td><td>내부 API 다수 (/intake · /advance)</td><td>requireMasterKey</td><td><span class="b ok">덮음</span></td></tr>
+        <tr><td>POD_AUTH_TOKEN</td><td>Pod Runner 호출</td><td>requirePodToken</td><td><span class="b ok">덮음</span></td></tr>
+        <tr><td>sdlcmem_*</td><td>MCP Bearer</td><td>requireMemoryToken</td><td><span class="b ok">덮음</span></td></tr>
+        <tr><td>이미지 서명</td><td>GET /images/{id}</td><td>signImageUrl · verifyImageToken</td><td><span class="b ok">덮음</span></td></tr>
+        <tr><td>SDLC_RECONCILE_TOKEN</td><td><strong>CronJob → reconcile</strong></td><td>—</td><td><span class="b no">누락</span></td></tr>
+        <tr><td>SDLC_CALLBACK_BEARER</td><td><strong>Pod · n8n → channel-notification</strong></td><td>—</td><td><span class="b no">누락</span></td></tr>
+        <tr><td>SDLC_MEMORY_TOKEN_ISSUER_TOKEN</td><td><strong>MCP 토큰 발급 권한 분리의 근거</strong></td><td>—</td><td><span class="b no">누락</span></td></tr>
+        <tr><td>SLACK_SIGNING_SECRET</td><td>events-api 모드 전용 (gateway 모드 미사용)</td><td>—</td><td><span class="b wa">조건부</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 900 246" role="img" aria-label="왼쪽은 누락을 방치했을 때로 U3의 reconcile 라우트와 channel-notification 라우트, U6의 토큰 발급 라우트가 각자 인증 검증 코드를 따로 만들어 보안 로직이 세 곳에 흩어진 상태다. 오른쪽은 AuthGuard를 10함수로 확장했을 때로 같은 세 라우트가 모두 U1의 AuthGuard 한 곳을 통과한다">
+      <defs>
+        <marker id="fah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--blade)"/>
+        </marker>
+        <marker id="fahBad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--bad)"/>
+        </marker>
+      </defs>
+
+      <text class="svg-title" x="16" y="24" fill="var(--bad)">방치하면 — 검증이 세 곳으로 흩어진다</text>
+
+      <rect x="16" y="44" width="168" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="30" y="64">U3 · reconcile</text>
+      <text class="svg-sub" x="30" y="80">CronJob 수신</text>
+      <rect x="16" y="100" width="168" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="30" y="120">U3 · callback</text>
+      <text class="svg-sub" x="30" y="136">Pod · n8n 수신</text>
+      <rect x="16" y="156" width="168" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="30" y="176">U6 · 토큰 발급</text>
+      <text class="svg-sub" x="30" y="192">발급자 검증</text>
+
+      <line x1="184" y1="67" x2="248" y2="67" stroke="var(--bad)" stroke-width="1.6" marker-end="url(#fahBad)"/>
+      <line x1="184" y1="123" x2="248" y2="123" stroke="var(--bad)" stroke-width="1.6" marker-end="url(#fahBad)"/>
+      <line x1="184" y1="179" x2="248" y2="179" stroke="var(--bad)" stroke-width="1.6" marker-end="url(#fahBad)"/>
+
+      <rect x="254" y="46" width="132" height="42" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.5"/>
+      <text class="svg-label" x="266" y="72" fill="var(--bad)">자체 검증 A</text>
+      <rect x="254" y="102" width="132" height="42" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.5"/>
+      <text class="svg-label" x="266" y="128" fill="var(--bad)">자체 검증 B</text>
+      <rect x="254" y="158" width="132" height="42" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.5"/>
+      <text class="svg-label" x="266" y="184" fill="var(--bad)">자체 검증 C</text>
+
+      <text class="svg-edge" x="16" y="228" fill="var(--bad)">AD-2가 막으려던 상태 · SECURITY-11 위배</text>
+
+      <line x1="430" y1="14" x2="430" y2="230" stroke="currentColor" stroke-width="1" opacity=".22"/>
+
+      <text class="svg-title" x="466" y="24" fill="var(--blade)">10함수로 확장 — 단일 지점 유지</text>
+
+      <rect x="466" y="44" width="150" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="480" y="64">U3 · reconcile</text>
+      <text class="svg-sub" x="480" y="80">CronJob 수신</text>
+      <rect x="466" y="100" width="150" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="480" y="120">U3 · callback</text>
+      <text class="svg-sub" x="480" y="136">Pod · n8n 수신</text>
+      <rect x="466" y="156" width="150" height="46" rx="5" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".55"/>
+      <text class="svg-label" x="480" y="176">U6 · 토큰 발급</text>
+      <text class="svg-sub" x="480" y="192">발급자 검증</text>
+
+      <line x1="616" y1="67" x2="694" y2="108" stroke="var(--blade)" stroke-width="1.6" marker-end="url(#fah)"/>
+      <line x1="616" y1="123" x2="694" y2="123" stroke="var(--blade)" stroke-width="1.6" marker-end="url(#fah)"/>
+      <line x1="616" y1="179" x2="694" y2="140" stroke="var(--blade)" stroke-width="1.6" marker-end="url(#fah)"/>
+
+      <rect x="700" y="82" width="184" height="84" rx="6" fill="none" stroke="var(--blade)" stroke-width="1.8"/>
+      <text class="svg-label" x="714" y="106" fill="var(--blade)">U1 · AuthGuard</text>
+      <text class="svg-sub" x="714" y="124">packages/lib/auth</text>
+      <text class="svg-sub" x="714" y="141">7 함수 → 10 함수</text>
+      <text class="svg-sub" x="714" y="158">보안 로직 한 곳</text>
+
+      <text class="svg-edge" x="466" y="228" fill="var(--blade)">지금 3개 추가 &lt; 나중에 3개 유닛에서 회수</text>
+    </svg>
+    <figcaption>
+      누락을 방치하면 각 스킴은 <b>그것을 필요로 하는 유닛의 라우트에서 개별 구현된다</b>.
+      U3가 reconcile 검증을, U3가 callback 검증을, U6가 발급자 검증을 각자 만든다.
+      AD-2는 정확히 그 상태를 막으려고 만든 결정이다.
+    </figcaption>
+  </figure>
+
+  <div class="note bad">
+    <h3>제안 — Step 4에서 7함수 → 10함수</h3>
+    <p>
+      <code>requireReconcileToken()</code> · <code>requireCallbackBearer()</code> ·
+      <code>requireTokenIssuer()</code> 를 추가하고 <code>components.md</code>의 C-1.2 정의를 갱신한다.
+      <strong>이 계획을 승인하면 그 갱신도 함께 승인된다.</strong>
+    </p>
+  </div>
+
+  <div class="note calm">
+    <h3>일부러 만들지 않는 것 둘</h3>
+    <p>
+      <strong>SLACK_SIGNING_SECRET</strong> — <code>events-api</code> 모드에서만 필요한데 설계는
+      gateway 모드를 쓴다. 쓰지 않을 검증 코드를 미리 만들지 않고 주석만 남긴다.
+    </p>
+    <p>
+      <strong>SDLC_INCIDENT_INGEST_TOKEN</strong> — 명세가 Master Key로 통합하며 제거하고
+      그로 인한 잔존 위험까지 기록해 둔 항목이다. 되살리지 않는다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="sat">
+  <p class="eyebrow">SATISFIED 검증</p>
+  <h2>참조 문서가 U1에 충분한가</h2>
+  <p class="lede">
+    Functional Design · NFR · Infrastructure Design은 기존 명세로 충족 처리됐다. 그 전제가 이 유닛에서
+    실제로 성립하는지 문서를 열어 확인하는 것이 각 유닛 Part 1의 조건이다.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>대상</th><th>참조 문서</th><th>확인 결과</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DB 스키마</td><td>04-db-schema.md · 723줄</td><td><span class="b ok">충분</span> 테이블별 실제 Drizzle 코드 + FK 기준 생성 순서 13단계</td></tr>
+        <tr><td>인증</td><td>01-auth-github.md · 330줄</td><td><span class="b wa">부분</span> Auth.js·RBAC·미들웨어는 충분 / 서버간 스킴은 F-1</td></tr>
+        <tr><td>디자인 토큰</td><td>design/ §2·§3 · 887줄</td><td><span class="b ok">충분</span> 색·타이포·간격, 사이드바 12항목, No-Line</td></tr>
+        <tr><td>인프라</td><td>10-k8s-infrastructure.md · 1,073줄</td><td><span class="b ok">충분</span> 매니페스트 수준 RBAC·Secret·env·CronJob</td></tr>
+        <tr><td>프로젝트 구조</td><td>00-overview.md §5 + UOW-9</td><td><span class="b ok">충분</span> 경로 매핑으로 이탈분 해소</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-top:1rem">
+    <strong>판정 — 추가 설계 단계 불필요.</strong> F-1만 생성 전에 확정하면 된다.
+    부수적으로 두 가지를 생성 시 정리한다 — 명세가 <code>mySchema</code>와 <code>sdlcSchema</code>를
+    섞어 쓰므로 후자로 통일하고, Step 14의 CronJob이 호출하는 엔드포인트는 정의 소유가 U3·U5이므로
+    U1은 호출만 한다.
+  </p>
+</section>
+
+<section class="sec" id="pha">
+  <p class="eyebrow">Phase A</p>
+  <h2>PR #1 — 계약만 담아 먼저 머지한다</h2>
+  <p class="lede">
+    구현은 들어가지 않는다. 시그니처와 타입, 그리고 스캐폴딩만 담는다.
+    이 6단계가 전체 일정의 임계 경로다.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="stepn">Step 1</span>
+      <div class="stepb">
+        <h4>워크스페이스 스캐폴딩</h4>
+        <p><code>pnpm-workspace.yaml</code> · 루트 <code>package.json</code> · <code>tsconfig.base.json</code> · <code>CODEOWNERS</code> · <code>apps/portal</code> 골격 · 패키지 2개 초기화</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U1-06</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 2</span>
+      <div class="stepb">
+        <h4>공유 타입·계약 선언</h4>
+        <p>Stage · DTO · Port 3종 · <strong>Factory 시그니처</strong> · StateMachine 조회. Stage에 <code>5·6·7·8</code>을 만들지 않는다. <strong>런타임 코드 0</strong></p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U1-04</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 3</span>
+      <div class="stepb">
+        <h4>Drizzle 스키마 선언</h4>
+        <p>유닛별 5파일 + 배럴. 인증 테이블은 public 스키마(Auth.js 호환), 비즈니스 테이블은 <code>sdlc</code> 스키마</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U1-03</span></div>
+    </div>
+    <div class="step key">
+      <span class="stepn">Step 4</span>
+      <div class="stepb">
+        <h4>AuthGuard 계약 + 인증 스킴 정합</h4>
+        <p><strong>F-1 반영 — 10함수.</strong> 스킴↔엔드포인트↔함수 대조표를 산출물로 남기고 C-1.2 정의를 갱신</p>
+      </div>
+      <div class="sbadges"><span class="b no">F-1</span><span class="b go">US-U1-02</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 5</span>
+      <div class="stepb">
+        <h4>디자인 토큰</h4>
+        <p>다크·라이트 모두 정의, <code>prefers-color-scheme</code> 자동 전환. 레이아웃 적용은 Step 10</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U1-05</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 6</span>
+      <div class="stepb">
+        <h4>PR #1 경계 검증</h4>
+        <p>typecheck 통과 · <code>contracts</code>에 런타임 코드가 없음을 기계 검증(컴파일 산출 JS가 비어야 함) · 동결 목록 산출</p>
+      </div>
+      <div class="sbadges"><span class="b ok">검증</span></div>
+    </div>
+    <div class="gate">✋ 머지 = 나머지 5유닛의 착수 신호</div>
+  </div>
+</section>
+
+<section class="sec" id="phb">
+  <p class="eyebrow">Phase B</p>
+  <h2>U1 구현 — 다른 다섯 명이 일하는 동안</h2>
+  <p class="lede">
+    TDD가 유지되므로(D-20 무수정) 각 단계는 테스트를 먼저 쓴다.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="stepn">Step 7</span>
+      <div class="stepb"><h4>GitHub OAuth 로그인</h4><p>Auth.js v5 설정 · 로그인 화면 · primary email 보강</p></div>
+      <div class="sbadges"><span class="b go">US-U1-01</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 8</span>
+      <div class="stepb"><h4>AuthGuard 구현</h4><p>10함수 구현 + 미들웨어. IDOR 방지 · 서버측 역할 검증 · deny-by-default. 테스트에 <strong>토큰 스킴 교차 사용 거부</strong> 포함</p></div>
+      <div class="sbadges"><span class="b go">US-U1-02</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 9</span>
+      <div class="stepb"><h4>마이그레이션 생성</h4><p>FK 의존 13단계 순서 준수 — 규정 테이블이 장애·개선보다 먼저</p></div>
+      <div class="sbadges"><span class="b go">US-U1-03</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 10</span>
+      <div class="stepb"><h4>글로벌 레이아웃</h4><p>사이드바 12항목 · 공통 셸 · No-Line 규칙</p></div>
+      <div class="sbadges"><span class="b go">US-U1-05</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 11</span>
+      <div class="stepb"><h4>Helm chart</h4><p>5개 서비스 + values. <strong><code>sdlc-endpoints.memoryMcpUrl</code> 키 정의</strong>(3자 합의점) · Portal 2+ · Gateway 1 고정</p></div>
+      <div class="sbadges"><span class="b go">US-U1-07</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 12</span>
+      <div class="stepb"><h4>로컬 스택 기동</h4><p>Skaffold · Conda · 기동 절차 문서</p></div>
+      <div class="sbadges"><span class="b go">US-U1-07</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 13</span>
+      <div class="stepb"><h4>Secret 분리와 RBAC</h4><p>최소 권한 — Pod 생성·삭제 verb만. DB에 평문 비밀 금지, 참조만 저장</p></div>
+      <div class="sbadges"><span class="b go">US-U1-08</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 14</span>
+      <div class="stepb"><h4>CronJob 2종</h4><p>reconcile · improvement-scan. 엔드포인트 <strong>정의 소유는 U3·U5</strong>, U1은 호출만</p></div>
+      <div class="sbadges"><span class="b wa">배치2 · 절삭 후보</span><span class="b go">US-U1-09</span></div>
+    </div>
+    <div class="step key">
+      <span class="stepn">Step 15</span>
+      <div class="stepb"><h4>CI 품질 게이트</h4><p>typecheck · lint · 테스트 · <strong>커버리지 게이트</strong> · <strong>Slack Gateway가 공유 패키지에 의존하면 실패</strong>시키는 검사</p></div>
+      <div class="sbadges"><span class="b go">US-U1-10</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 16</span>
+      <div class="stepb"><h4>Portal Dockerfile</h4><p>5유닛 코드를 담으므로 U1 소유. 비루트 · 멀티스테이지</p></div>
+      <div class="sbadges"><span class="b go">US-U1-06</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">Step 17</span>
+      <div class="stepb"><h4>문서 요약</h4><p>다른 유닛이 읽을 계약 문서 · 인증 스킴 대조표 · 동결 목록. <strong>마크다운만</strong></p></div>
+      <div class="sbadges"><span class="b ok">문서</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="story">
+  <p class="eyebrow">추적</p>
+  <h2>스토리 10건 → 단계</h2>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>스토리</th><th>내용</th><th>배치</th><th>단계</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>US-U1-01</td><td>GitHub 계정으로 로그인</td><td>1</td><td>Step 7</td></tr>
+        <tr><td>US-U1-02 ⭐</td><td>권한(user/admin) 분리</td><td>1</td><td>Step 4 · 8</td></tr>
+        <tr><td>US-U1-03 ⭐</td><td>DB 스키마와 마이그레이션</td><td>1</td><td>Step 3 · 9</td></tr>
+        <tr><td>US-U1-04 ⭐</td><td>공유 타입 정의</td><td>1</td><td>Step 2</td></tr>
+        <tr><td>US-U1-05</td><td>디자인 토큰과 글로벌 레이아웃</td><td>1</td><td>Step 5 · 10</td></tr>
+        <tr><td>US-U1-06 ⭐</td><td>프로젝트 스캐폴딩</td><td>1</td><td>Step 1 · 16</td></tr>
+        <tr><td>US-U1-07</td><td>로컬 K8s 스택 기동</td><td>1</td><td>Step 11 · 12</td></tr>
+        <tr><td>US-U1-08</td><td>Secret 분리와 최소 권한 RBAC</td><td>1</td><td>Step 13</td></tr>
+        <tr><td>US-U1-09</td><td>정합성 복구·주기 스캔 CronJob</td><td><strong>2</strong></td><td>Step 14</td></tr>
+        <tr><td>US-U1-10</td><td>CI 품질 게이트</td><td>1</td><td>Step 15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="lede" style="margin-top:1rem">
+    ⭐ 4건이 Phase A를 구성한다 — <strong>이 4건이 다섯 유닛의 착수를 푼다.</strong>
+  </p>
+</section>
+
+<section class="sec" id="path">
+  <p class="eyebrow">코드 위치</p>
+  <h2>애플리케이션 코드는 워크스페이스 루트에만 쓴다</h2>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>대상</th><th>경로</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>워크스페이스 설정</td><td><code>/pnpm-workspace.yaml</code> · <code>/package.json</code> · <code>/tsconfig.base.json</code> · <code>/CODEOWNERS</code></td></tr>
+        <tr><td>공유 계약</td><td><code>/packages/contracts/</code></td></tr>
+        <tr><td>공유 런타임</td><td><code>/packages/lib/{auth,db,ui}/</code></td></tr>
+        <tr><td>Portal 앱</td><td><code>/apps/portal/</code></td></tr>
+        <tr><td>마이그레이션</td><td><code>/drizzle/</code></td></tr>
+        <tr><td>배포</td><td><code>/charts/</code> · <code>/skaffold.yaml</code> · <code>/environment.yml</code></td></tr>
+        <tr><td>CI</td><td><code>/.github/workflows/</code></td></tr>
+        <tr><td>문서 요약</td><td><code>aidlc-docs/construction/u1-shared-foundation/code/</code> — <strong>마크다운만</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="dod">
+  <p class="eyebrow">완료 정의</p>
+  <h2>U1이 끝났다고 말할 수 있는 조건</h2>
+
+  <div class="note calm">
+    <h3>공통 + U1 추가</h3>
+    <p>
+      배치1 9건의 인수 조건 충족 · TDD 준수와 커버리지 게이트 통과 · <code>pnpm -r typecheck</code> 통과 ·
+      <strong>PR #1이 머지되어 5유닛이 착수 가능</strong> · CI에 Slack Gateway 의존 금지 검사 포함 ·
+      인증 스킴 대조표가 명세의 활성 스킴을 빠짐없이 덮음 · Portal Dockerfile 빌드와 chart 기동 확인
+    </p>
+  </div>
+
+  <p class="foot">
+    계획 원본 — <code>aidlc-docs/construction/plans/u1-shared-foundation-code-generation-plan.md</code><br>
+    AIways-On · AI-DLC Construction / Code Generation 1 of 6 · 2026-09-08 · 계획 승인 대기
+  </p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  if(!('IntersectionObserver' in window))return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      var i=secs.indexOf(e.target);
+      if(i<0)return;
+      links.forEach(function(a){a.classList.remove('on');});
+      links[i].classList.add('on');
+    });
+  },{rootMargin:'-10% 0px -75% 0px'});
+  secs.forEach(function(s){if(s)io.observe(s);});
+})();
+</script>

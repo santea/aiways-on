@@ -1,0 +1,61 @@
+# 최소 권한 RBAC — US-U1-08 (NFR-19, SECURITY-06).
+#
+# ⚠️ 명세와의 의도적 차이 (U1 Code Generation 에서 판단, 되돌릴 수 있음):
+#    `10-k8s-infrastructure.md` §2.2 는 RoleBinding 의 subject 를 **`default` ServiceAccount** 로
+#    적는다. 그렇게 하면 네임스페이스의 **모든 Pod** 가 Pod 생성·삭제·Secret 조회 권한을 갖게 되어
+#    최소 권한 원칙과 어긋난다. 전용 ServiceAccount 를 만들어 Portal 에만 바인딩한다.
+#    권한 목록(verbs)은 명세 §2.1 그대로다.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.podRunner.serviceAccount }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "aiways-on.labels" (dict "name" .Values.portal.name "root" .) | nindent 4 }}
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: portal-sdlc-pod-manager
+  namespace: {{ .Values.namespace }}
+rules:
+  # Pod 관리 (생성·삭제·상태 조회)
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  # 터미널 WebSocket
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  # Secret 은 조회만 — 생성·수정 권한을 주지 않는다
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+  # per-SR 워크스페이스
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "create", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: portal-sdlc-pod-manager-binding
+  namespace: {{ .Values.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.podRunner.serviceAccount }}
+    namespace: {{ .Values.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: portal-sdlc-pod-manager

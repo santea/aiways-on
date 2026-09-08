@@ -1,0 +1,9 @@
+{
+  "name": "sdlc",
+  "version": "1.0.0",
+  "description": "mis team sdlc plugin",
+  "keywords": [
+    "claude-code",
+    "plugin"
+  ]  
+}

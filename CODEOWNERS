@@ -1,0 +1,49 @@
+# AIways-On 소유권 경계 — UOW-5 (unit-of-work.md §2.4)
+# 타 유닛 경로를 수정하는 PR은 GitHub이 소유자 리뷰를 강제한다.
+# 경계 규약(B-1~B-7)은 aidlc-docs/inception/application-design/component-dependency.md §3 참조.
+
+# ── U1 공용 기반 — 전 유닛에 영향. 변경 시 영향 범위를 PR 설명에 기재 ──
+/packages/                              @u1-owner
+/charts/                                @u1-owner
+/drizzle/                               @u1-owner
+/skaffold.yaml                          @u1-owner
+/environment.yml                        @u1-owner
+/pnpm-workspace.yaml                    @u1-owner
+/package.json                           @u1-owner
+/tsconfig.base.json                     @u1-owner
+/CODEOWNERS                             @u1-owner
+/scripts/                               @u1-owner
+/.github/                               @u1-owner
+/apps/portal/Dockerfile                 @u1-owner
+/apps/portal/src/app/layout.tsx         @u1-owner
+/apps/portal/src/app/(auth)/            @u1-owner
+/apps/portal/src/middleware.ts          @u1-owner
+
+# ── U2 코어SDLC (관리) ──
+/apps/portal/src/features/u2-core-mgmt/ @u2-owner
+/apps/portal/src/app/(dashboard)/       @u2-owner
+/apps/portal/src/app/admin/orgs/        @u2-owner
+/apps/portal/src/app/admin/repos/       @u2-owner
+
+# ── U3 코어SDLC (진행) ──
+/apps/portal/src/features/u3-core-run/  @u3-owner
+/apps/sdlc-pod-runner/                  @u3-owner
+/apps/sdlc-slack-gateway/               @u3-owner
+/n8n/                                   @u3-owner
+
+# ── U4 장애 대응 ──
+/apps/portal/src/features/u4-incident/  @u4-owner
+/apps/portal/src/app/(incident)/        @u4-owner
+/apps/portal/src/app/admin/incident-templates/ @u4-owner
+
+# ── U5 자체개선 ──
+/apps/portal/src/features/u5-improvement/ @u5-owner
+/apps/portal/src/app/(improvement)/       @u5-owner
+/apps/portal/src/app/admin/improvement-targets/ @u5-owner
+
+# ── U6 개발 규정 ──
+/apps/portal/src/features/u6-memory/    @u6-owner
+/apps/portal/src/app/(memory)/          @u6-owner
+/apps/portal/src/app/admin/memory-systems/ @u6-owner
+/apps/portal/src/app/admin/memory-tokens/  @u6-owner
+/apps/sdlc-memory-mcp/                  @u6-owner

@@ -1,0 +1,26 @@
+{
+  "name": "@aiways/lib",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./auth": "./src/auth/index.ts",
+    "./db": "./src/db/index.ts",
+    "./db/schema": "./src/db/schema/index.ts",
+    "./ui": "./src/ui/index.ts",
+    "./domain": "./src/domain/index.ts",
+    "./auth/next-auth": "./src/auth/next-auth.ts",
+    "./ui/tokens.css": "./src/ui/tokens.css",
+    "./auth/guard": "./src/auth/guard.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@aiways/contracts": "workspace:*",
+    "@auth/drizzle-adapter": "^1.11.3",
+    "drizzle-orm": "^0.45.2",
+    "next-auth": "5.0.0-beta.32",
+    "postgres": "^3.4.9"
+  }
+}

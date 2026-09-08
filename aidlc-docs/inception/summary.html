@@ -1,0 +1,478 @@
+<title>AIways-On Inception Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* ── Midnight Obsidian — 이 프로젝트 자신의 디자인 토큰 ── */
+:root{
+  --ground:#0b0f17; --s1:#111827; --s2:#131e2e; --s3:#1f2937; --s4:#2d3748;
+  --ink:#dfe2ee; --ink-dim:#bcc9cd; --ink-faint:#869397;
+  --blade:#4cd7f6; --blade-deep:#06b6d4; --blade-wash:rgba(6,182,212,.13);
+  --link:#7aa7ff; --ok:#4edea3; --ok-wash:rgba(78,222,163,.13);
+  --warn:#f5b74b; --warn-wash:rgba(245,183,75,.13);
+  --bad:#ff8a80; --bad-wash:rgba(255,138,128,.13);
+  --rail:15rem;
+  --font-d:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-b:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,"SFMono-Regular",monospace;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+    --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+    --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+    --link:#2456c4; --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+    --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+    --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --link:#2456c4; --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}
+
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-d);text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--link)}
+code,.mono{font-family:var(--font-m)}
+
+/* No-Line: 구분은 테두리가 아니라 배경 명도 계층으로만 */
+.shell{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);min-height:100vh;align-items:start}
+
+/* ── 좌측 텔레메트리 레일 (No Top Nav) ── */
+.rail{position:sticky;top:0;height:100vh;background:var(--s1);padding:1.5rem 0;
+  display:flex;flex-direction:column;gap:1.5rem;overflow-y:auto}
+.brand{padding:0 1.25rem;display:flex;flex-direction:column;gap:.35rem}
+.brand b{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.brand span{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--blade)}
+.nav{display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;gap:.6rem;padding:.5rem 1.25rem;color:var(--ink-dim);
+  text-decoration:none;font-size:13px;border-left:3px solid transparent}
+.nav a .n{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--ink-faint);width:1.1rem}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.on{background:var(--s3);color:var(--ink);border-left-color:var(--blade-deep);
+  box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.nav a:focus-visible{outline:2px solid var(--blade);outline-offset:-2px}
+.railfoot{margin-top:auto;padding:0 1.25rem;color:var(--ink-faint);font-size:11px;line-height:1.5}
+
+/* ── 본문 캔버스 ── */
+.canvas{padding:2.5rem 2rem 4rem;max-width:78rem}
+section{margin-bottom:3rem;scroll-margin-top:1.5rem}
+.eyebrow{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--blade);margin-bottom:.5rem}
+h1{font-size:2.1rem;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+h2{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.4rem}
+h3{font-size:1rem;font-weight:600;letter-spacing:-.015em}
+.lede{color:var(--ink-dim);max-width:62ch;margin-top:.6rem}
+
+/* 상태 스트립 */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1px;
+  background:var(--ground);margin-top:1.5rem;border-radius:8px;overflow:hidden}
+.strip div{background:var(--s2);padding:.85rem 1rem;display:flex;flex-direction:column;gap:.25rem}
+.strip dt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-faint)}
+.strip dd{margin:0;font-family:var(--font-d);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+
+/* 배지 */
+.b{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--font-m);font-size:10px;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .45rem;border-radius:4px;
+  white-space:nowrap}
+.b::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.b.ok{background:var(--ok-wash);color:var(--ok)}
+.b.go{background:var(--blade-wash);color:var(--blade)}
+.b.wa{background:var(--warn-wash);color:var(--warn)}
+.b.no{background:var(--bad-wash);color:var(--bad)}
+.b.idle{background:var(--s3);color:var(--ink-faint)}
+
+/* 카드 그리드 */
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.card{background:var(--s2);border-radius:8px;padding:1.15rem 1.25rem;display:flex;
+  flex-direction:column;gap:.6rem}
+.card.lift{background:var(--s3);box-shadow:0 8px 32px -4px var(--blade-wash)}
+.card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.card p{color:var(--ink-dim);font-size:13px}
+.card ul{margin:0;padding-left:1.05rem;color:var(--ink-dim);font-size:13px;display:flex;
+  flex-direction:column;gap:.2rem}
+.uid{font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--blade)}
+
+/* 유닛 규모 막대 */
+.bars{display:flex;flex-direction:column;gap:.55rem;margin-top:1rem}
+.bar{display:grid;grid-template-columns:11rem 1fr 5.5rem;align-items:center;gap:.75rem;font-size:13px}
+.bar .track{background:var(--s1);border-radius:4px;height:1.35rem;overflow:hidden}
+.bar .fill{height:100%;background:var(--blade-deep);border-radius:4px}
+.bar .fill.hot{background:var(--warn)}
+.bar .fill.base{background:var(--ok)}
+.bar .val{font-family:var(--font-m);font-size:11px;font-weight:700;text-align:right;
+  font-variant-numeric:tabular-nums;color:var(--ink-dim)}
+
+/* 표 — zebra luminance, 괘선 없음 */
+.tw{overflow-x:auto;border-radius:8px;background:var(--s2);margin-top:1rem}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:34rem}
+th{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint);text-align:left;padding:.7rem .9rem;background:var(--s3);white-space:nowrap}
+td{padding:.6rem .9rem;vertical-align:top;color:var(--ink-dim)}
+tbody tr:nth-child(even){background:var(--s1)}
+td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-weight:700;white-space:nowrap}
+td strong{color:var(--ink);font-weight:600}
+
+/* 단계 레일 — 실제 순서가 있는 내용이므로 번호가 정보를 담는다 */
+.stages{display:flex;flex-direction:column;gap:1px;background:var(--ground);border-radius:8px;
+  overflow:hidden;margin-top:1rem}
+.stage{background:var(--s2);padding:.75rem 1rem;display:grid;
+  grid-template-columns:1.6rem 1fr auto;align-items:center;gap:.85rem}
+.stage.done{background:var(--s2)}
+.stage.now{background:var(--s3);box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.stage .dot{width:1.6rem;text-align:center;font-family:var(--font-m);font-size:11px;font-weight:700}
+.stage.done .dot{color:var(--ok)}
+.stage.now .dot{color:var(--blade)}
+.stage.next .dot{color:var(--ink-faint)}
+.stage .nm{font-size:13px}
+.stage.next .nm{color:var(--ink-faint)}
+
+/* 콜아웃 */
+.note{background:var(--s2);border-radius:8px;padding:1.1rem 1.25rem;display:flex;
+  flex-direction:column;gap:.5rem;margin-top:1rem}
+.note.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.note.hot{box-shadow:inset 3px 0 0 var(--bad)}
+.note.calm{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.note h3{font-size:.95rem}
+.note p{color:var(--ink-dim);font-size:13px;max-width:70ch}
+
+.foot{color:var(--ink-faint);font-size:12px;line-height:1.7;padding-top:1.5rem}
+
+@media (max-width:880px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static;height:auto;padding:1.25rem 0}
+  .nav{flex-direction:row;flex-wrap:wrap;padding:0 .9rem;gap:.25rem}
+  .nav a{border-left:0;border-radius:4px;padding:.35rem .6rem}
+  .nav a.on{box-shadow:inset 0 -2px 0 var(--blade-deep)}
+  .railfoot{display:none}
+  .canvas{padding:1.75rem 1.15rem 3rem}
+  h1{font-size:1.65rem}
+  .bar{grid-template-columns:7.5rem 1fr 4.5rem;gap:.5rem;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <div class="brand">
+    <b>AIways-On</b>
+    <span>Inception Brief</span>
+  </div>
+  <div class="nav">
+    <a href="#now" class="on"><em class="n mono">01</em>현재 위치</a>
+    <a href="#calls"><em class="n mono">02</em>핵심 판단</a>
+    <a href="#units"><em class="n mono">03</em>6-유닛 분할</a>
+    <a href="#decisions"><em class="n mono">04</em>확정 결정</a>
+    <a href="#quality"><em class="n mono">05</em>품질·보안</a>
+    <a href="#risks"><em class="n mono">06</em>리스크</a>
+    <a href="#next"><em class="n mono">07</em>다음 결정</a>
+  </div>
+  <div class="railfoot">
+    AI-DLC v1.0.1<br>
+    문서 15,033줄 분석<br>
+    2026-09-08
+  </div>
+</nav>
+
+<main class="canvas">
+
+<section id="now">
+  <p class="eyebrow">Inception / Requirements Analysis</p>
+  <h1>6명이 2일 안에 SDLC 자동화 포탈을 만든다</h1>
+  <p class="lede">
+    요구사항 명세 <strong>15,033줄</strong>은 이미 API 시그니처·DB 컬럼·상태 전이표 수준까지 확정되어 있다.
+    이번 Inception이 실제로 한 일은 요구사항 도출이 아니라, <strong>명세에 없던 미결정 사항 29건을 확정하고
+    6인 병렬 구조로 재편</strong>한 것이다.
+  </p>
+
+  <dl class="strip">
+    <div><dt>기간</dt><dd>2일</dd></div>
+    <div><dt>인원</dt><dd>6명</dd></div>
+    <div><dt>유닛</dt><dd>1 + 5</dd></div>
+    <div><dt>확정 결정</dt><dd>29건</dd></div>
+    <div><dt>기능 요구사항</dt><dd>45건</dd></div>
+    <div><dt>비기능 요구사항</dt><dd>27건</dd></div>
+  </dl>
+
+  <div class="stages">
+    <div class="stage done"><span class="dot">✓</span><span class="nm">Workspace Detection — Greenfield 확정</span><span class="b ok">완료</span></div>
+    <div class="stage done"><span class="dot">—</span><span class="nm">Reverse Engineering — Greenfield이므로 생략. 기존 폴더는 참고자료로 재배치</span><span class="b idle">생략</span></div>
+    <div class="stage now"><span class="dot">▸</span><span class="nm">Requirements Analysis — 질문 27건 · 답변 27건 · requirements.md 391줄</span><span class="b go">승인 대기</span></div>
+    <div class="stage next"><span class="dot">4</span><span class="nm">User Stories — 실행 여부 미결</span><span class="b idle">대기</span></div>
+    <div class="stage next"><span class="dot">5</span><span class="nm">Workflow Planning</span><span class="b idle">대기</span></div>
+    <div class="stage next"><span class="dot">6</span><span class="nm">Units Generation — 6유닛 확정</span><span class="b idle">대기</span></div>
+    <div class="stage next"><span class="dot">7</span><span class="nm">Construction — 유닛별 설계 · 코드 생성 · 빌드/테스트</span><span class="b idle">대기</span></div>
+  </div>
+</section>
+
+<section id="calls">
+  <p class="eyebrow">Key Calls</p>
+  <h2>이번 단계에서 갈린 세 가지</h2>
+
+  <div class="note calm">
+    <h3>상태 머신은 명세를 따른다 — 참고자산의 구 체계는 버린다</h3>
+    <p>
+      기존 n8n 워크플로우와 <code>claude-global.md</code>는 <code>Advance to 5</code>, "보고서 작성 (Stage 7)"처럼
+      <strong>구 stage 번호</strong>를 쓴다. 명세는 Stage 5–8을 enum 값 없는 미사용 예약으로 두고
+      정상 경로를 <code>1 → 2 → 3 → 4 → 9_COMPLETE</code>로 규정한다.
+      <strong>명세를 채택</strong>했고, n8n은 번호를 재매핑해 신규 작성한다. 참고자산의 구 번호가 코드에 새어 들어오는 것이
+      리스크 R-04다.
+    </p>
+  </div>
+
+  <div class="note warn">
+    <h3>범위·깊이·일정을 모두 유지한다 — 바이브코딩 생산성이 근거</h3>
+    <p>
+      12 person-day(6명×2일)로 명세 15,033줄을 TDD로 완주하는 것은 통상 공수 산정으로는 불가능하다는 우려를
+      제기했고, <strong>두 차례 "바이브코딩으로 2일 내 가능"으로 확인</strong>받았다. 사용자 결정으로 수용해
+      전체 범위·전체 깊이로 진행한다. 이 가정이 어긋나면 가장 먼저 조정할 후보는 <strong>범위</strong>이며,
+      그 판단은 사용자가 한다.
+    </p>
+  </div>
+
+  <div class="note hot">
+    <h3>구조적 병목 두 곳이 이미 보인다</h3>
+    <p>
+      <strong>U1이 나머지 5명 전원을 차단</strong>한다 — 스키마·타입·인증이 없으면 아무도 시작할 수 없다.
+      그리고 <strong>U3가 명세의 27%</strong>를 혼자 진다. 2일 일정에서 둘 다 치명적이므로,
+      Units Generation에서 <em>U1 인터페이스 우선 산출</em>과 <em>U3 재분배</em>를 설계한다.
+    </p>
+  </div>
+</section>
+
+<section id="units">
+  <p class="eyebrow">Work Breakdown</p>
+  <h2>6-유닛 분할</h2>
+  <p class="lede">
+    U1이 유일한 공통 선행 유닛이고, 나머지 5개가 병렬로 붙는다.
+    Pod Runner·Slack Gateway는 U3가, K8s·n8n 인프라는 U1이 소유한다.
+  </p>
+
+  <div class="grid">
+    <div class="card lift">
+      <div class="top"><h3>U1 · 공용 (기반)</h3><span class="b go">선행</span></div>
+      <p>나머지 5개 유닛이 모두 의존하는 차단 유닛. 인터페이스를 최우선으로 뽑아내야 한다.</p>
+      <ul>
+        <li>Drizzle 스키마 전체 + 마이그레이션</li>
+        <li>공유 타입 — <code>Stage</code>·<code>ChannelType</code>·DTO</li>
+        <li>Auth.js v5 GitHub OAuth + 권한 미들웨어</li>
+        <li>디자인 토큰(다크·라이트) + 사이드바 레이아웃</li>
+        <li>Helm · Skaffold · Conda · K8s Secret/RBAC/CronJob</li>
+        <li>GitHub Actions CI + 커버리지 게이트</li>
+      </ul>
+      <span class="uid">FR-U1-01 … 10</span>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>U2 · 코어SDLC (관리)</h3><span class="b idle">병렬</span></div>
+      <p>SR 등록·조회·관리 UI와 그 API. 관리자 화면 6종 포함.</p>
+      <ul>
+        <li>SR 등록 · 대시보드 · SR 상세</li>
+        <li><code>POST /intake</code> — 등록 + 즉시 프로비저닝</li>
+        <li>GitHub 어댑터 — Issue · PR 생성/merge</li>
+        <li>감사 로그 · 이미지 프록시 서빙</li>
+      </ul>
+      <span class="uid">FR-U2-01 … 07</span>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>U3 · 코어SDLC (진행)</h3><span class="b wa">과부하</span></div>
+      <p>파이프라인 실행 엔진. 명세의 27%를 담당해 다른 유닛의 1.5–2.5배다.</p>
+      <ul>
+        <li>상태 머신 + <strong>CAS 전이</strong> · 멱등성 · 보상 트랜잭션</li>
+        <li>DevSubStage 4종 추적</li>
+        <li><strong>sdlc-pod-runner</strong> (FastAPI, 11 엔드포인트)</li>
+        <li>Pod 이미지 재작성 + lifecycle orchestrator</li>
+        <li>MessageChannelAdapter + <strong>Slack Gateway</strong></li>
+        <li>n8n Workflow A/B/C 신규 작성</li>
+      </ul>
+      <span class="uid">FR-U3-01 … 13</span>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>U4 · 장애 대응</h3><span class="b idle">병렬</span></div>
+      <p><code>pipelineProfile='incident'</code>. 요구사항·설계를 건너뛰고 dev 채널 1개만 쓴다.</p>
+      <ul>
+        <li>트리거 수집 + fail-closed 플래그</li>
+        <li>incident SR 자동 승격 · 자동머지 금지</li>
+        <li>원인분석 · 대응가이드 · 코드수정 Agent</li>
+        <li>5단계 상태 레일 UI + Test 트리거 주입</li>
+      </ul>
+      <span class="uid">FR-U4-01 … 05</span>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>U5 · 자체개선</h3><span class="b idle">병렬</span></div>
+      <p><code>pipelineProfile='improvement'</code>. 읽기 전용 실행.</p>
+      <ul>
+        <li>주기 스캔 CronJob</li>
+        <li>finding 발굴 Agent</li>
+        <li>finding → SR 또는 개발규정 승격</li>
+        <li>스캔 상세 UI + category 탭</li>
+      </ul>
+      <span class="uid">FR-U5-01 … 05</span>
+    </div>
+
+    <div class="card">
+      <div class="top"><h3>U6 · 개발 규정</h3><span class="b idle">병렬</span></div>
+      <p>가장 독립적인 유닛. U3에는 MCP 주입 지점으로만 약하게 묶인다.</p>
+      <ul>
+        <li>개발 규정 5종 CRUD + 개정 이력</li>
+        <li><strong>sdlc-memory-mcp</strong> — Streamable HTTP :58002</li>
+        <li>MCP 토큰 발급·폐기 (발급 권한 분리)</li>
+        <li>규정 UI 3종 + 전역 검색</li>
+      </ul>
+      <span class="uid">FR-U6-01 … 05</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2rem">유닛별 담당 명세 규모</h3>
+  <p class="lede" style="font-size:13px">원본 문서 줄 수 기준 추정치. U3의 편중이 그대로 드러난다.</p>
+  <div class="bars">
+    <div class="bar"><span>U1 공용</span><span class="track"><span class="fill base" style="width:53%"></span></span><span class="val">약 2,126</span></div>
+    <div class="bar"><span>U2 관리</span><span class="track"><span class="fill" style="width:64%"></span></span><span class="val">약 2,574</span></div>
+    <div class="bar"><span>U3 진행</span><span class="track"><span class="fill hot" style="width:100%"></span></span><span class="val">약 4,000</span></div>
+    <div class="bar"><span>U4 장애</span><span class="track"><span class="fill" style="width:51%"></span></span><span class="val">약 2,030</span></div>
+    <div class="bar"><span>U5 개선</span><span class="track"><span class="fill" style="width:42%"></span></span><span class="val">약 1,688</span></div>
+    <div class="bar"><span>U6 규정</span><span class="track"><span class="fill" style="width:60%"></span></span><span class="val">약 2,394</span></div>
+  </div>
+</section>
+
+<section id="decisions">
+  <p class="eyebrow">Confirmed Decisions</p>
+  <h2>확정 결정 29건 중 핵심</h2>
+  <p class="lede">질문 27건(확인 14 · 명확화 5 · 복원력 8)에 대한 답변으로 확정된 사항이다.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>ID</th><th>항목</th><th>결정</th></tr></thead>
+      <tbody>
+        <tr><td>D-01</td><td>v1 범위</td><td><strong>전체</strong> — 명세 01~13 전 문서. 축소 없음</td></tr>
+        <tr><td>D-05</td><td>상태 머신 권위</td><td><strong>명세 우선.</strong> <code>1→2→3→4→9_COMPLETE</code>, Stage 5–8은 예약</td></tr>
+        <tr><td>D-06</td><td><code>claude-global.md</code></td><td>참고용. "Stage 5/7" 기술은 채택하지 않음</td></tr>
+        <tr><td>D-07/08</td><td>런타임</td><td>Next.js 16 · Node 22 전면 통일 (Pod 이미지 포함)</td></tr>
+        <tr><td>D-09</td><td>ORM</td><td>Drizzle ORM — Prisma 아님</td></tr>
+        <tr><td>D-10</td><td>저장소</td><td>단일 repo + 디렉토리 분리, 브랜치 병렬</td></tr>
+        <tr><td>D-11/12</td><td>레지스트리</td><td>개발은 공용 레지스트리, 배포 시 사내 미러. Pod Dockerfile 전면 재작성</td></tr>
+        <tr><td>D-13</td><td>메시징</td><td>Slack — 실제 워크스페이스·자격증명 확보 가능</td></tr>
+        <tr><td>D-15</td><td>공용 유닛 범위</td><td>스캐폴딩 + 스키마 + 타입 + 인증 + 로컬환경 <strong>+ K8s·n8n 인프라</strong></td></tr>
+        <tr><td>D-16/17</td><td>서비스 소속</td><td>Pod Runner · Slack Gateway → <strong>U3</strong></td></tr>
+        <tr><td>D-19</td><td>n8n 작성</td><td>기존 JSON 참고 후 <strong>명세 기준 신규 작성</strong>. 배포 후 착수</td></tr>
+        <tr><td>D-20</td><td>테스트</td><td><strong>TDD 강제</strong> — 선작성 + CI 커버리지 게이트</td></tr>
+        <tr><td>D-24</td><td>복구 목표</td><td>RTO 4시간 / RPO 24시간, 일일 백업</td></tr>
+        <tr><td>D-26</td><td>CI/CD</td><td>로컬 Skaffold + GitHub Actions <strong>CI까지만</strong> (CD 없음)</td></tr>
+        <tr><td>D-27</td><td>배포·롤백</td><td>Rolling Update / <code>rollout undo</code> / 단일 클러스터·단일 존</td></tr>
+        <tr><td>D-28</td><td>색상 모드</td><td><code>prefers-color-scheme</code> 자동 전환 — 다크·라이트 토큰 모두 정의</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="quality">
+  <p class="eyebrow">Quality Gates</p>
+  <h2>확장 규칙 준수</h2>
+
+  <div class="grid three">
+    <div class="card">
+      <div class="top"><h3>Security Baseline</h3><span class="b ok">전체 적용</span></div>
+      <p>OWASP Top 10 전체. SECURITY-01~15 <strong>전부 blocking</strong>이며 비기능 요구사항 NFR-10~20에 매핑했다.</p>
+    </div>
+    <div class="card">
+      <div class="top"><h3>Resiliency Baseline</h3><span class="b wa">예외 2건</span></div>
+      <p>RESILIENCY-01~15 적용. 단 아래 2건은 사용자 승인 예외로, 이후 모든 단계 준수 요약에 계속 표시된다.</p>
+    </div>
+    <div class="card">
+      <div class="top"><h3>Property-Based Testing</h3><span class="b go">부분 적용</span></div>
+      <p>순수 함수와 직렬화 왕복에만. 대상 후보는 <code>advance()</code>, 멱등키 생성, DTO 직렬화, 채널명 규칙.</p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <h3>사용자 승인 예외 — 은폐하지 않고 계속 표시</h3>
+    <p>
+      <strong>RESILIENCY-14</strong> 복원력 테스트 생략(설계 원칙만 준수) ·
+      <strong>RESILIENCY-15</strong> 운영 장애대응 프로세스 v2 연기. 둘 다 2일 일정을 이유로 사용자가
+      제시된 선택지에서 명시적으로 선택했다. 기본값이 blocking인 규칙이므로 예외임을 계속 드러낸다.
+    </p>
+    <p>
+      <strong>혼동 주의:</strong> RESILIENCY-15의 "v2 연기"는 <em>팀이 AIways-On 장애에 대응하는 절차</em>를
+      미룬다는 뜻이다. <em>제품 기능인 장애대응 Agent(U4)</em>는 D-01에 따라 v1 범위에 그대로 포함된다.
+    </p>
+  </div>
+</section>
+
+<section id="risks">
+  <p class="eyebrow">Risk Register</p>
+  <h2>리스크 8건</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>ID</th><th>리스크</th><th>영향</th><th>완화</th></tr></thead>
+      <tbody>
+        <tr><td>R-01</td><td>2일 내 전체 범위 완주 실패</td><td><span class="b no">치명</span></td><td>바이브코딩 생산성 가정에 의존. 실패 시 사용자 판단으로 범위 축소</td></tr>
+        <tr><td>R-02</td><td>U1 지연이 나머지 5명을 차단</td><td><span class="b no">치명</span></td><td>인터페이스(타입·스키마) 우선 산출 전략</td></tr>
+        <tr><td>R-03</td><td>U3 과부하 — 명세의 27%</td><td><span class="b wa">높음</span></td><td>Units Generation에서 재분배 검토</td></tr>
+        <tr><td>R-04</td><td>참고자산의 구 stage 체계 혼입</td><td><span class="b wa">높음</span></td><td>D-05·D-06으로 차단. 코드 리뷰 확인 항목화</td></tr>
+        <tr><td>R-05</td><td>6명 동일 repo 병렬 충돌</td><td><span class="b go">중간</span></td><td>유닛별 디렉토리 경계 + 공유 타입 U1 단독 소유</td></tr>
+        <tr><td>R-06</td><td>Next.js 16 미출시 또는 불안정</td><td><span class="b go">중간</span></td><td>Next.js 15 폴백</td></tr>
+        <tr><td>R-07</td><td>OWASP 전체 준수가 2일 일정과 충돌</td><td><span class="b wa">높음</span></td><td>사용자 확정 사항. 충돌 시 사용자 재판단</td></tr>
+        <tr><td>R-08</td><td>복원력 테스트 생략으로 보상 트랜잭션 결함 미발견</td><td><span class="b go">중간</span></td><td>승인 예외. PBT로 상태 전이 로직 일부 보완</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="next">
+  <p class="eyebrow">Open Decision</p>
+  <h2>다음에 정할 것</h2>
+  <div class="note calm">
+    <h3>User Stories 단계를 실행할까?</h3>
+    <p>
+      <strong>실행 근거</strong> — 사용자 대면 라우트 18개, 다중 페르소나(요청자·개발자·운영자·admin),
+      6인 협업으로 공통 이해가 필요한 조건. AI-DLC 판정 기준으로는 실행 권장 대상이다.
+    </p>
+    <p>
+      <strong>생략 근거</strong> — 2일 일정. 그리고 <code>design/</code> 문서가 이미 화면별 표시 정보와
+      권한 매트릭스를 정의해 스토리가 더할 정보가 제한적이다.
+    </p>
+    <p>
+      생략하면 <strong>Workflow Planning → Units Generation</strong>으로 직행해 6유닛 분할을 확정하고
+      바로 Construction에 들어간다.
+    </p>
+  </div>
+
+  <p class="foot">
+    출처 · <code>aidlc-docs/inception/requirements/requirements.md</code> (391줄) ·
+    <code>aidlc-state.md</code> · <code>audit.md</code> · <code>reference-assets/</code> 7개 문서<br>
+    이 페이지의 색·서체·레이아웃은 AIways-On 자신의 디자인 시스템(Stitch "Midnight Obsidian")을 그대로 쓴다 —
+    Manrope · Inter · JetBrains Mono, 상단 네비 없음, 괘선 없이 배경 명도 계층으로만 구분.
+  </p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function sync(){
+    var y=window.scrollY+120, best=0;
+    secs.forEach(function(s,i){ if(s && s.offsetTop<=y) best=i; });
+    links.forEach(function(a,i){ a.classList.toggle('on', i===best); });
+  }
+  window.addEventListener('scroll',sync,{passive:true});
+  sync();
+})();
+</script>

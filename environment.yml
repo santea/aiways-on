@@ -1,0 +1,14 @@
+# 로컬 개발 환경 — US-U1-07.
+# Node 는 pnpm/corepack 으로 관리하고, 여기서는 Pod Runner(FastAPI, U3)와
+# 공통 도구 체인만 잡는다.
+name: aiways-on
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - fastapi>=0.115
+      - uvicorn[standard]>=0.32
+      - httpx>=0.27
+      - pydantic>=2.9

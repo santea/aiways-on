@@ -1,0 +1,143 @@
+/**
+ * 레이아웃 — No-Line 규칙 (design §2.1).
+ * 구분선을 쓰지 않고 surface 계층의 명도 차이로만 영역을 나눈다.
+ */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100vh;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--sidebar-surface);
+  padding: var(--space-6) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  padding: 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar-brand b {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.45rem var(--space-4);
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  font-size: 13px;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+  background: var(--surface-container-2);
+  color: var(--on-surface);
+}
+
+/* design §2.4 — 4px cyan blade + active 배경 + glow */
+.sidebar-link.is-active {
+  background: var(--sidebar-active);
+  color: var(--on-surface);
+  border-left-color: var(--sidebar-blade);
+  box-shadow: var(--shadow-glow-active);
+}
+
+.app-canvas {
+  padding: var(--space-8) var(--space-8) 4rem;
+  max-width: 78rem;
+}
+
+/* 로그인 화면 — 사이드바 없이 단독 표시 */
+.login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.login-card {
+  padding: var(--space-8);
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.login-lede {
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.login-button {
+  margin-top: var(--space-2);
+  padding: 0.6rem var(--space-4);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent-strong);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    padding: var(--space-3) 0;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0 var(--space-3);
+    gap: var(--space-1);
+  }
+
+  .sidebar-link {
+    border-left: 0;
+    border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+  }
+
+  .sidebar-link.is-active {
+    box-shadow: inset 0 -2px 0 var(--sidebar-blade);
+  }
+
+  .app-canvas {
+    padding: var(--space-6) var(--space-4) 3rem;
+  }
+}

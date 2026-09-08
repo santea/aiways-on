@@ -1,0 +1,28 @@
+{
+  "name": "aiways-on",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --no-bail typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "next lint --dir apps/portal",
+    "build": "pnpm --filter @aiways/portal build",
+    "dev": "pnpm --filter @aiways/portal dev",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "verify:contracts-runtime-free": "node scripts/verify-contracts-runtime-free.mjs",
+    "verify:gateway-isolation": "node scripts/verify-gateway-isolation.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^3.2.7",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

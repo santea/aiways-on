@@ -1,0 +1,82 @@
+-- =============================================
+-- My Page 메인메뉴 추가 + FAQ 메인메뉴 비활성화
+-- 구조: My Page (1depth, PORTAL_MENU_MY_PAGE, seq=0) → 공지사항(seq=1) 앞
+-- =============================================
+
+DECLARE @SYS_ID NVARCHAR(50);
+DECLARE @WORKGROUP_ID NVARCHAR(50);
+DECLARE @MENU_TYPE_CODE_ID NVARCHAR(50);
+
+SELECT TOP 1 @SYS_ID = SYS_ID FROM TN_CF_SYS;
+SELECT @WORKGROUP_ID = WORKGROUP_ID FROM TN_CF_WORKGROUP WHERE WORKGROUP_NAME = 'USER_AUTH_MENU';
+SELECT TOP 1 @MENU_TYPE_CODE_ID = CODE_ID FROM TC_CF_COMM_CODE WHERE CODE_ID LIKE 'MENU_TYPE%' AND DELETE_YN = '0';
+
+-- =============================================
+-- 1. FAQ 메인메뉴 비활성화
+-- =============================================
+UPDATE TN_CF_MENU SET USE_YN = '0' WHERE MENU_ID = 'PORTAL_MENU_FAQ';
+PRINT 'PORTAL_MENU_FAQ 비활성화: ' + CAST(@@ROWCOUNT AS VARCHAR) + '건';
+
+-- =============================================
+-- 2. My Page SYS_RESOURCE 등록
+-- =============================================
+IF NOT EXISTS (SELECT 1 FROM TN_CF_SYS_RESOURCE WHERE SYS_RESOURCE_ID = 'PORTAL_MENU_MY_PAGE')
+BEGIN
+    INSERT INTO TN_CF_SYS_RESOURCE
+    (SYS_RESOURCE_ID, UPPER_SYS_RESOURCE_ID, SYS_ID, SYS_RESOURCE_NAME, SYS_RESOURCE_TYPE_CODE_ID,
+     DELETE_YN, FIRST_REG_DATETIME, FIRST_REGR_ID, LAST_MOD_DATETIME, LAST_MODR_ID)
+    VALUES
+    ('PORTAL_MENU_MY_PAGE', 'PORTAL_MENU_ROOT', @SYS_ID, 'My Page', 'MENU',
+     '0', GETDATE(), 'admin', GETDATE(), 'admin')
+    PRINT 'PORTAL_MENU_MY_PAGE SYS_RESOURCE 등록'
+END
+ELSE PRINT 'PORTAL_MENU_MY_PAGE SYS_RESOURCE 이미 존재'
+
+-- =============================================
+-- 3. My Page MENU 등록 (seq=0, 공지사항 seq=1 앞)
+-- =============================================
+IF NOT EXISTS (SELECT 1 FROM TN_CF_MENU WHERE MENU_ID = 'PORTAL_MENU_MY_PAGE')
+BEGIN
+    INSERT INTO TN_CF_MENU
+    (MENU_ID, LABEL, LABEL_JSON, MENU_SEQUENCE, MENU_LEVEL,
+     USE_YN, DELETE_YN, MENU_TYPE_CODE_ID, EXTERNAL_URL_USE_YN, EXTERNAL_URL)
+    VALUES
+    ('PORTAL_MENU_MY_PAGE', 'My Page', '{"ko":"My Page","en":"My Page"}', 0, 1,
+     '1', '0', @MENU_TYPE_CODE_ID, '0', NULL)
+    PRINT 'PORTAL_MENU_MY_PAGE MENU 등록'
+END
+ELSE
+BEGIN
+    UPDATE TN_CF_MENU
+    SET LABEL = 'My Page', USE_YN = '1', DELETE_YN = '0', MENU_SEQUENCE = 0
+    WHERE MENU_ID = 'PORTAL_MENU_MY_PAGE'
+    PRINT 'PORTAL_MENU_MY_PAGE MENU 업데이트'
+END
+
+-- =============================================
+-- 4. testuser 권한 부여
+-- =============================================
+IF NOT EXISTS (SELECT 1 FROM TN_CF_USER_AUTHORIZATION
+               WHERE USER_ID = 'testuser' AND SYS_RESOURCE_ID = 'PORTAL_MENU_MY_PAGE')
+BEGIN
+    INSERT INTO TN_CF_USER_AUTHORIZATION
+    (WORKGROUP_ID, SYS_RESOURCE_ID, AUTHORIZATION_ID, USER_ID, FROM_DATE, THRU_DATE,
+     FIRST_REG_DATETIME, FIRST_REGR_ID, LAST_MOD_DATETIME, LAST_MODR_ID)
+    VALUES
+    (@WORKGROUP_ID, 'PORTAL_MENU_MY_PAGE', 'READ', 'testuser',
+     CONVERT(VARCHAR(8), GETDATE(), 112), '99991231', GETDATE(), 'admin', GETDATE(), 'admin')
+    PRINT 'PORTAL_MENU_MY_PAGE 권한 등록'
+END
+ELSE PRINT 'PORTAL_MENU_MY_PAGE 권한 이미 존재'
+
+-- =============================================
+-- 5. 확인
+-- =============================================
+SELECT M.MENU_ID, SR.UPPER_SYS_RESOURCE_ID, M.LABEL, M.MENU_LEVEL, M.MENU_SEQUENCE, M.USE_YN
+FROM   TN_CF_MENU M
+       JOIN TN_CF_SYS_RESOURCE SR ON M.MENU_ID = SR.SYS_RESOURCE_ID
+WHERE  M.MENU_ID IN (
+    'PORTAL_MENU_MY_PAGE', 'PORTAL_MENU_NOTICE', 'PORTAL_MENU_FAQ',
+    'PORTAL_MENU_APP', 'PORTAL_MENU_USER_MGMT', 'PORTAL_MENU_ADMIN'
+)
+ORDER BY M.MENU_LEVEL, M.MENU_SEQUENCE;

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-n8n
+  labels:
+    app: ddt-n8n
+    {{- include "ddt.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ddt-n8n
+  template:
+    metadata:
+      labels:
+        app: ddt-n8n
+    spec:
+      containers:
+        - name: n8n
+          image: "{{ .Values.n8n.image.repository }}:{{ .Values.n8n.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.n8n.port }}
+          env:
+            {{- range $key, $val := .Values.n8n.env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
