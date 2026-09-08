@@ -5,8 +5,8 @@
 - **Project Type**: **Greenfield target application** (사용자 확인: 2026-09-08. AIways-On 타깃은 신규 구축하며, 기존 폴더는 입력 참고자료일 뿐 수정·확장 대상인 기존 제품이 아님)
 - **Start Date**: 2026-09-08T14:01:00+09:00 (KST)
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: CONSTRUCTION / Code Generation — U1 ✅ 완료 · **U2 착수 대기 (사용자 지시 대기)**
-- **Next Stage**: Code Generation ×6 → Build and Test
+- **Current Stage**: CONSTRUCTION / Code Generation — U1 ✅ · U2 ✅ (재작업 5건 이월) · **다음: U3 코어SDLC(진행)**
+- **Next Stage**: Code Generation U3 → U4 → U5 → U6 → Build and Test
 
 ## Workspace State
 - **Target Application Code at Workflow Entry**: **No** — AIways-On 구현은 존재하지 않았음
@@ -81,7 +81,7 @@ Workspace Detection 당시 `requirements/00-overview.md` §5가 지정한 다음
       - [x] Step 5.1 Extension 규칙 로드 (security 15 / resiliency 15 / PBT 10)
       - [x] Resiliency 필수 질문 8건 생성 — resiliency-questions.md
       - [x] Resiliency 답변 수신 (8/8)
-      - [x] **Step 7 requirements.md 생성 완료** (391줄, D-01~D-29 / 45 FR / 27 NFR)
+      - [x] **Step 7 requirements.md 생성 완료** (391줄, D-01~D-29 / 45 FR / 27 NFR) → **D-30 추가로 47 FR (2026-09-08)**
       - [x] ✅ **사용자 승인 완료 (2026-09-08)**
 
 #### Resiliency 확정 (R1~R8)
@@ -134,6 +134,45 @@ Workspace Detection 당시 `requirements/00-overview.md` §5가 지정한 다음
       - [x] 실행 체크리스트 23/23 완료
       - [x] 품질 검증 — INVEST 6기준 통과, FR 45/45 커버
       - [x] ✅ **사용자 승인 완료 (2026-09-08)**
+      - [x] **v2 보강 — 비즈니스 내러티브 정렬 (2026-09-08, CONSTRUCTION 중 revisit)** ✅ 승인 완료
+            - [x] 내러티브 액터 A·B ↔ 페르소나 P1/P2/P3 매핑 및 OWNER 책임 분해 (personas.md)
+            - [x] 비즈니스 기준선 정량화 (20건/월 · 인터뷰 1일 · 개발 2~3일 · 리드타임 1주)
+            - [x] 스토리 17건 추가 — U2 +2 · U3 +7 · U4 +3 · U5 +2 · U6 +3 → **누계 73건**
+            - [x] 내러티브 문단 ↔ 스토리 추적성 매트릭스 (17문단)
+            - [x] 내러티브 ↔ 명세 GAP 7건 식별 (GAP-01~07) — 스토리로 지어내지 않고 미결로 표기
+            - [x] HTML 병합본 발행 — `aidlc-docs/inception/user-stories.html` (73 스토리, 버전 필터 v1/v2)
+            - [x] ✅ **사용자 승인 완료 (2026-09-08)** — "user story 승인"
+            - [x] ✅ **GAP-04/05 → Requirements Analysis 재방문 완료 — D-30 확정** (2026-09-08)
+                  - [x] 영향 분석 — 기존 목업 확정 루프·feedback poll·독촉 메일 재사용 가능 확인
+                  - [x] 신규 Stage 불필요 확인 (Stage enum 7개 유지, D-05·R-04 무영향)
+                  - [x] 질문 파일 생성 — `requirements/approval-gate-questions.md` (5문항)
+                  - [x] 답변 수신 (5/5) — Q1=X · Q2=B · Q3=A · Q4=X · Q5=A
+                  - [x] Step 9 답변 분석 — **모순 1건 · 미결 1건 발견**
+                        - 모순: `Q1/Q4=X`의 "OWNER B"가 현행 권한 모델(`user`/`admin` 2종)에 존재하지 않음.
+                          `design/` §8상 `user`는 타인 SR 상세 접근 시 403 → OWNER가 A의 SR을 열 수 없음
+                        - 미결: `Q3=A`(무기한 대기) 중 Pod·PVC 자원 점유 정책
+                  - [x] 후속 질문 파일 생성 — `requirements/approval-gate-followup-questions.md` (2문항)
+                  - [x] 후속 답변 수신 — 후속 Q1=**A**(admin이 승인), 보완 2(self-approval 금지)는 **불채택**
+                  - [x] 후속 Q2(Pod 자원) — **질문 불필요로 종결**: 기존 `SDLC_POD_DEADLINE_SECONDS`(4h)가
+                        이미 하이브리드로 동작. 워크스페이스는 `SDLC_PVC_RETENTION_DAYS`(7일) 보존, 승인 후 기존 resume 경로 재사용
+                  - [x] **D-30 확정** — `requirements.md`에 결정 + `FR-U2-08`·`FR-U3-14` 추가 (45 → **47 FR**)
+                  - [x] `stories.md` 반영 — `US-U2-11` 신설 · `US-U3-21` 인수 조건 4건 추가 (73 → **74 스토리**)
+                  - [x] GAP-04 **해소** · GAP-05 **종결(신설 안 함)** → 미결 GAP 7 → **5건**
+                  - [x] HTML 아티팩트 재발행 (74 스토리)
+                  - [x] ✅ **결정 완료 (2026-09-08)**
+
+#### v2 보강 GAP 요약 — **GAP-04·05 종결(2026-09-08) · 나머지 5건 미결**
+> 스토리 승인(2026-09-08)은 **작성된 73건의 스토리를 승인**한 것이며, 아래 GAP 7건의 처리 방향을 승인한 것이 아니다.
+> GAP-04/05는 요구사항 변경을 수반하므로 결정 시 Requirements Analysis 재방문이 필요하다.
+| GAP | 내용 | 권고 |
+|-----|------|------|
+| GAP-01 | 코드베이스 구조 분석 산출물 | `system_profile` 규정으로 대체 가능한지 검토 |
+| GAP-02 | 메신저 내 PR 승인·머지 | v1 범위 유지 권고 |
+| GAP-03 | 사내 메신저 어댑터 구현체 | v2 과제 (NFR-25가 경로 보장) |
+| ~~GAP-04~~ | 요구사항 정의서 승인 게이트 | ✅ **해소 — D-30.** admin 승인 fail-closed 게이트 신설 (FR-U2-08·FR-U3-14·US-U2-11) |
+| ~~GAP-05~~ | 상세 설계서 승인 게이트 | ✅ **종결 — 신설하지 않음(D-30).** 입구 게이트 + `design` 채널 상시 개입으로 갈음 |
+| GAP-06 | 장애 분석 → 수정 개발 자동 연결 | 내러티브도 "향후" — v1 범위 밖 확정 권고 |
+| GAP-07 | 리드타임 성과 지표 계측 | FR 없음. `audit_events` 기반 산출 가능성 검토 |
 
 #### 스토리 방법론 확정 (Q1~Q7)
 | Q | 답 | 결정 |
@@ -250,14 +289,14 @@ Workspace Detection 당시 `requirements/00-overview.md` §5가 지정한 다음
 - [x] **NFR Requirements** — ✅ SATISFIED (기존 명세)
 - [x] **NFR Design** — ✅ SATISFIED (기존 명세)
 - [x] **Infrastructure Design** — ✅ SATISFIED (기존 명세)
-- [~] **Code Generation** — 유닛별 6회 · U1 진행 중
+- [~] **Code Generation** — 유닛별 6회 · **U1 ✅ · U2 ✅ · U3~U6 미착수**
       - [x] **U1 공용 기반** — ✅ COMPLETE (승인 2026-09-08). **PR #1 머지 시 5유닛 착수 가능**
             - [x] Step 1 유닛 컨텍스트 분석
             - [x] **SATISFIED 참조 문서 충분성 검증** — DB·디자인·인프라·구조 충분 / **인증 부분 부족(F-1)**
             - [x] Step 2~4 계획 생성 — `construction/plans/u1-shared-foundation-code-generation-plan.md` (17단계)
             - [x] 계획 HTML 요약 발행 — `construction/u1-shared-foundation/code/u1-plan.html` → Artifact `d789420b`
-            - [ ] ⛔ **GATE: 계획 승인 대기 중**
-            - [~] Part 2 — 코드 생성 진행 중
+            - [x] ✅ 계획 승인 완료
+            - [x] Part 2 — 코드 생성 완료
                   - [x] **Phase A (Step 1~6) = PR #1 완료** — 5유닛 착수 차단 해제 지점
                         - [x] typecheck 3/3 통과 (실제 실행)
                         - [x] contracts 런타임 코드 0 검증 + **반증 테스트로 검증기 동작 확인**
@@ -281,7 +320,43 @@ AD-2는 AuthGuard를 모든 인증의 단일 검증 지점으로 정했고 C-1.2
 방치 시 각 스킴이 필요한 유닛(U3·U3·U6)에서 개별 구현되어 **AD-2가 막으려던 분산이 그대로 발생**하고
 SECURITY-11에 위배된다. → Step 4에서 **7함수 → 10함수 확장** 완료 + `components.md` C-1.2 갱신 완료 (2026-09-08).
 `SLACK_SIGNING_SECRET`은 gateway 모드 미사용이므로 함수를 만들지 않는다(주석만).
-      - [ ] **U2 코어SDLC(관리)** — 다음 차례. 사용자가 "승인까지만"으로 범위를 끊어 착수하지 않음
+      - [x] **U2 코어SDLC(관리)** — ✅ **코드 승인 완료 (2026-09-08)** · 재작업 5건 백로그로 이월
+            - [x] Step 1 유닛 컨텍스트 분석 (컴포넌트 5 · 스토리 8 · 경계 B-1~B-4)
+            - [x] **SATISFIED 참조 문서 충분성 검증** — API·DB·UI·상태머신 충분 / **design/ Stage 체계·기술스택·암호화 3건 부족**
+            - [x] Step 2~4 계획 생성 — `construction/plans/u2-core-mgmt-code-generation-plan.md` (18단계)
+            - [x] 계획 HTML 요약 발행 — `construction/u2-core-mgmt/code/u2-plan.html` → Artifact `fce5fe3d`
+            - [x] ✅ **계획 승인 (2026-09-08)** — F-1 A안(Tailwind v4 + shadcn/ui) + U1 공유 영역 4건 포함
+            - [x] **Part 2 완료** — 실행 체크리스트 18/18 · 스토리 8/8
+                  - [x] 검증 실행: typecheck 3/3 · 테스트 **247건** · 커버리지 **85.59%** · next build(라우트 23) · helm lint/template · 검증기 2종
+                  - [x] 경계 준수 코드 검색: SR 직접 INSERT 0 · 전이 호출 0 · 자체 Bearer 0 · Stage 5~8 0 · 라우트 13/13 AuthGuard
+                  - [x] PBT 가 실제 결함 발견·수정 (암호화 왕복이 빈 문자열에서 깨짐 — 태그 길이 off-by-one)
+                  - [x] 커버리지 게이트가 실제로 실패(60.01%) → **임계값을 낮추지 않고 테스트를 써서** 85.59% 달성
+            - [x] ✅ **코드 승인 완료 (2026-09-08)** — "승인하고 재작업 할수 있게 남겨줘"
+            - [x] 재작업 백로그 생성 — `construction/u2-core-mgmt/code/rework-backlog.md` (RW-1~RW-5)
+                  - [ ] **RW-1** 요구사항 승인 게이트 `FR-U2-08` — **U3 T1 이후** (강제 지점이 U3의 `advance`)
+                  - [ ] **RW-2** `CompensationPort` → contracts 승격 (F-7) — U3 T1 · U1 승인 필요
+                  - [ ] **RW-3** 이미지 토큰 401/403 정합 (F-8) — 문서 정정
+                  - [ ] **RW-4** 암호화 키 환경변수 이름 확정
+                  - [ ] **RW-5** 웹 터미널·재개발/테스트 버튼 (F-6) — 보류(요구사항 재검토 선행)
+
+#### U2 Part 1에서 발견된 사항 (F-1~F-6)
+| ID | 내용 | 상태 |
+|----|------|------|
+| F-1 ✅ | **Tailwind v4 + shadcn/ui 미도입** — `00-overview.md` §6이 지정하나 U1은 순수 CSS로 구현. U2가 첫 UI 유닛이라 지금 결정되며 U4·U5·U6이 같은 컴포넌트 어휘를 씀 | ✅ **해소** — A안 채택, `@theme inline`으로 U1 토큰에 연결 |
+| F-2 | **`secret_refs` 암호화 · 오류 응답 매퍼에 소유자 없음** — U2·U6가 각자 구현하면 U1의 F-1(AuthGuard 분산)과 같은 문제 재발 | 제안: `packages/lib/`에 배치 (U1 승인) |
+| F-3 | **`design/` §5.1·§6.2가 구 Stage 체계**(5·7·8·0_QUEUED) — D-05·R-04와 충돌 | 해소: Q5=A에 따라 `08-sr-registration-ui.md` 우선. 배지 매핑 확정. **design/ 문서는 미수정** |
+| F-4 | **커버리지 게이트가 `apps/`를 재지 않음** — `coverage.include`가 `packages/lib/src/**`뿐이라 U2~U6 다섯 유닛에 D-20 게이트가 무효 | 제안: include 확장 (U1 승인) |
+| F-5 | **chart에 `S3_*` 환경변수 없음** — US-U2-07(배치2) 전제 | Step 17에서 처리 (U1 승인) |
+| F-6 | **웹 터미널·재개발/테스트 버튼이 FR·스토리에 없음** — 명세에는 있으나 Requirements Analysis에서 빠짐 | 범위 밖으로 기록. U2는 "중지" 버튼만 구현 |
+| **F-7** | **`contracts` 에 보상 트랜잭션 진입점이 없다** (Part 2 신규) — `03-state-machine.md` §6 의 `compensateFailedSdlc` 가 PR #1 동결 목록에 없다. U2 가 `/intake` 실패 시 호출해야 하므로 `CompensationPort` 를 U2 안에 **임시 선언**했고 stub 을 주입했다 | ⚠️ **미해소 → RW-2로 이월** — U3 T1 때 `packages/contracts/ports.ts` 로 승격 (U1 승인). contracts 는 직접 수정하지 않음(AD-4) |
+| **F-8** | **이미지 토큰 실패 상태 코드 모순** (Part 2 신규) — US-U2-07 은 403, `05-portal-api.md` §2.11·§7 관례·U1 `verifyImageToken` 은 401 | ⚠️ **기록만 → RW-3으로 이월** — Q5=A 에 따라 401 구현. 스토리·명세 **양쪽 다 미수정** |
+
+#### U2 구현 결과
+- **스키마 변경 0건 · 마이그레이션 0건** (U1 이 필요한 테이블을 전부 선언해 둠)
+- 라우트 13개 · 화면 6개 · 컴포넌트 5/5 · 스토리 8/8 (배치1 6 + 배치2 2)
+- **B-1·B-3 교체 지점은 `features/u2-core-mgmt/deps.ts` 세 줄** — U3 T1·T2 완료 시 그것만 바꾸면 된다
+- 산출물: `construction/u2-core-mgmt/code/summary.md` · `boundary-notes.md`
+
       - [ ] U3 코어SDLC(진행) · [ ] U4 장애대응 · [ ] U5 자체개선 · [ ] U6 개발규정
 
 > **U1 완료로 열린 것**: `interfaces.md` 가 U2~U6 담당자의 진입점이다.

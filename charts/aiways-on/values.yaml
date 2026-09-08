@@ -19,6 +19,12 @@ portal:
     requests: { cpu: "250m", memory: "512Mi" }
     limits: { cpu: "1000m", memory: "1Gi" }
 
+  # U2 F-5 — 목업 이미지 저장소. 키는 Secret, 접속 정보는 여기.
+  s3:
+    endpoint: "http://minio.bia-systems.svc.cluster.local:9000"
+    bucket: "aiways-on-sdlc"
+    region: "ap-northeast-2"
+    prefix: ""
 slackGateway:
   name: portal-sdlc-slack-gateway
   # ⚠️ 1 고정. Socket Mode 는 replica 수만큼 중복 수신하므로 늘리면 같은 피드백이 여러 번 처리된다.

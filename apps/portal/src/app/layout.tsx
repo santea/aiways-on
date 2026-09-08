@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { UserRole } from '@aiways/contracts';
-import '@aiways/lib/ui/tokens.css';
-import './layout.css';
+// globals.css 가 tokens.css · layout.css · Tailwind v4 를 함께 들여온다 (F-1 A안).
+import './globals.css';
 import { Sidebar } from '@/components/Sidebar';
 import { auth } from '@/auth';
 

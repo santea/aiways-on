@@ -18,6 +18,11 @@
 /apps/portal/src/app/layout.tsx         @u1-owner
 /apps/portal/src/app/(auth)/            @u1-owner
 /apps/portal/src/middleware.ts          @u1-owner
+# 공유 UI 프리미티브·유틸 — 네 UI 유닛(U2·U4·U5·U6)이 함께 쓴다 (U2 F-1)
+/apps/portal/src/components/            @u1-owner
+/apps/portal/src/lib/                   @u1-owner
+/apps/portal/src/app/globals.css        @u1-owner
+/apps/portal/postcss.config.mjs         @u1-owner
 
 # ── U2 코어SDLC (관리) ──
 /apps/portal/src/features/u2-core-mgmt/ @u2-owner

@@ -1,0 +1,670 @@
+<title>U2 Core Management Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap">
+<style>
+:root{
+  --ground:#0b0f17; --s1:#111827; --s2:#131e2e; --s3:#1f2937; --s4:#2d3748;
+  --ink:#dfe2ee; --ink-dim:#bcc9cd; --ink-faint:#869397;
+  --blade:#4cd7f6; --blade-deep:#06b6d4; --blade-wash:rgba(6,182,212,.13);
+  --ok:#4edea3; --ok-wash:rgba(78,222,163,.13);
+  --warn:#f5b74b; --warn-wash:rgba(245,183,75,.13);
+  --bad:#ff8a80; --bad-wash:rgba(255,138,128,.13);
+  --font-d:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --font-b:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-m:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}}
+:root[data-theme="light"]{
+  --ground:#eef2f5; --s1:#ffffff; --s2:#f6f9fb; --s3:#e6edf1; --s4:#d8e2e8;
+  --ink:#111c26; --ink-dim:#43555f; --ink-faint:#6d7f88;
+  --blade:#0e7c94; --blade-deep:#0891b2; --blade-wash:rgba(8,145,178,.11);
+  --ok:#0b7a56; --ok-wash:rgba(11,122,86,.11);
+  --warn:#8a5a06; --warn-wash:rgba(138,90,6,.12);
+  --bad:#b3261e; --bad-wash:rgba(179,38,30,.10);
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-d);text-wrap:balance;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--font-m)}
+code{font-size:11.5px;color:var(--ink-faint)}
+.shell{display:grid;grid-template-columns:13.5rem minmax(0,1fr);min-height:100vh;align-items:start}
+.rail{position:sticky;top:0;height:100vh;background:var(--s1);padding:1.5rem 0;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+.brand{padding:0 1.25rem;display:flex;flex-direction:column;gap:.3rem}
+.brand b{font-family:var(--font-d);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+.brand span{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade)}
+.nav{display:flex;flex-direction:column}
+.nav a{display:flex;align-items:center;gap:.55rem;padding:.45rem 1.25rem;color:var(--ink-dim);text-decoration:none;font-size:13px;border-left:3px solid transparent}
+.nav a .n{font-family:var(--font-m);font-size:10px;font-weight:700;color:var(--ink-faint);width:1rem;font-style:normal}
+.nav a:hover{background:var(--s2);color:var(--ink)}
+.nav a.on{background:var(--s3);color:var(--ink);border-left-color:var(--blade-deep);box-shadow:inset 3px 0 12px -4px var(--blade-deep)}
+.nav a.on .n{color:var(--blade)}
+.nav a:focus-visible{outline:2px solid var(--blade);outline-offset:-2px}
+.railfoot{margin-top:auto;padding:0 1.25rem;color:var(--ink-faint);font-size:11px;line-height:1.55}
+.canvas{padding:2.25rem 2rem 4rem;max-width:78rem}
+section.top{margin-bottom:2.5rem}
+.sec{margin-bottom:3rem;scroll-margin-top:1rem}
+.eyebrow{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blade);margin-bottom:.45rem}
+.eyebrow.bad{color:var(--bad)}
+.eyebrow.warn{color:var(--warn)}
+h1{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;line-height:1.18}
+h2{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.35rem}
+h3{font-size:.95rem;font-weight:700;letter-spacing:-.01em}
+.lede{color:var(--ink-dim);max-width:64ch;margin-top:.6rem}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:1px;background:var(--ground);margin-top:1.5rem;border-radius:8px;overflow:hidden}
+.strip div{background:var(--s2);padding:.8rem 1rem;display:flex;flex-direction:column;gap:.2rem}
+.strip dt{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.strip dd{margin:0;font-family:var(--font-d);font-weight:700;font-size:1.05rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.b{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .38rem;border-radius:4px;white-space:nowrap}
+.b::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.b.ok{background:var(--ok-wash);color:var(--ok)}
+.b.go{background:var(--blade-wash);color:var(--blade)}
+.b.wa{background:var(--warn-wash);color:var(--warn)}
+.b.no{background:var(--bad-wash);color:var(--bad)}
+figure{margin:1.25rem 0 0;background:var(--s2);border-radius:8px;padding:1.25rem 1.25rem 1rem;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;color:var(--ink-dim);margin:0 auto}
+figcaption{margin-top:.85rem;color:var(--ink-faint);font-size:12px;line-height:1.6;max-width:72ch}
+figcaption b{color:var(--ink-dim);font-weight:600}
+.svg-label{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;fill:currentColor}
+.svg-sub{font-family:"Inter",sans-serif;font-size:10.5px;fill:currentColor;opacity:.72}
+.svg-title{font-family:"Manrope",sans-serif;font-size:12px;font-weight:700;fill:currentColor}
+.steps{display:flex;flex-direction:column;gap:1px;background:var(--ground);border-radius:8px;overflow:hidden;margin-top:1rem}
+.step{display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;gap:.9rem;background:var(--s2);padding:.75rem 1rem;align-items:baseline}
+.step.key{background:var(--s3);box-shadow:inset 3px 0 0 var(--blade-deep)}
+.stepn{font-family:var(--font-m);font-size:10.5px;font-weight:700;color:var(--blade);font-variant-numeric:tabular-nums}
+.stepb h4{font-size:.88rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.18rem}
+.stepb p{color:var(--ink-dim);font-size:12px;line-height:1.5}
+.stepb code{font-size:11px}
+.sbadges{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.phase{background:var(--s3);padding:.55rem 1rem;font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;gap:1rem}
+.phase b{color:var(--blade);font-weight:700}
+.gate{background:var(--s3);padding:.7rem 1rem;display:flex;align-items:center;gap:.6rem;font-family:var(--font-m);font-size:11px;font-weight:700;color:var(--blade);letter-spacing:.03em;box-shadow:inset 0 0 0 1px var(--blade-wash)}
+.tw{overflow-x:auto;border-radius:8px;background:var(--s2);margin-top:1rem}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:34rem}
+th{font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:.6rem .85rem;background:var(--s3);white-space:nowrap}
+td{padding:.55rem .85rem;vertical-align:top;color:var(--ink-dim)}
+tbody tr:nth-child(even){background:var(--s1)}
+td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-weight:700;white-space:nowrap}
+td strong{color:var(--ink);font-weight:600}
+.note{background:var(--s2);border-radius:8px;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.45rem;margin-top:1rem}
+.note.calm{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.note.warn{box-shadow:inset 3px 0 0 var(--warn)}
+.note.bad{box-shadow:inset 3px 0 0 var(--bad)}
+.note.ok{box-shadow:inset 3px 0 0 var(--ok)}
+.note h3{font-size:.92rem}
+.note p{color:var(--ink-dim);font-size:12.5px;max-width:72ch}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1px;background:var(--ground);border-radius:8px;overflow:hidden;margin-top:1rem}
+.opt{background:var(--s2);padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.5rem}
+.opt.pick{background:var(--s3);box-shadow:inset 3px 0 0 var(--blade-deep)}
+.opt h4{font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:.45rem}
+.opt p{color:var(--ink-dim);font-size:12px;line-height:1.55}
+.opt .cost{color:var(--ink-faint);font-size:11.5px;line-height:1.55}
+.tree{margin-top:1rem;background:var(--s2);border-radius:8px;padding:1.1rem 1.25rem;overflow-x:auto;font-family:var(--font-m);font-size:11.5px;line-height:1.85;color:var(--ink-dim);white-space:pre}
+.tree b{color:var(--ink);font-weight:700}
+.tree i{color:var(--blade);font-style:normal}
+.tree u{color:var(--warn);text-decoration:none}
+.checks{list-style:none;margin:1rem 0 0;padding:0;display:flex;flex-direction:column;gap:1px;background:var(--ground);border-radius:8px;overflow:hidden}
+.checks li{background:var(--s2);padding:.6rem 1rem;color:var(--ink-dim);font-size:12.5px;display:flex;gap:.6rem;align-items:baseline}
+.checks li::before{content:"—";color:var(--blade);font-family:var(--font-m);font-size:11px;font-weight:700}
+.checks li strong{color:var(--ink);font-weight:600}
+.foot{color:var(--ink-faint);font-size:11.5px;line-height:1.7;padding-top:1.5rem}
+@media (max-width:900px){
+ .shell{grid-template-columns:1fr}
+ .rail{position:static;height:auto;padding:1.15rem 0}
+ .nav{flex-direction:row;flex-wrap:wrap;padding:0 .9rem;gap:.25rem}
+ .nav a{border-left:0;border-radius:4px;padding:.3rem .55rem}
+ .nav a.on{box-shadow:inset 0 -2px 0 var(--blade-deep)}
+ .railfoot{display:none}
+ .canvas{padding:1.6rem 1.1rem 3rem}
+ h1{font-size:1.5rem}
+ .step{grid-template-columns:2.6rem minmax(0,1fr);gap:.6rem}
+ .sbadges{grid-column:1 / -1;justify-content:flex-start;margin-top:.3rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <div class="brand"><b>AIways-On</b><span>U2 · Code Gen</span></div>
+  <div class="nav">
+    <a href="#top" class="on"><em class="n mono">01</em>계획 개요</a>
+    <a href="#f1"><em class="n mono">02</em>F-1 · 승인이 결정</a>
+    <a href="#f4"><em class="n mono">03</em>F-4 · 게이트 구멍</a>
+    <a href="#rest"><em class="n mono">04</em>나머지 발견 4건</a>
+    <a href="#steps"><em class="n mono">05</em>18단계</a>
+    <a href="#bound"><em class="n mono">06</em>경계와 stub</a>
+    <a href="#story"><em class="n mono">07</em>스토리 추적</a>
+    <a href="#dod"><em class="n mono">08</em>코드 위치·DoD</a>
+  </div>
+  <div class="railfoot">
+    Construction<br>Code Generation · 2/6<br>2026-09-08
+  </div>
+</nav>
+
+<main class="canvas">
+
+<section class="top" id="top">
+  <p class="eyebrow">Construction / Code Generation — 유닛 2 / 6</p>
+  <h1>사람이 보는 첫 화면을 만드는 유닛</h1>
+  <p class="lede">
+    U2는 SR을 접수하고 조회하고 GitHub에 연결한다. 새 테이블은 하나도 만들지 않는다 —
+    U1이 이미 다 선언해 뒀다. 대신 <strong>여섯 유닛 중 처음으로 실제 화면을 만드는 유닛</strong>이라,
+    지금까지 미뤄져 있던 UI 결정들이 이 승인에서 한꺼번에 확정된다.
+  </p>
+  <dl class="strip">
+    <div><dt>생성 단계</dt><dd>18</dd></div>
+    <div><dt>스토리</dt><dd>8</dd></div>
+    <div><dt>컴포넌트</dt><dd>5</dd></div>
+    <div><dt>발견 사항</dt><dd>6</dd></div>
+    <div><dt>스키마 변경</dt><dd>0</dd></div>
+    <div><dt>U1 승인 필요</dt><dd>5</dd></div>
+  </dl>
+  <div class="note calm">
+    <h3>SATISFIED 참조 문서를 실제로 열어 확인했다</h3>
+    <p>
+      Workflow Planning이 Functional·NFR·Infrastructure Design을 “기존 명세로 충족”으로 처리했으므로,
+      그 명세가 <em>U2 범위에</em> 충분한지 가정하지 않고 직접 대조했다.
+      <code>05-portal-api.md</code>(엔드포인트 13종·인증 매트릭스·오류 포맷),
+      <code>04-db-schema.md</code>(U1의 <code>schema/sdlc.ts</code>와 교차 확인 — 필요한 테이블이 <b>전부 이미 있다</b>),
+      <code>08-sr-registration-ui.md</code>, <code>03-state-machine.md</code> §1.2 는 충분했다.
+      나머지 세 문서에서 아래 발견 사항이 나왔다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="f1">
+  <p class="eyebrow warn">F-1 · 이 승인이 결정하는 항목</p>
+  <h2>Tailwind v4 + shadcn/ui가 도입되지 않았다</h2>
+  <p class="lede">
+    <code>00-overview.md</code> §6은 스타일링을 <strong>Tailwind CSS v4</strong>, 컴포넌트를
+    <strong>shadcn/ui</strong>로 못 박고 <code>08-sr-registration-ui.md</code> §9는 16종을 이름으로
+    지정한다. 그런데 U1이 만든 것은 순수 CSS이고 <code>apps/portal/package.json</code>에
+    Tailwind·Radix 의존이 없다. <strong>U2가 첫 UI 유닛이라 결정이 지금 내려진다.</strong>
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 240" role="img" aria-label="왼쪽은 U2 U4 U5 U6 네 유닛이 각자 Dialog Select Table 같은 프리미티브를 따로 만드는 상태로 접근성과 토큰 적용이 네 곳에서 갈린다. 오른쪽은 같은 네 유닛이 공유 프리미티브 한 벌을 함께 쓰는 상태다">
+      <defs>
+        <marker id="u2ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <polygon points="0,1 9,5 0,9" fill="var(--blade)"/>
+        </marker>
+      </defs>
+
+      <text class="svg-title" x="16" y="24" fill="var(--bad)">U2가 손으로 만들면 — 같은 프리미티브가 네 벌</text>
+
+      <rect x="16" y="44" width="196" height="54" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.3" opacity=".7"/>
+      <text class="svg-label" x="32" y="66">U2 · /register</text>
+      <text class="svg-sub" x="32" y="84">Dialog · Select · Table</text>
+
+      <rect x="224" y="44" width="196" height="54" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.3" opacity=".7"/>
+      <text class="svg-label" x="240" y="66">U4 · /incidents</text>
+      <text class="svg-sub" x="240" y="84">Dialog · Progress · Table</text>
+
+      <rect x="16" y="108" width="196" height="54" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.3" opacity=".7"/>
+      <text class="svg-label" x="32" y="130">U5 · /improvements</text>
+      <text class="svg-sub" x="32" y="148">Dialog · Badge · Table</text>
+
+      <rect x="224" y="108" width="196" height="54" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.3" opacity=".7"/>
+      <text class="svg-label" x="240" y="130">U6 · /memory</text>
+      <text class="svg-sub" x="240" y="148">Tabs · Accordion · Dialog</text>
+
+      <text class="svg-sub" x="16" y="192">접근성·토큰 적용·다크모드가 네 곳에서 따로 결정된다</text>
+      <text class="svg-sub" x="16" y="212">U1의 F-1(AuthGuard 분산)과 같은 구조의 문제</text>
+
+      <text class="svg-title" x="470" y="24" fill="var(--blade)">공유 프리미티브 한 벌 — 권장안 A</text>
+
+      <rect x="470" y="44" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+      <text class="svg-label" x="518" y="69" text-anchor="middle">U2</text>
+      <rect x="574" y="44" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+      <text class="svg-label" x="622" y="69" text-anchor="middle">U4</text>
+      <rect x="678" y="44" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+      <text class="svg-label" x="726" y="69" text-anchor="middle">U5</text>
+      <rect x="782" y="44" width="96" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+      <text class="svg-label" x="830" y="69" text-anchor="middle">U6</text>
+
+      <line x1="518" y1="88" x2="518" y2="128" stroke="var(--blade)" stroke-width="1.4" marker-end="url(#u2ah)"/>
+      <line x1="622" y1="88" x2="622" y2="128" stroke="var(--blade)" stroke-width="1.4" marker-end="url(#u2ah)"/>
+      <line x1="726" y1="88" x2="726" y2="128" stroke="var(--blade)" stroke-width="1.4" marker-end="url(#u2ah)"/>
+      <line x1="830" y1="88" x2="830" y2="128" stroke="var(--blade)" stroke-width="1.4" marker-end="url(#u2ah)"/>
+
+      <rect x="470" y="132" width="408" height="54" rx="5" fill="var(--blade-wash)" stroke="var(--blade)" stroke-width="1.5"/>
+      <text class="svg-label" x="488" y="154" fill="var(--blade)">components/ui · shadcn/ui + Radix</text>
+      <text class="svg-sub" x="488" y="172">@theme 을 기존 tokens.css 변수에 연결</text>
+
+      <text class="svg-sub" x="470" y="212">design §2.1 “raw hex 금지”와 U1의 layout.css 가 그대로 살아남는다</text>
+    </svg>
+    <figcaption>
+      <b>U2만의 문제가 아니다.</b> <code>/incidents</code>(U4) · <code>/improvements</code>(U5) ·
+      <code>/memory</code>(U6)가 같은 컴포넌트 어휘를 쓴다. U2가 손으로 만들면 세 유닛이 각자 또 만든다.
+    </figcaption>
+  </figure>
+
+  <div class="opts">
+    <div class="opt pick">
+      <h4>A안 <span class="b go">권장</span></h4>
+      <p>명세대로 Tailwind v4 + shadcn/ui를 도입하되, <code>@theme</code>을 <strong>기존 <code>tokens.css</code> 변수에 연결</strong>한다. U1의 <code>layout.css</code>는 그대로 둔다.</p>
+      <p class="cost">근거 — ① <code>requirements/</code>가 SSOT이고 Q5=A(명세 우선)가 이미 확정됨 · ② 뒤따르는 3개 UI 유닛의 중복을 막는 판단은 U1에서 AuthGuard를 10함수로 넓힌 것과 같음 · ③ shadcn은 파일 복사라 되돌리기 쉬움</p>
+    </div>
+    <div class="opt">
+      <h4>B안</h4>
+      <p>U1의 순수 CSS를 이어가고 프리미티브를 손으로 작성한다.</p>
+      <p class="cost">대가 — 명세 §6 이탈이 확정된다. Dialog·Select의 접근성을 직접 책임져야 한다. 네 유닛이 각자 만든다.</p>
+    </div>
+  </div>
+  <div class="note warn">
+    <h3>이 계획을 승인하면 A안을 승인하는 것이다</h3>
+    <p>B안을 원하면 승인 대신 그렇게 말해 달라. 결정을 뒤로 미루면 U4·U5·U6 착수 시점에 같은 질문이 세 번 더 나온다.</p>
+  </div>
+</section>
+
+<section class="sec" id="f4">
+  <p class="eyebrow bad">F-4 · 파급이 가장 넓은 발견</p>
+  <h2>커버리지 게이트가 <code>apps/</code>를 재지 않는다</h2>
+  <p class="lede">
+    <code>vitest.config.ts</code>의 <code>coverage.include</code>는 <code>packages/lib/src/**/*.ts</code>
+    <strong>한 줄뿐</strong>이고, CI(<code>ci.yml</code>)는 그 설정 그대로 <code>vitest run --coverage</code>를 돌린다.
+    U2 코드는 전부 <code>apps/portal/src/**</code>에 있으므로 집계에 <strong>한 줄도 들어가지 않는다.</strong>
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 196" role="img" aria-label="커버리지 게이트가 측정하는 범위는 packages 슬래시 lib 슬래시 src 하나뿐이며 U1은 97.29퍼센트로 측정됐다. apps 슬래시 portal 슬래시 src 는 집계 대상이 아니고 그 안에 U2부터 U6까지 다섯 유닛의 코드가 들어간다">
+      <text class="svg-title" x="16" y="22" fill="currentColor">coverage.include 가 보는 범위</text>
+
+      <rect x="16" y="38" width="286" height="58" rx="5" fill="var(--ok-wash)" stroke="var(--ok)" stroke-width="1.5"/>
+      <text class="svg-label" x="34" y="60" fill="var(--ok)">packages/lib/src/**</text>
+      <text class="svg-sub" x="34" y="78">U1 · 97.29% 측정됨 · 게이트 통과</text>
+
+      <rect x="318" y="38" width="566" height="58" rx="5" fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text class="svg-label" x="336" y="60" fill="var(--bad)">apps/portal/src/**</text>
+      <text class="svg-sub" x="336" y="78">집계 대상 아님 — 측정된 줄 0</text>
+
+      <rect x="318" y="110" width="106" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
+      <text class="svg-label" x="371" y="132" text-anchor="middle">U2</text>
+      <rect x="432" y="110" width="106" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
+      <text class="svg-label" x="485" y="132" text-anchor="middle">U3</text>
+      <rect x="546" y="110" width="106" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
+      <text class="svg-label" x="599" y="132" text-anchor="middle">U4</text>
+      <rect x="660" y="110" width="106" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
+      <text class="svg-label" x="713" y="132" text-anchor="middle">U5</text>
+      <rect x="774" y="110" width="110" height="34" rx="4" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
+      <text class="svg-label" x="829" y="132" text-anchor="middle">U6</text>
+
+      <text class="svg-sub" x="16" y="176">D-20의 “TDD + CI 커버리지 게이트”가 여섯 중 다섯 유닛에 대해 사실상 무효다</text>
+    </svg>
+    <figcaption>
+      <b>U1이 97.29%를 낸 것은 U1 코드가 <code>packages/</code>에 있었기 때문이다.</b>
+      해소 — <code>coverage.include</code>에 <code>apps/portal/src/features/**</code>와
+      <code>app/api/**</code>를 추가한다. 화면 컴포넌트는 제외한다(렌더 테스트는 Build and Test의 E2E 몫).
+      <code>vitest.config.ts</code>는 루트 설정이므로 <b>U1 승인 대상</b>이다.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="sec" id="rest">
+  <p class="eyebrow">나머지 발견 사항</p>
+  <h2>소유자 없는 유틸, 낡은 문서, 되살리지 않을 범위</h2>
+
+  <div class="note bad">
+    <h3>F-2 · 공유 유틸 2종에 소유자가 없다</h3>
+    <p>
+      U1이 <code>secret_refs</code> 테이블과 <code>AuthError</code>는 만들었지만, 그 표에 쓰는 코드는 만들지 않았다.
+      <strong>AES-256-GCM 암·복호화</strong>(<code>04-db-schema.md</code> §8.1 · <code>01-auth-github.md</code> §6)와
+      <strong><code>AuthError</code> → §7 표준 오류 응답 매퍼</strong>가 없다.
+      방치하면 U2가 PAT·repo 파일·env var로, U6가 MCP 토큰으로 <b>암호화를 각각 구현</b>하고,
+      네 유닛의 라우트가 각자 try/catch를 써서 오류 포맷이 갈라진다.
+      제안 — 둘 다 <code>packages/lib/</code>에 둔다 (U1 승인 대상).
+    </p>
+  </div>
+
+  <div class="note warn">
+    <h3>F-3 · <code>design/</code> §5.1·§6.2의 Stage 체계가 낡았다</h3>
+    <p>
+      배지표는 <code>5_READY_FOR_DEPLOY</code>·<code>7_DEV_SERVER_TEST</code>·<code>8_COMPLETED</code>·<code>0_QUEUED</code>를,
+      Flow는 <code>① → ② → ③ → ④ → ⑤ → ⑦ → ⑧</code>을 쓴다. D-05·R-04가 없앤 값들이고
+      <code>contracts/stage.ts</code>에도 없다. <code>0_QUEUED</code>는 대기 큐 자체가 사라졌으므로 더더욱 성립하지 않는다.
+      해소 — Q5=A에 따라 이미 <code>1→2→3→4→9</code>로 갱신된 <code>08-sr-registration-ui.md</code>를 따른다.
+      <b><code>design/</code> 문서는 수정하지 않는다</b> — 정리 여부는 사용자 판단이며 C-1과 함께 남긴다.
+    </p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>상태</th><th>배지</th><th>확정 근거</th></tr></thead>
+      <tbody>
+        <tr><td>1_REGISTERED ~ 4_DEV_IN_PROGRESS</td><td><span class="b go">accent</span></td><td>design §5.1 “진행 중” 행의 의미를 현 Stage 집합에 적용</td></tr>
+        <tr><td>9_COMPLETE</td><td><span class="b ok">success</span></td><td>design §5.1 <code>8_COMPLETED</code> 행의 계승</td></tr>
+        <tr><td>X_STOPPED</td><td><span class="b wa">warning</span></td><td>design §5.1 그대로</td></tr>
+        <tr><td>X_FAILED</td><td><span class="b no">error</span></td><td>design §5.1 그대로</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="lede">
+    따라서 대시보드 카드는 <strong>진행 / 완료 / 실패 3장</strong>이다.
+    <code>design/</code> §4.2의 “대기” 카드는 <code>0_QUEUED</code>가 없으므로 만들지 않는다.
+  </p>
+
+  <div class="note warn">
+    <h3>F-5 · 배치2 전제 — chart에 <code>S3_*</code>가 없다</h3>
+    <p>
+      <code>10-k8s-infrastructure.md</code> §7은 <code>S3_ENDPOINT</code>·<code>S3_BUCKET</code>·<code>S3_ACCESS_KEY</code>·<code>S3_SECRET_KEY</code>를
+      필수로 정의하지만 <code>charts/.../portal.yaml</code>에는 <code>SDLC_IMAGE_SIGNING_SECRET</code>만 있다.
+      US-U2-07에 필요하며 chart는 U1 소유이므로 Step 17에서 승인 항목으로 처리한다.
+    </p>
+  </div>
+
+  <div class="note calm">
+    <h3>F-6 · 웹 터미널은 되살리지 않는다 (기록만)</h3>
+    <p>
+      <code>08-sr-registration-ui.md</code> §6.5와 <code>design/</code> §4.4는 웹 터미널(엔드포인트 5종, K8s <code>pods/exec</code>)을 규정하지만
+      <strong><code>requirements.md</code>의 FR에도 <code>stories.md</code>의 어느 스토리에도 없다.</strong>
+      Requirements Analysis에서 이미 빠진 것으로 보이며 U2가 임의로 되살리지 않는다.
+      “재개발 / 테스트 진행” 버튼도 같다 — 그 버튼들은 <b>존재하지 않는 Stage 7</b>에 걸려 있다.
+      U2는 §6.3대로 <b>“중지” 버튼 하나만</b> 만든다.
+    </p>
+  </div>
+
+  <div class="note bad">
+    <h3>덤으로 잡은 빌드 파손 지점</h3>
+    <p>
+      U1이 만든 <code>apps/portal/src/app/page.tsx</code>가 <code>/</code>를 차지하고 있다.
+      대시보드가 <code>(dashboard)/page.tsx</code>로 들어가면 <b>같은 경로를 해석하는 파일이 둘</b>이 되어 빌드가 깨진다.
+      Step 11에서 삭제·대체하고, U1이 만든 파일이므로 PR 설명에 명시한다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="steps">
+  <p class="eyebrow">생성 단계</p>
+  <h2>18단계 · 5개 Phase</h2>
+  <p class="lede">
+    각 단계는 <strong>테스트 우선(RED) → 구현(GREEN) → 정리</strong> 순서로 실행한다.
+    D-20은 UOW-4로 완화되지 않았다.
+  </p>
+
+  <div class="steps">
+    <div class="phase"><span>Phase 1 — 공유 결정과 경계</span><b>Step 1–3</b></div>
+    <div class="step key">
+      <span class="stepn">01</span>
+      <div class="stepb">
+        <h4>U1 공유 영역 변경 4건</h4>
+        <p><code>lib/crypto/secret-ref.ts</code> · <code>lib/http/api-error.ts</code> · <code>vitest.config.ts</code> include 확장 · <code>CODEOWNERS</code>에 <code>components/</code> 추가. A안 승인 시 Tailwind 설정 포함.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">U1 승인</span><span class="b no">F-1·F-2·F-4</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">02</span>
+      <div class="stepb">
+        <h4>경계 stub 3종</h4>
+        <p><code>SdlcRequestFactoryStub</code> · <code>PodPortStub</code> · <code>StateMachineStub</code>. 주입 지점을 <code>deps.ts</code> 한 곳에 모아 U3 완료 시 한 파일만 바꾸게 한다.</p>
+      </div>
+      <div class="sbadges"><span class="b go">B-1·B-3</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">03</span>
+      <div class="stepb">
+        <h4>순수 함수 + PBT</h4>
+        <p><code>request-no</code> · <code>dedup-key</code> · <code>status-badge</code>(F-3 확정표). 왕복 성질 <code>parse(format(x)) === x</code>를 PBT-02로 검증.</p>
+      </div>
+      <div class="sbadges"><span class="b go">PBT-02</span></div>
+    </div>
+
+    <div class="phase"><span>Phase 2 — GitHub 연동 · C-2.3</span><b>Step 4–6</b></div>
+    <div class="step">
+      <span class="stepn">04</span>
+      <div class="stepb">
+        <h4>Org · Repo · Credential 리포지토리</h4>
+        <p>PAT는 Step 1의 암호화 모듈로 <code>secret_refs</code>에만 저장. 평문을 어떤 컬럼·로그·응답에도 남기지 않는다.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">NFR-10</span></div>
+    </div>
+    <div class="step key">
+      <span class="stepn">05</span>
+      <div class="stepb">
+        <h4><code>GitHubAdapter</code> = <code>GitHubPort</code> 구현</h4>
+        <p><code>implements</code>로 선언해 계약 이탈이 typecheck에 걸리게 한다. <code>ensure*</code> 멱등. <strong>commit 이력이 없으면 <code>null</code> 반환</strong>(B-2 특수 케이스)을 테스트로 고정.</p>
+      </div>
+      <div class="sbadges"><span class="b go">B-2</span><span class="b ok">DoD</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">06</span>
+      <div class="stepb">
+        <h4>관리자 API</h4>
+        <p><code>orgs</code> · <code>repos</code> · <code>credentials</code> — 전부 <code>requireAdmin</code>. 응답에 <code>pat</code> 불포함 검증, <code>user</code> 접근 시 403.</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U2-05</span></div>
+    </div>
+
+    <div class="phase"><span>Phase 3 — 접수·조회 · C-2.1 · C-2.2</span><b>Step 7–10</b></div>
+    <div class="step key">
+      <span class="stepn">07</span>
+      <div class="stepb">
+        <h4><code>RequestIntake</code> + <code>POST /intake</code></h4>
+        <p><code>requireMasterKey</code> → 검증(400) → <strong>Factory 경유 생성</strong>(직접 INSERT 금지) → <code>PodPort.provision()</code>. 동일 <code>dedupKey</code>는 기존 SR 반환. 실패는 대기 상태로 남기지 않는다.</p>
+      </div>
+      <div class="sbadges"><span class="b go">B-1</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">08</span>
+      <div class="stepb">
+        <h4><code>RequestQuery</code> + 조회 API</h4>
+        <p><code>GET /requests</code>(필터·검색·페이지) · <code>/requests/{id}</code> · <code>/github-links</code>. <code>user</code>는 본인 SR만. 상태·substage·이력은 <code>StateMachineReader</code>로만 읽는다.</p>
+      </div>
+      <div class="sbadges"><span class="b go">B-3</span><span class="b wa">NFR-12</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">09</span>
+      <div class="stepb">
+        <h4>등록 폼 보조 API</h4>
+        <p><code>generate-request-no</code>(날짜별 일련번호, 서버에서만 시각 생성) · <code>dev-types</code>.</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U2-01</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">10</span>
+      <div class="stepb">
+        <h4><code>POST /requests/{id}/issues</code></h4>
+        <p><code>repos[]</code>가 문자열·객체 양쪽 형태를 받는다. <code>work_branch</code>를 저장해 PR 생성 시 재계산 위험을 없앤다.</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U2-06</span></div>
+    </div>
+
+    <div class="phase"><span>Phase 4 — 화면 · C-2.4</span><b>Step 11–15</b></div>
+    <div class="step">
+      <span class="stepn">11</span>
+      <div class="stepb">
+        <h4>대시보드 <code>/</code></h4>
+        <p>U1의 <code>app/page.tsx</code> 삭제 → <code>(dashboard)/page.tsx</code> 신설. 진행·완료·실패 3카드 + 목록 테이블.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">경로 충돌</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">12</span>
+      <div class="stepb">
+        <h4>SR 등록 <code>/register</code> + Server Action</h4>
+        <p>폼 필드 13종. <strong>제출자 정보는 세션에서 서버가 주입</strong>하고 클라이언트가 보낸 값을 신뢰하지 않는다. 실패 시 내부 정보 미노출.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">NFR-12·16</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">13</span>
+      <div class="stepb">
+        <h4>내 요청 <code>/requests</code></h4>
+        <p>목록·필터·검색·페이지네이션.</p>
+      </div>
+      <div class="sbadges"><span class="b go">US-U2-02</span></div>
+    </div>
+    <div class="step key">
+      <span class="stepn">14</span>
+      <div class="stepb">
+        <h4>SR 상세 <code>/requests/[id]</code></h4>
+        <p>Flow <code>① → ② → ③ → ④ → ⑨</code> — <strong>Stage 5·6·7·8을 렌더링하지 않는다.</strong> incident·improvement는 <code>1→4→9</code> 축약. Stage 4에서 DevSubStage 4종. 액션 버튼은 “중지” 하나.</p>
+      </div>
+      <div class="sbadges"><span class="b no">D-05·R-04</span><span class="b go">F-6</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">15</span>
+      <div class="stepb">
+        <h4>관리 화면 <code>/admin/orgs</code> · <code>/admin/repos</code></h4>
+        <p>전 라우트 <code>requireAdmin</code>. 자격증명은 저장 후 화면에 평문 재표시 금지.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">NFR-10</span></div>
+    </div>
+
+    <div class="phase"><span>Phase 5 — 배치2 (Should) · 절삭 후보</span><b>Step 16–17</b></div>
+    <div class="step">
+      <span class="stepn">16</span>
+      <div class="stepb">
+        <h4>감사 로그 <code>POST /requests/{id}/audit</code></h4>
+        <p>토큰·비밀번호 <strong>마스킹 후 저장</strong>. <strong>append-only</strong> — 애플리케이션 경로에 UPDATE·DELETE를 만들지 않고, 삭제 시도가 실패함을 테스트로 고정.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">NFR-14·18</span></div>
+    </div>
+    <div class="step">
+      <span class="stepn">17</span>
+      <div class="stepb">
+        <h4><code>ImageProxy</code> 업로드·서빙</h4>
+        <p>multipart 업로드 → S3 → 서명 URL. 토큰 없음·만료 시 403. chart에 <code>S3_*</code> 4종 추가.</p>
+      </div>
+      <div class="sbadges"><span class="b wa">F-5 · U1 승인</span></div>
+    </div>
+
+    <div class="phase"><span>마무리</span><b>Step 18</b></div>
+    <div class="step">
+      <span class="stepn">18</span>
+      <div class="stepb">
+        <h4>경계 검증 + 문서 요약</h4>
+        <p>typecheck · 커버리지(확장된 include로) · build · <code>verify:*</code> 2종 · stub 목록 대조 · <code>summary.md</code>·<code>boundary-notes.md</code> 작성.</p>
+      </div>
+      <div class="sbadges"><span class="b ok">DoD</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="bound">
+  <p class="eyebrow">경계와 테스트 더블</p>
+  <h2>U3를 기다리지 않고 착수하는 방법</h2>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>경계</th><th>방향</th><th>U2에서의 의미</th></tr></thead>
+      <tbody>
+        <tr><td>B-1</td><td>U2 → U3</td><td><code>SdlcRequestFactory</code>·<code>PodPort</code> — stub으로 착수, U3 T1·T2 완료 후 교체</td></tr>
+        <tr><td>B-2</td><td>U3 → U2</td><td><strong>U2가 <code>GitHubPort</code> 구현을 제공한다.</strong> U3는 인터페이스 타입으로만 호출</td></tr>
+        <tr><td>B-3</td><td>U2 → U3</td><td><code>StateMachineReader</code> — <strong>읽기 전용</strong>. U2는 상태를 전이시키지 않는다</td></tr>
+        <tr><td>B-4</td><td>Pod → U2</td><td>이미지 업로드 엔드포인트 (배치2)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note bad">
+    <h3>stub 2건에는 지키지 않으면 설계가 무너지는 조건이 있다</h3>
+    <p>
+      ① <code>SdlcRequestFactoryStub</code>은 <strong><code>metadata</code>에 <code>channelTypes</code>·<code>autoMergeAllowed</code>가 각인된</strong> 객체를 반환해야 한다.
+      각인 없이 반환하면 정책을 다시 판정하는 코드가 생겨 AD-3이 무력화된다.<br>
+      ② <code>StateMachineStub</code>은 <strong>Reader만</strong> 구현한다. <code>advance</code>·<code>setSubStage</code>를 만들면 B-3의 읽기 전용 경계가 stub 단계에서 이미 깨진다.
+    </p>
+  </div>
+
+  <div class="note ok">
+    <h3>스키마 변경 0건</h3>
+    <p>
+      U2가 쓰는 테이블 — <code>sdlc_github_credentials</code>·<code>orgs</code>·<code>repos</code>·<code>issues</code>·<code>pull_requests</code>·<code>request_images</code>·<code>repo_files</code>·<code>repo_env_vars</code>·<code>secret_refs</code>·<code>audit_events</code> — 은
+      <strong>U1이 이미 전부 선언했다.</strong> 따라서 U2는 마이그레이션을 생성하지 않는다.
+      필요해지면 순서 충돌을 막기 위해 U1이 일괄 생성한다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="story">
+  <p class="eyebrow">스토리 추적</p>
+  <h2>8건 — Must 6 · Should 2</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>스토리</th><th>배치</th><th>단계</th><th>경계</th></tr></thead>
+      <tbody>
+        <tr><td>US-U2-01</td><td><span class="b go">Must</span></td><td>3 · 9 · 12</td><td>SR 신규 등록 — 폼·요청번호·제출</td></tr>
+        <tr><td>US-U2-02</td><td><span class="b go">Must</span></td><td>3 · 8 · 11 · 13</td><td>대시보드 진행 현황 · 목록</td></tr>
+        <tr><td>US-U2-03</td><td><span class="b go">Must</span></td><td>2 · 8 · 14</td><td><strong>B-3</strong> <code>StateMachineStub</code></td></tr>
+        <tr><td>US-U2-04</td><td><span class="b go">Must</span></td><td>2 · 7</td><td><strong>B-1</strong> Factory · PodPort stub</td></tr>
+        <tr><td>US-U2-05</td><td><span class="b go">Must</span></td><td>1 · 4 · 6 · 15</td><td>Org·Repo·자격증명 관리</td></tr>
+        <tr><td>US-U2-06</td><td><span class="b go">Must</span></td><td>5 · 10</td><td><strong>B-2</strong> U3가 소비하는 구현</td></tr>
+        <tr><td>US-U2-07</td><td><span class="b wa">Should</span></td><td>17</td><td><strong>B-4</strong> · F-5 chart 선행 필요</td></tr>
+        <tr><td>US-U2-08</td><td><span class="b wa">Should</span></td><td>16</td><td>감사 로그 append-only</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="dod">
+  <p class="eyebrow">코드 위치 · 완료 정의</p>
+  <h2>어디에 쓰고, 무엇으로 끝났다고 하는가</h2>
+  <p class="lede">
+    애플리케이션 코드는 <strong>워크스페이스 루트에만</strong> 쓴다. <code>aidlc-docs/</code>에는 마크다운 요약만 남긴다.
+  </p>
+
+  <div class="tree"><b>apps/portal/src/</b>
+├── app/
+│   ├── <i>(dashboard)/</i>                      <u>← U2 소유</u>
+│   │   ├── page.tsx                    대시보드      US-U2-02
+│   │   ├── register/                   SR 등록       US-U2-01
+│   │   └── requests/ · requests/[id]/  목록 · 상세   US-U2-02·03
+│   ├── admin/orgs/ · admin/repos/                    US-U2-05
+│   └── api/v1/sdlc/                    라우트 13종
+├── <i>features/u2-core-mgmt/</i>                 <u>← U2 소유</u>
+│   ├── intake/ query/ github/ images/ audit/
+│   ├── request-no.ts · status-badge.ts  순수 함수
+│   └── stubs/ · deps.ts                 B-1 · B-3
+└── components/ui/                       공유 프리미티브 (A안)
+
+<b>packages/lib/src/</b>crypto/ · http/           <u>U1 승인</u>
+<b>vitest.config.ts</b> · <b>CODEOWNERS</b> · <b>charts/</b>       <u>U1 승인</u></div>
+
+  <ul class="checks">
+    <li>배치1 <strong>6건</strong>의 인수 조건 전부 충족</li>
+    <li>TDD 준수 · 커버리지 게이트 통과 — <strong>F-4 해소 후의 확장된 집계 기준으로</strong></li>
+    <li><strong><code>GitHubAdapter</code>가 <code>GitHubPort</code>를 implements</strong> (typecheck)</li>
+    <li><code>ensure*</code> 멱등 확인 · <strong>commit 이력 없을 때 <code>null</code> 반환 경로 검증</strong></li>
+    <li>stub 3종이 <code>unit-of-work-dependency.md</code> §6 목록과 일치, 주입 지점 단일화</li>
+    <li>U2 라우트 전부가 <code>AuthGuard</code> 함수 중 하나를 통과 (public은 명시적 예외)</li>
+    <li><strong>SR 직접 INSERT 0건 · 상태 전이 호출 0건</strong> — B-1·B-3 준수를 코드 검색으로 확인</li>
+    <li>B-1~B-4 규약을 PR 설명에 명시</li>
+  </ul>
+
+  <div class="gate" style="margin-top:1rem;border-radius:8px">⛔ GATE — 계획 승인 후에만 Part 2 코드 생성으로 넘어간다</div>
+
+  <p class="foot">
+    AIways-On · AI-DLC Construction / Code Generation — 유닛 2 / 6 · 2026-09-08<br>
+    원본 계획: <code>aidlc-docs/construction/plans/u2-core-mgmt-code-generation-plan.md</code> (18단계) ·
+    선행 계약: <code>aidlc-docs/construction/u1-shared-foundation/code/interfaces.md</code>
+  </p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+  var map = {};
+  links.forEach(function(a){ var el = document.querySelector(a.getAttribute('href')); if (el) map[el.id] = a; });
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      var a = map[e.target.id];
+      if (!a) return;
+      links.forEach(function(l){ l.classList.remove('on'); });
+      a.classList.add('on');
+    });
+  }, { rootMargin: '-10% 0px -75% 0px' });
+  Object.keys(map).forEach(function(id){ io.observe(document.getElementById(id)); });
+})();
+</script>

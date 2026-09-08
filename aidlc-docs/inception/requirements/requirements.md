@@ -97,6 +97,7 @@
 |----|------|------|------|
 | D-28 | 색상 모드 | **`prefers-color-scheme` 자동 전환.** 다크·라이트 토큰 모두 정의 | Q14=C |
 | D-29 | 디자인 토큰 | Stitch "Midnight Obsidian" 토큰값 채택. `design/` 문서의 의미적 토큰명에 매핑 | `stitch-design-system.md` |
+| D-30 | **요구사항 승인 게이트** | `2 → 3` 전이는 **admin의 명시적 승인 없이는 일어나지 않는다**(fail-closed, 무기한 대기). 설계 게이트는 **신설하지 않는다**. self-approval은 **허용**한다 | 승인게이트 Q1=X·Q2=B·Q3=A·Q4=X·Q5=A, 후속 Q1=A |
 
 ---
 
@@ -130,6 +131,7 @@
 | FR-U2-05 | 관리자 화면 6종 — Org / Repo / 장애템플릿 / 개선대상 / 규정시스템 / MCP토큰 | `design/` §4.13 |
 | FR-U2-06 | GitHub 어댑터 — Org/Repo/Credential 관리, Issue 생성, PR 생성·merge | `05-portal-api.md` |
 | FR-U2-07 | 감사 로그 API + 이미지 프록시 서빙 (`/api/v1/sdlc/images/{id}?token=`) | `05-portal-api.md` |
+| FR-U2-08 | **요구사항 승인 게이트 (D-30)** — `POST /requests/{id}/confirm-requirements` 인증을 **`requireAdmin`으로 확정**(명세의 "세션(로그인 사용자)"에서 축소, IDOR 차단) + `/requests/[id]` 승인 버튼 + `audit_events` 승인 기록(승인자·시각) | `05-portal-api.md` §2.6, D-30 |
 
 ### U3. 코어SDLC (진행) — 파이프라인 실행 엔진
 
@@ -148,6 +150,7 @@
 | FR-U3-11 | **sdlc-slack-gateway** — Socket Mode 릴레이 Pod, replicas 1 | `02-messaging-adapter.md` §6.3 |
 | FR-U3-12 | **n8n Workflow A/B/C** — 명세 기준 신규 작성, stage 번호 재매핑 | `07-n8n-workflows.md` (849줄), D-19 |
 | FR-U3-13 | 목업 캡처 파이프라인 — 이미지 업로드 → S3 → 채널 게시 | `06-pod-runner-api.md` §2.4 |
+| FR-U3-14 | **승인 게이트 강제 (D-30)** — `2 → 3` advance는 `metadata.requirementsConfirmedAt`이 없으면 **거부**(fail-closed). 승인 요청은 `requirements` 채널에 알림 + Portal 딥링크로 게시(`feedback-request` 재사용). Pod는 기존 `SDLC_POD_DEADLINE_SECONDS`(4h)로 자동 종료되고 승인 후 기존 resume 경로로 재개 | `03-state-machine.md` §4, D-30 |
 
 ### U4. 장애 대응 (Incident)
 
@@ -359,7 +362,7 @@ Extension 규칙상 기본은 blocking이나, 사용자 결정으로 수용하�
 | `12-self-improvement-agent.md` | 1,688 | U5 | FR-U5-01~05 |
 | `13-developer-memory-agent.md` | 2,394 | U6 | FR-U6-01~05 |
 | `design/웹화면-디자인-요구사항_v1.md` | 887 | U1(토큰·레이아웃) + 각 유닛(화면) | 18개 라우트 |
-| **합계** | **15,033** | **6 유닛** | **45 FR + 27 NFR** |
+| **합계** | **15,033** | **6 유닛** | **47 FR + 27 NFR** (D-30으로 FR-U2-08·FR-U3-14 추가) |
 
 ### 8.1 유닛별 명세 규모 (불균형 확인)
 

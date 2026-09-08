@@ -71,6 +71,10 @@ h1{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;line-height:1.18}
 .cards{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(20.5rem,1fr))}
 .story{background:var(--s2);border-radius:8px;padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.5rem}
 .story:hover{background:var(--s3)}
+.story.v2{box-shadow:inset 3px 0 0 var(--blade-deep)}
+.b.v2{background:var(--blade-wash);color:var(--blade)}
+.b.gap{background:var(--warn-wash);color:var(--warn)}
+.pri.should{background:var(--s4);color:var(--ink-faint)}
 .shead{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
 .sid{font-size:11px;font-weight:700;color:var(--ink)}
 .pri{font-size:10px;font-weight:700;width:1.15rem;height:1.15rem;display:grid;place-items:center;border-radius:4px}
@@ -117,131 +121,172 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
   <div>
     <p class="flabel">유닛</p>
     <div class="filt" id="unitFilter">
-      <button class="fbtn on" data-f="unit" data-v="all">전체 <span class="n">56</span></button>
+      <button class="fbtn on" data-f="unit" data-v="all">전체 <span class="n">74</span></button>
       <button class="fbtn" data-f="unit" data-v="U1">U1 공용(기반) <span class="n">10</span></button>
-      <button class="fbtn" data-f="unit" data-v="U2">U2 코어SDLC(관리) <span class="n">8</span></button>
-      <button class="fbtn" data-f="unit" data-v="U3">U3 코어SDLC(진행) <span class="n">18</span></button>
-      <button class="fbtn" data-f="unit" data-v="U4">U4 장애대응 <span class="n">7</span></button>
-      <button class="fbtn" data-f="unit" data-v="U5">U5 자체개선 <span class="n">6</span></button>
-      <button class="fbtn" data-f="unit" data-v="U6">U6 개발규정 <span class="n">7</span></button>
+      <button class="fbtn" data-f="unit" data-v="U2">U2 코어SDLC(관리) <span class="n">11</span></button>
+      <button class="fbtn" data-f="unit" data-v="U3">U3 코어SDLC(진행) <span class="n">25</span></button>
+      <button class="fbtn" data-f="unit" data-v="U4">U4 장애대응 <span class="n">10</span></button>
+      <button class="fbtn" data-f="unit" data-v="U5">U5 자체개선 <span class="n">8</span></button>
+      <button class="fbtn" data-f="unit" data-v="U6">U6 개발규정 <span class="n">10</span></button>
     </div>
   </div>
   <div>
     <p class="flabel">우선순위</p>
     <div class="filt" id="priFilter">
-      <button class="fbtn on" data-f="pri" data-v="all">전체 <span class="n">56</span></button>
-      <button class="fbtn" data-f="pri" data-v="M">Must <span class="n">46</span></button>
-      <button class="fbtn" data-f="pri" data-v="S">Should <span class="n">10</span></button>
+      <button class="fbtn on" data-f="pri" data-v="all">전체 <span class="n">74</span></button>
+      <button class="fbtn" data-f="pri" data-v="M">Must <span class="n">58</span></button>
+      <button class="fbtn" data-f="pri" data-v="S">Should <span class="n">16</span></button>
+    </div>
+  </div>
+  <div>
+    <p class="flabel">버전</p>
+    <div class="filt" id="verFilter">
+      <button class="fbtn on" data-f="ver" data-v="all">전체 <span class="n">74</span></button>
+      <button class="fbtn" data-f="ver" data-v="v1">v1 최초 <span class="n">56</span></button>
+      <button class="fbtn" data-f="ver" data-v="v2">v2 보강 <span class="n">18</span></button>
     </div>
   </div>
   <div class="railfoot">
-    페르소나 7종<br>사람 4 · 시스템 3<br>2026-09-08
+    페르소나 7종<br>사람 4 · 시스템 3<br>v1 2026-09-08<br>v2 보강 2026-09-08
   </div>
 </nav>
 
 <main class="canvas">
   <p class="eyebrow">Inception / User Stories</p>
-  <h1>6개 유닛, 56개 스토리</h1>
+  <h1>6개 유닛, 74개 스토리</h1>
   <p class="lede">
     확정된 요구사항 45건을 6인 병렬 개발에 맞춰 실행 단위로 재편했다.
     인수 조건은 TDD의 첫 테스트가 되고, 유닛 경계 표시는 착수 전 합의가 필요한 지점을 가리킨다.
+    <strong>v2 보강</strong>에서 비즈니스 내러티브를 명세와 대조해 17건을 더했다 —
+    <em>명세에 근거가 있는데 v1이 놓친 것만</em> 스토리로 만들고, 근거가 없는 것은 GAP으로 남겼다.
   </p>
 
   <dl class="strip">
-    <div><dt>스토리</dt><dd>56</dd></div>
-    <div><dt>Must</dt><dd>46</dd></div>
-    <div><dt>Should</dt><dd>10</dd></div>
-    <div><dt>FR 커버</dt><dd>45/45</dd></div>
-    <div><dt>유닛 경계</dt><dd>9</dd></div>
-    <div><dt>인터페이스 우선</dt><dd>4</dd></div>
+    <div><dt>스토리</dt><dd>74</dd></div>
+    <div><dt>v2 추가</dt><dd>18</dd></div>
+    <div><dt>Must</dt><dd>58</dd></div>
+    <div><dt>Should</dt><dd>16</dd></div>
+    <div><dt>FR 커버</dt><dd>47/47</dd></div>
+    <div><dt>신규 FR</dt><dd>2 · D-30</dd></div>
+    <div><dt>유닛 경계</dt><dd>12</dd></div>
+    <div><dt>GAP 미결</dt><dd>5 / 7</dd></div>
   </dl>
+
+  <div class="note calm">
+    <h3>v2 보강은 어떻게 만들었나</h3>
+    <p>
+      내러티브를 스토리로 바로 옮기지 않았다. 각 문단을 <code>requirements/</code> 명세와 먼저 대조한 뒤 세 갈래로 나눴다 —
+      <strong>(a)</strong> v1이 이미 커버한 것은 그대로 두고,
+      <strong>(b)</strong> 명세에는 있는데 v1 스토리가 놓친 것만 스토리로 만들고(17건),
+      <strong>(c)</strong> 내러티브에는 있지만 명세에 근거가 없는 것은 지어내지 않고 GAP으로 기록했다(7건).
+      신규 FR은 <strong>0건</strong>이다. 스토리 보강 중에 요구사항을 신설하면 승인된 범위가 조용히 늘어나기 때문이다.
+    </p>
+  </div>
 
   <p class="empty" id="empty">선택한 조건에 맞는 스토리가 없습니다.</p>
 <section class="unit" id="U1" data-unit="U1">
 <div class="uhead"><h2><span class="ucode">U1</span> 공용 (기반)</h2><span class="ucount mono">10건 · M 9 · S 1</span></div>
 <div class="cards">
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-01</span><span class="pri must mono">M</span><span class="pers mono">P1·P2·P3</span></div><h3>GitHub 계정으로 로그인</h3><p class="val">요청자·개발자·Admin으로서 GitHub 계정으로 로그인하고 싶다. 그래야 별도 계정을 만들지 않고 내 GitHub 신원으로 SDLC를 쓸 수 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-04</code> · <code>01-auth-github.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-02</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>권한(user/admin) 분리  ·  8</h3><p class="val">Admin으로서 관리 기능이 일반 사용자에게 노출되지 않기를 원한다. 그래야 자동화가 통제 밖에서 실행되지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-04</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-03</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>DB 스키마와 마이그레이션</h3><p class="val">개발자로서 모든 유닛이 같은 테이블 정의를 공유하기를 원한다. 그래야 6명이 병렬로 작업해도 스키마가 갈라지지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-02, 03</code> · <code>04-db-schema.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-04</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>공유 타입 정의  ·  1</h3><p class="val">개발자로서 `Stage`·`ChannelType`·`pipelineProfile`을 한 곳에서만 정의하고 싶다. 그래야 유닛마다 다른 상태값을 쓰는 사고가 나지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-05</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-05</span><span class="pri must mono">M</span><span class="pers mono">P1·P2·P3</span></div><h3>디자인 토큰과 글로벌 레이아웃  ·  2·3</h3><p class="val">모든 사용자로서 어느 화면에서도 같은 시각 규칙을 경험하고 싶다. 그래야 6명이 만든 화면이 한 제품처럼 보인다.</p><div class="meta"><span class="ac mono">인수조건 8 · 체크리스트</span></div><div class="refs"><code>FR-U1-06</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-06</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>프로젝트 스캐폴딩  ·  3·5</h3><p class="val">개발자로서 첫날 아침에 `pnpm dev`가 바로 뜨기를 원한다. 그래야 5명이 환경 구성으로 반나절을 쓰지 않는다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-01</code> · <code>00-overview.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-07</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>로컬 K8s 스택 기동</h3><p class="val">Admin으로서 명령 하나로 전체 스택을 로컬에 띄우고 싶다. 그래야 개발자마다 다른 환경에서 생기는 문제를 없앨 수 있다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U1-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-08</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>Secret 분리와 최소 권한 RBAC  ·  2·5.2</h3><p class="val">Admin으로서 자격증명이 평문으로 남지 않고, Portal이 필요 이상의 K8s 권한을 갖지 않기를 원한다. 그래야 유출 시 피해 범위가 제한된다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-08</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="S"><div class="shead"><span class="sid mono">US-U1-09</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>정합성 복구·주기 스캔 CronJob 배포  ·  3</h3><p class="val">Admin으로서 정합성 복구와 개선 스캔이 스케줄대로 돌기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b no">⚠️ 경계(U5)</span></div><div class="refs"><code>FR-U1-08, 09</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-10</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>CI 품질 게이트</h3><p class="val">개발자로서 테스트가 깨진 코드가 병합되지 않기를 원한다. 그래야 6명이 동시에 밀어넣어도 main이 살아 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-10</code> · <code>D-20, D-26</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-01</span><span class="pri must mono">M</span><span class="pers mono">P1·P2·P3</span></div><h3>GitHub 계정으로 로그인</h3><p class="val">요청자·개발자·Admin으로서 GitHub 계정으로 로그인하고 싶다. 그래야 별도 계정을 만들지 않고 내 GitHub 신원으로 SDLC를 쓸 수 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-04</code> · <code>01-auth-github.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-02</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>권한(user/admin) 분리  ·  8</h3><p class="val">Admin으로서 관리 기능이 일반 사용자에게 노출되지 않기를 원한다. 그래야 자동화가 통제 밖에서 실행되지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-04</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-03</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>DB 스키마와 마이그레이션</h3><p class="val">개발자로서 모든 유닛이 같은 테이블 정의를 공유하기를 원한다. 그래야 6명이 병렬로 작업해도 스키마가 갈라지지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-02, 03</code> · <code>04-db-schema.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-04</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>공유 타입 정의  ·  1</h3><p class="val">개발자로서 `Stage`·`ChannelType`·`pipelineProfile`을 한 곳에서만 정의하고 싶다. 그래야 유닛마다 다른 상태값을 쓰는 사고가 나지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-05</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-05</span><span class="pri must mono">M</span><span class="pers mono">P1·P2·P3</span></div><h3>디자인 토큰과 글로벌 레이아웃  ·  2·3</h3><p class="val">모든 사용자로서 어느 화면에서도 같은 시각 규칙을 경험하고 싶다. 그래야 6명이 만든 화면이 한 제품처럼 보인다.</p><div class="meta"><span class="ac mono">인수조건 8 · 체크리스트</span></div><div class="refs"><code>FR-U1-06</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-06</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>프로젝트 스캐폴딩  ·  3·5</h3><p class="val">개발자로서 첫날 아침에 `pnpm dev`가 바로 뜨기를 원한다. 그래야 5명이 환경 구성으로 반나절을 쓰지 않는다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b go">⭐ 인터페이스 우선</span></div><div class="refs"><code>FR-U1-01</code> · <code>00-overview.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-07</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>로컬 K8s 스택 기동</h3><p class="val">Admin으로서 명령 하나로 전체 스택을 로컬에 띄우고 싶다. 그래야 개발자마다 다른 환경에서 생기는 문제를 없앨 수 있다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U1-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-08</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>Secret 분리와 최소 권한 RBAC  ·  2·5.2</h3><p class="val">Admin으로서 자격증명이 평문으로 남지 않고, Portal이 필요 이상의 K8s 권한을 갖지 않기를 원한다. 그래야 유출 시 피해 범위가 제한된다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-08</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="S"><div class="shead"><span class="sid mono">US-U1-09</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>정합성 복구·주기 스캔 CronJob 배포  ·  3</h3><p class="val">Admin으로서 정합성 복구와 개선 스캔이 스케줄대로 돌기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b no">⚠️ 경계(U5)</span></div><div class="refs"><code>FR-U1-08, 09</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U1" data-pri="M"><div class="shead"><span class="sid mono">US-U1-10</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>CI 품질 게이트</h3><p class="val">개발자로서 테스트가 깨진 코드가 병합되지 않기를 원한다. 그래야 6명이 동시에 밀어넣어도 main이 살아 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U1-10</code> · <code>D-20, D-26</code></div></article>
 </div></section>
 <section class="unit" id="U2" data-unit="U2">
-<div class="uhead"><h2><span class="ucode">U2</span> 코어SDLC (관리)</h2><span class="ucount mono">8건 · M 6 · S 2</span></div>
+<div class="uhead"><h2><span class="ucode">U2</span> 코어SDLC (관리)</h2><span class="ucount mono">11건 · M 8 · S 3</span></div>
 <div class="cards">
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-01</span><span class="pri must mono">M</span><span class="pers mono">P1</span></div><h3>SR 신규 등록  ·  ·  4.3</h3><p class="val">요청자로서 개발이 필요한 일을 폼으로 제출하고 싶다. 그래야 개발자를 찾아다니지 않고 요청을 시작할 수 있다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U2-01</code> · <code>08-sr-registration-ui.md</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-02</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>대시보드에서 진행 현황 파악  ·  4.2</h3><p class="val">요청자·개발자로서 내 요청들이 지금 어느 단계인지 한눈에 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U2-02</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-03</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>SR 상세에서 파이프라인 추적  ·  4.4·6.2·6.3</h3><p class="val">요청자·개발자로서 내 SR이 어느 단계에 있고 무엇이 진행 중인지 보고 싶다. 그래야 언제 내 차례인지 알 수 있다.</p><div class="meta"><span class="ac mono">인수조건 6 · 체크리스트</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-03</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-04</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>SR 접수와 즉시 프로비저닝  ·  1.2</h3><p class="val">n8n 오케스트레이터로서 접수 요청 한 번으로 SR 등록부터 채널·Pod 생성까지 끝나기를 원한다. 그래야 대기 큐나 자원 게이트를 관리하지 않아도 된다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-04</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-05</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>GitHub Org·Repo·자격증명 관리  ·  4.13</h3><p class="val">Admin으로서 어떤 repo에 SDLC를 열어 줄지 통제하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U2-05, 06</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-06</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>GitHub Issue·PR 연동</h3><p class="val">개발자로서 SR이 GitHub Issue·PR과 1:1로 연결되기를 원한다. 그래야 평소 쓰던 GitHub 워크플로우에서 벗어나지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U2-06</code> · <code>05-portal-api.md</code></div></article>
-<article class="story" data-unit="U2" data-pri="S"><div class="shead"><span class="sid mono">US-U2-07</span><span class="pri should mono">S</span><span class="pers mono">P2</span></div><h3>목업 이미지 확인</h3><p class="val">개발자로서 Pod가 캡처한 목업 이미지를 채널과 웹에서 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-07</code> · <code>05-portal-api.md</code></div></article>
-<article class="story" data-unit="U2" data-pri="S"><div class="shead"><span class="sid mono">US-U2-08</span><span class="pri should mono">S</span><span class="pers mono">S1·S2</span></div><h3>감사 로그 적재</h3><p class="val">n8n·Pod로서 파이프라인에서 일어난 일을 감사 로그에 남기고 싶다. 그래야 실패했을 때 사람이 추적할 수 있다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U2-07</code> · <code>05-portal-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-01</span><span class="pri must mono">M</span><span class="pers mono">P1</span></div><h3>SR 신규 등록  ·  ·  4.3</h3><p class="val">요청자로서 개발이 필요한 일을 폼으로 제출하고 싶다. 그래야 개발자를 찾아다니지 않고 요청을 시작할 수 있다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U2-01</code> · <code>08-sr-registration-ui.md</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-02</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>대시보드에서 진행 현황 파악  ·  4.2</h3><p class="val">요청자·개발자로서 내 요청들이 지금 어느 단계인지 한눈에 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U2-02</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-03</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>SR 상세에서 파이프라인 추적  ·  4.4·6.2·6.3</h3><p class="val">요청자·개발자로서 내 SR이 어느 단계에 있고 무엇이 진행 중인지 보고 싶다. 그래야 언제 내 차례인지 알 수 있다.</p><div class="meta"><span class="ac mono">인수조건 6 · 체크리스트</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-03</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-04</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>SR 접수와 즉시 프로비저닝  ·  1.2</h3><p class="val">n8n 오케스트레이터로서 접수 요청 한 번으로 SR 등록부터 채널·Pod 생성까지 끝나기를 원한다. 그래야 대기 큐나 자원 게이트를 관리하지 않아도 된다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-04</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-05</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>GitHub Org·Repo·자격증명 관리  ·  4.13</h3><p class="val">Admin으로서 어떤 repo에 SDLC를 열어 줄지 통제하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U2-05, 06</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-06</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>GitHub Issue·PR 연동</h3><p class="val">개발자로서 SR이 GitHub Issue·PR과 1:1로 연결되기를 원한다. 그래야 평소 쓰던 GitHub 워크플로우에서 벗어나지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U2-06</code> · <code>05-portal-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="S"><div class="shead"><span class="sid mono">US-U2-07</span><span class="pri should mono">S</span><span class="pers mono">P2</span></div><h3>목업 이미지 확인</h3><p class="val">개발자로서 Pod가 캡처한 목업 이미지를 채널과 웹에서 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U2-07</code> · <code>05-portal-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U2" data-pri="S"><div class="shead"><span class="sid mono">US-U2-08</span><span class="pri should mono">S</span><span class="pers mono">S1·S2</span></div><h3>감사 로그 적재</h3><p class="val">n8n·Pod로서 파이프라인에서 일어난 일을 감사 로그에 남기고 싶다. 그래야 실패했을 때 사람이 추적할 수 있다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U2-07</code> · <code>05-portal-api.md</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-09</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>PR 자동 머지 조건 판정과 완료 요약 게시</h3><p class="val">시스템 OWNER로서 사전에 허용한 조건을 만족하면 AI가 PR을 머지하고, 아니면 내가 직접 보고 머지하고 싶다. 그래야 안전한 변경은 사람 없이 흐르고 위험한 변경만 내 손을 거친다.</p><div class="meta"><span class="ac mono">인수조건 8 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U2-06</code> · <code>03-state-machine.md §4.4</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U2" data-pri="S"><div class="shead"><span class="sid mono">US-U2-10</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>repo별 AI 실행 정책 설정</h3><p class="val">Admin으로서 repo마다 AI에게 어디까지 허용할지 미리 정해 두고 싶다. 그래야 자동 머지가 아무 repo에서나 켜지지 않는다. (autoPrMerge 기본값 꺼짐)</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U2-05</code> · <code>08-sr-registration-ui.md</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U2" data-pri="M"><div class="shead"><span class="sid mono">US-U2-11</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>요구사항 승인 게이트 (UI·API)</h3><p class="val">Admin(시스템 OWNER)으로서 AI가 정리한 요구사항을 내가 확정해야만 개발 단계로 넘어가기를 원한다. 그래야 자동화가 사람 확인 없이 main까지 가지 않는다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span><span class="b v2">v2.1</span><span class="b ok">GAP-04 해소</span></div><div class="refs"><code>FR-U2-08</code> · <code>05-portal-api.md §2.6</code> · <code>D-30</code></div></article>
 </div></section>
 <section class="unit" id="U3" data-unit="U3">
-<div class="uhead"><h2><span class="ucode">U3</span> 코어SDLC (진행)</h2><span class="ucount mono">18건 · M 16 · S 2</span></div>
+<div class="uhead"><h2><span class="ucode">U3</span> 코어SDLC (진행)</h2><span class="ucount mono">25건 · M 21 · S 4</span></div>
 <div class="cards">
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-01</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>합법 전이만 허용  ·  1·2</h3><p class="val">n8n 오케스트레이터로서 정의되지 않은 단계 전이가 거부되기를 원한다. 그래야 파이프라인이 예상 밖 상태로 빠지지 않는다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span></div><div class="refs"><code>FR-U3-01</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-02</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>CAS 기반 원자적 상태 전이  ·  3</h3><p class="val">n8n 오케스트레이터로서 동시에 두 번 전이 요청이 가도 한 번만 반영되기를 원한다. 그래야 재시도나 중복 webhook이 단계를 두 칸 밀지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-02</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-03</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>멱등 실행  ·  3.2</h3><p class="val">n8n 오케스트레이터로서 같은 단계 작업을 재시도해도 부작용이 없기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-03</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-04</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>단계 진입 작업 실행  ·  4·5</h3><p class="val">n8n 오케스트레이터로서 단계에 진입할 때 필요한 준비 작업이 자동으로 실행되기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span></div><div class="refs"><code>FR-U3-04</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-05</span><span class="pri must mono">M</span><span class="pers mono">P3·S1</span></div><h3>보상 트랜잭션  ·  6</h3><p class="val">Admin으로서 실패한 SR이 조용히 사라지지 않고 원인을 확인할 창구가 남기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-05</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-06</span><span class="pri must mono">M</span><span class="pers mono">P2·S1</span></div><h3>DevSubStage 추적  ·  7</h3><p class="val">개발자로서 Stage 4 안에서 어느 substage가 진행 중이고 어디서 실패했는지 알고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U2)</span></div><div class="refs"><code>FR-U3-06</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-07</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>Pod lifecycle 관리  ·  6</h3><p class="val">Admin으로서 SR마다 격리된 Pod가 생성되고 끝나면 정리되기를 원한다. 그래야 자원이 무한정 쌓이지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-08</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>Pod 세션 초기화  ·  2.2</h3><p class="val">n8n 오케스트레이터로서 repo를 clone하고 작업 공간을 준비시키고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-09</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>Claude Code 실행  ·  2.4</h3><p class="val">SDLC Pod로서 받은 프롬프트가 지시한 작업만 수행하고, 결과와 확정 신호만 출력하고 종료하고 싶다. 그래야 파이프라인 제어권이 n8n에 남는다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-10</span><span class="pri must mono">M</span><span class="pers mono">S1·S2</span></div><h3>목업 확정 신호 판정</h3><p class="val">n8n 오케스트레이터로서 사용자가 목업을 확정했는지를 Pod 출력만 보고 판정하고 싶다. 그래야 사용자 원문을 보지 않고도 다음 단계로 넘어갈 수 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12, 13</code> · <code>07-n8n-workflows.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-11</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>Git commit·push  ·  2.5</h3><p class="val">SDLC Pod로서 작업 결과를 work branch에 안전하게 올리고 싶다. 그래야 작업물이 유실되지 않는다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-12</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>Slack 채널 게시</h3><p class="val">요청자·개발자로서 단계별 진행 내용이 Slack 채널에 올라오기를 원한다. 그래야 포탈을 계속 보지 않아도 흐름을 따라갈 수 있다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-10</code> · <code>02-messaging-adapter.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-13</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>Slack 피드백 수신  ·  6.3</h3><p class="val">요청자·개발자로서 채널에 답을 쓰면 그것이 파이프라인에 전달되기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-11</code> · <code>02-messaging-adapter.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-14</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>접수 워크플로우 (Workflow A)</h3><p class="val">n8n 오케스트레이터로서 접수 webhook 하나로 repo 선택부터 요구사항 인터뷰 시작까지 진행하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-15</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>콜백 워크플로우 (Workflow B)</h3><p class="val">n8n 오케스트레이터로서 Pod 완료 신호를 받아 다음 단계나 다음 substage를 발화하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-16</span><span class="pri should mono">S</span><span class="pers mono">S1</span></div><h3>고아 세션 재개</h3><p class="val">n8n 오케스트레이터로서 중단된 세션을 예산 한도 안에서 재개하고 싶다. 그래야 일시적 장애로 SR이 영구히 멈추지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-17</span><span class="pri should mono">S</span><span class="pers mono">S3</span></div><h3>정합성 복구  ·  3.1</h3><p class="val">CronJob으로서 실제 K8s 상태와 DB 상태가 어긋난 것을 찾아 회복하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U3-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-18</span><span class="pri must mono">M</span><span class="pers mono">P3·S2</span></div><h3>Pod 실행 이미지 구축</h3><p class="val">Admin·SDLC Pod로서 Claude Code·Playwright·conda가 갖춰진 실행 이미지가 재현 가능하게 빌드되기를 원한다. 그래야 모든 SR이 동일한 실행 환경에서 돌아간다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span></div><div class="refs"><code>FR-U3-09</code> · <code>D-11, D-12</code> · <code>sdlc-pod/Dockerfile</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-01</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>합법 전이만 허용  ·  1·2</h3><p class="val">n8n 오케스트레이터로서 정의되지 않은 단계 전이가 거부되기를 원한다. 그래야 파이프라인이 예상 밖 상태로 빠지지 않는다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span></div><div class="refs"><code>FR-U3-01</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-02</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>CAS 기반 원자적 상태 전이  ·  3</h3><p class="val">n8n 오케스트레이터로서 동시에 두 번 전이 요청이 가도 한 번만 반영되기를 원한다. 그래야 재시도나 중복 webhook이 단계를 두 칸 밀지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-02</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-03</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>멱등 실행  ·  3.2</h3><p class="val">n8n 오케스트레이터로서 같은 단계 작업을 재시도해도 부작용이 없기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-03</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-04</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>단계 진입 작업 실행  ·  4·5</h3><p class="val">n8n 오케스트레이터로서 단계에 진입할 때 필요한 준비 작업이 자동으로 실행되기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span></div><div class="refs"><code>FR-U3-04</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-05</span><span class="pri must mono">M</span><span class="pers mono">P3·S1</span></div><h3>보상 트랜잭션  ·  6</h3><p class="val">Admin으로서 실패한 SR이 조용히 사라지지 않고 원인을 확인할 창구가 남기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-05</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-06</span><span class="pri must mono">M</span><span class="pers mono">P2·S1</span></div><h3>DevSubStage 추적  ·  7</h3><p class="val">개발자로서 Stage 4 안에서 어느 substage가 진행 중이고 어디서 실패했는지 알고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U2)</span></div><div class="refs"><code>FR-U3-06</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-07</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>Pod lifecycle 관리  ·  6</h3><p class="val">Admin으로서 SR마다 격리된 Pod가 생성되고 끝나면 정리되기를 원한다. 그래야 자원이 무한정 쌓이지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-08</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>Pod 세션 초기화  ·  2.2</h3><p class="val">n8n 오케스트레이터로서 repo를 clone하고 작업 공간을 준비시키고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-09</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>Claude Code 실행  ·  2.4</h3><p class="val">SDLC Pod로서 받은 프롬프트가 지시한 작업만 수행하고, 결과와 확정 신호만 출력하고 종료하고 싶다. 그래야 파이프라인 제어권이 n8n에 남는다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-10</span><span class="pri must mono">M</span><span class="pers mono">S1·S2</span></div><h3>목업 확정 신호 판정</h3><p class="val">n8n 오케스트레이터로서 사용자가 목업을 확정했는지를 Pod 출력만 보고 판정하고 싶다. 그래야 사용자 원문을 보지 않고도 다음 단계로 넘어갈 수 있다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12, 13</code> · <code>07-n8n-workflows.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-11</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>Git commit·push  ·  2.5</h3><p class="val">SDLC Pod로서 작업 결과를 work branch에 안전하게 올리고 싶다. 그래야 작업물이 유실되지 않는다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U3-08</code> · <code>06-pod-runner-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-12</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>Slack 채널 게시</h3><p class="val">요청자·개발자로서 단계별 진행 내용이 Slack 채널에 올라오기를 원한다. 그래야 포탈을 계속 보지 않아도 흐름을 따라갈 수 있다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b ok">PBT 대상</span></div><div class="refs"><code>FR-U3-10</code> · <code>02-messaging-adapter.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-13</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>Slack 피드백 수신  ·  6.3</h3><p class="val">요청자·개발자로서 채널에 답을 쓰면 그것이 파이프라인에 전달되기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-11</code> · <code>02-messaging-adapter.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-14</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>접수 워크플로우 (Workflow A)</h3><p class="val">n8n 오케스트레이터로서 접수 webhook 하나로 repo 선택부터 요구사항 인터뷰 시작까지 진행하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-15</span><span class="pri must mono">M</span><span class="pers mono">S1</span></div><h3>콜백 워크플로우 (Workflow B)</h3><p class="val">n8n 오케스트레이터로서 Pod 완료 신호를 받아 다음 단계나 다음 substage를 발화하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-16</span><span class="pri should mono">S</span><span class="pers mono">S1</span></div><h3>고아 세션 재개</h3><p class="val">n8n 오케스트레이터로서 중단된 세션을 예산 한도 안에서 재개하고 싶다. 그래야 일시적 장애로 SR이 영구히 멈추지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-17</span><span class="pri should mono">S</span><span class="pers mono">S3</span></div><h3>정합성 복구  ·  3.1</h3><p class="val">CronJob으로서 실제 K8s 상태와 DB 상태가 어긋난 것을 찾아 회복하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U3-07</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-18</span><span class="pri must mono">M</span><span class="pers mono">P3·S2</span></div><h3>Pod 실행 이미지 구축</h3><p class="val">Admin·SDLC Pod로서 Claude Code·Playwright·conda가 갖춰진 실행 이미지가 재현 가능하게 빌드되기를 원한다. 그래야 모든 SR이 동일한 실행 환경에서 돌아간다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span></div><div class="refs"><code>FR-U3-09</code> · <code>D-11, D-12</code> · <code>sdlc-pod/Dockerfile</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-19</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>작업 공간 컨텍스트 구성</h3><p class="val">SDLC Pod로서 코드를 만지기 전에 이 요청이 어떤 repo·브랜치·실행 환경 위에서 도는지 먼저 알고 싶다. 그래야 인터뷰와 개발이 실제 코드베이스 위에서 이뤄진다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b v2">v2</span><span class="b gap">GAP-01</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md §2.5~2.7</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-20</span><span class="pri must mono">M</span><span class="pers mono">P1·S2</span></div><h3>비전문가 요구사항을 개발 가능한 수준으로 구체화</h3><p class="val">요청자로서 "엑셀로 일괄 다운로드하게 해 주세요" 정도만 말해도 AI가 되물어 나머지를 채워 주기를 원한다. 화면·배치·Sheet·Column·기간·검색조건 6축을 되묻는다.</p><div class="meta"><span class="ac mono">인수조건 6 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U3-12, 13</code> · <code>07-n8n-workflows.md §3.4·§3.5</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-21</span><span class="pri must mono">M</span><span class="pers mono">P1·P2</span></div><h3>요구사항 정의서 생성과 확인 창구</h3><p class="val">요청자로서 AI가 정리한 요구사항을 문서로 받아 내가 말한 것과 같은지 확인하고 싶다. 시스템 OWNER로서 그 문서가 Issue에 근거로 남기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span><span class="b gap">GAP-04</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md §3.6·§3.7</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-22</span><span class="pri must mono">M</span><span class="pers mono">P2·S2</span></div><h3>시스템 OWNER 기술 설계 인터뷰</h3><p class="val">시스템 OWNER로서 AI가 코드를 만지기 전에 어디를 어떻게 고칠지 나와 합의하기를 원한다. 파일·표준·데이터·권한·회귀·테스트 6항목을 결정한다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md §3.8</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="M"><div class="shead"><span class="sid mono">US-U3-23</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>상세 설계서 생성과 게시</h3><p class="val">시스템 OWNER로서 합의한 설계가 문서로 남고 Issue에서 언제든 다시 읽히기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b v2">v2</span><span class="b gap">GAP-05</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md §3.9</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-24</span><span class="pri should mono">S</span><span class="pers mono">P2</span></div><h3>개발·RSCCB 최종 보고서</h3><p class="val">시스템 OWNER로서 PR을 통째로 읽지 않고도 무엇이 왜 바뀌었는지 요약으로 파악하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U3-12</code> · <code>07-n8n-workflows.md §3.11·§3.12</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U3" data-pri="S"><div class="shead"><span class="sid mono">US-U3-25</span><span class="pri should mono">S</span><span class="pers mono">P1·P2</span></div><h3>메신저만으로 SDLC에 참여</h3><p class="val">요청자·시스템 OWNER로서 포탈이나 개발 도구를 열지 않고 메신저 대화만으로 개발과 운영에 참여하고 싶다. 승인·머지 행위 자체는 GitHub에서 수행한다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b v2">v2</span><span class="b gap">GAP-02·03</span></div><div class="refs"><code>FR-U3-10, 11</code> · <code>02-messaging-adapter.md</code></div></article>
 </div></section>
 <section class="unit" id="U4" data-unit="U4">
-<div class="uhead"><h2><span class="ucode">U4</span> 장애 대응</h2><span class="ucount mono">7건 · M 5 · S 2</span></div>
+<div class="uhead"><h2><span class="ucode">U4</span> 장애 대응</h2><span class="ucount mono">10건 · M 7 · S 3</span></div>
 <div class="cards">
-<article class="story" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-01</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>장애 트리거 수집</h3><p class="val">Admin으로서 외부 장애 이벤트를 시스템이 받아들이되, 내가 스위치로 막을 수 있기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U4-01</code> · <code>11-incident-response-agent.md</code></div></article>
-<article class="story" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-02</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>incident SR 승격  ·  1.1</h3><p class="val">Admin으로서 진짜 장애만 SR로 승격해 대응을 시작하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U4-02</code> · <code>03-state-machine.md</code></div></article>
-<article class="story" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-03</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>장애 분석 에이전트 실행  ·  2.4</h3><p class="val">SDLC Pod로서 장애 원인분석·대응가이드·코드수정을 수행하고 산출물을 남기고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U4-03</code> · <code>06-pod-runner-api.md</code></div></article>
-<article class="story" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-04</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>장애 목록 조회  ·  4.5</h3><p class="val">개발자·Admin으로서 현재 장애 현황을 한눈에 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U4-04</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-05</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>장애 상세와 상태 레일  ·  4.6·6.4</h3><p class="val">개발자·Admin으로서 장애가 어느 대응 단계에 있고 무엇이 분석되었는지 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U4-04</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U4" data-pri="S"><div class="shead"><span class="sid mono">US-U4-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>Test 트리거 주입  ·  4.7</h3><p class="val">Admin으로서 실제 장애 없이 파이프라인을 시험해 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U4-05</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U4" data-pri="S"><div class="shead"><span class="sid mono">US-U4-07</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>장애 템플릿 관리  ·  4.13</h3><p class="val">Admin으로서 자주 쓰는 장애 유형을 템플릿으로 등록해 두고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · 체크리스트</span></div><div class="refs"><code>FR-U4-05</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-01</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>장애 트리거 수집</h3><p class="val">Admin으로서 외부 장애 이벤트를 시스템이 받아들이되, 내가 스위치로 막을 수 있기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U4-01</code> · <code>11-incident-response-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-02</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>incident SR 승격  ·  1.1</h3><p class="val">Admin으로서 진짜 장애만 SR로 승격해 대응을 시작하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U4-02</code> · <code>03-state-machine.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-03</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>장애 분석 에이전트 실행  ·  2.4</h3><p class="val">SDLC Pod로서 장애 원인분석·대응가이드·코드수정을 수행하고 산출물을 남기고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U4-03</code> · <code>06-pod-runner-api.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-04</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>장애 목록 조회  ·  4.5</h3><p class="val">개발자·Admin으로서 현재 장애 현황을 한눈에 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U4-04</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-05</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>장애 상세와 상태 레일  ·  4.6·6.4</h3><p class="val">개발자·Admin으로서 장애가 어느 대응 단계에 있고 무엇이 분석되었는지 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 5 · 체크리스트</span></div><div class="refs"><code>FR-U4-04</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="S"><div class="shead"><span class="sid mono">US-U4-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>Test 트리거 주입  ·  4.7</h3><p class="val">Admin으로서 실제 장애 없이 파이프라인을 시험해 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U4-05</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U4" data-pri="S"><div class="shead"><span class="sid mono">US-U4-07</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>장애 템플릿 관리  ·  4.13</h3><p class="val">Admin으로서 자주 쓰는 장애 유형을 템플릿으로 등록해 두고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · 체크리스트</span></div><div class="refs"><code>FR-U4-05</code> · <code>design/</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-08</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>MCP 컨텍스트 기반 원인 추적</h3><p class="val">SDLC Pod로서 코드만 보고 추측하는 것이 아니라 이 시스템의 금지사항·과거 장애·실패 사례를 먼저 읽고 원인을 좁히고 싶다. 경쟁 가설 3개 이상을 증거로 배제한다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U4-03</code> · <code>11-incident-response-agent.md §5</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U4" data-pri="M"><div class="shead"><span class="sid mono">US-U4-09</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>장애 분석 리포트 4요소</h3><p class="val">개발자·Admin으로서 장애 리포트를 받으면 바로 판단하고 움직일 수 있기를 원한다. 예상 원인·관련 소스코드·영향 범위·대응 방향이 모두 담긴다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U4-03, 04</code> · <code>11-incident-response-agent.md §6</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U4" data-pri="S"><div class="shead"><span class="sid mono">US-U4-10</span><span class="pri should mono">S</span><span class="pers mono">S2</span></div><h3>장애 지식 축적</h3><p class="val">SDLC Pod로서 이번에 알아낸 원인을 다음 장애 때 쓸 수 있게 남기고 싶다. incident_response 규정은 물리 삭제 없이 archive만 가능하다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U4-03</code> · <code>13-developer-memory-agent.md §1.2</code></div></article>
 </div></section>
 <section class="unit" id="U5" data-unit="U5">
-<div class="uhead"><h2><span class="ucode">U5</span> 자체개선</h2><span class="ucount mono">6건 · M 5 · S 1</span></div>
+<div class="uhead"><h2><span class="ucode">U5</span> 자체개선</h2><span class="ucount mono">8건 · M 6 · S 2</span></div>
 <div class="cards">
-<article class="story" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-01</span><span class="pri must mono">M</span><span class="pers mono">S3</span></div><h3>주기 repo 스캔  ·  3.2</h3><p class="val">CronJob으로서 등록된 repo를 주기적으로 훑어 개선점을 찾고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U1)</span></div><div class="refs"><code>FR-U5-01</code> · <code>10-k8s-infrastructure.md</code></div></article>
-<article class="story" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-02</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>finding 발굴 에이전트</h3><p class="val">SDLC Pod로서 repo를 분석해 개선점을 finding으로 만들고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U5-02</code> · <code>12-self-improvement-agent.md</code></div></article>
-<article class="story" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-03</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>finding 검토  ·  8</h3><p class="val">개발자로서 제안된 개선점을 검토하고 채택 여부를 판단하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-03</code> · <code>12-self-improvement-agent.md</code></div></article>
-<article class="story" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-04</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>finding 승격  ·  8</h3><p class="val">Admin으로서 검토된 finding을 실제 SR이나 개발 규정으로 승격할지 최종 확정하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U5-03</code> · <code>12-self-improvement-agent.md</code></div></article>
-<article class="story" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-05</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>스캔 회차 목록  ·  4.8</h3><p class="val">개발자·Admin으로서 스캔이 언제 돌았고 무엇이 나왔는지 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-04</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U5" data-pri="S"><div class="shead"><span class="sid mono">US-U5-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>개선 대상 관리와 수동 트리거  ·  4.13</h3><p class="val">Admin으로서 어떤 repo를 스캔할지 정하고, 필요하면 즉시 돌리고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-05</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-01</span><span class="pri must mono">M</span><span class="pers mono">S3</span></div><h3>주기 repo 스캔  ·  3.2</h3><p class="val">CronJob으로서 등록된 repo를 주기적으로 훑어 개선점을 찾고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U1)</span></div><div class="refs"><code>FR-U5-01</code> · <code>10-k8s-infrastructure.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-02</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>finding 발굴 에이전트</h3><p class="val">SDLC Pod로서 repo를 분석해 개선점을 finding으로 만들고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span></div><div class="refs"><code>FR-U5-02</code> · <code>12-self-improvement-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-03</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>finding 검토  ·  8</h3><p class="val">개발자로서 제안된 개선점을 검토하고 채택 여부를 판단하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-03</code> · <code>12-self-improvement-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-04</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>finding 승격  ·  8</h3><p class="val">Admin으로서 검토된 finding을 실제 SR이나 개발 규정으로 승격할지 최종 확정하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U5-03</code> · <code>12-self-improvement-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-05</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>스캔 회차 목록  ·  4.8</h3><p class="val">개발자·Admin으로서 스캔이 언제 돌았고 무엇이 나왔는지 보고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-04</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U5" data-pri="S"><div class="shead"><span class="sid mono">US-U5-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>개선 대상 관리와 수동 트리거  ·  4.13</h3><p class="val">Admin으로서 어떤 repo를 스캔할지 정하고, 필요하면 즉시 돌리고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U5-05</code> · <code>design/</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U5" data-pri="M"><div class="shead"><span class="sid mono">US-U5-07</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>finding 탐색 범위 커버리지</h3><p class="val">SDLC Pod로서 repo를 훑을 때 무엇을 찾아야 하는지 기준이 고정되어 있기를 원한다. 품질·중복·장애가능성·성능·유지보수·과거장애 유사위험·운영안정성 7종.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U5-02</code> · <code>12-self-improvement-agent.md</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U5" data-pri="S"><div class="shead"><span class="sid mono">US-U5-08</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>finding의 규정 승격에 admin 승인</h3><p class="val">Admin으로서 AI가 찾아낸 것이 곧바로 팀 규정이 되는 일은 막고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U6)</span></div><div class="refs"><code>FR-U5-03</code> · <code>13-developer-memory-agent.md §2.1</code></div></article>
 </div></section>
 <section class="unit" id="U6" data-unit="U6">
-<div class="uhead"><h2><span class="ucode">U6</span> 개발 규정</h2><span class="ucount mono">7건 · M 5 · S 2</span></div>
+<div class="uhead"><h2><span class="ucode">U6</span> 개발 규정</h2><span class="ucount mono">10건 · M 7 · S 3</span></div>
 <div class="cards">
-<article class="story" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-01</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>개발 규정 등록·수정</h3><p class="val">개발자로서 우리 팀 개발 규정을 등록하고 최신으로 유지하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md</code></div></article>
-<article class="story" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-02</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>규정 개정 이력</h3><p class="val">개발자로서 규정이 언제 왜 바뀌었는지 추적하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 2 · GWT</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md</code></div></article>
-<article class="story" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-03</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>규정 탐색과 검색  ·  4.10·4.11</h3><p class="val">개발자·Admin으로서 필요한 규정을 빨리 찾고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U6-04</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-04</span><span class="pri must mono">M</span><span class="pers mono">P4</span></div><h3>로컬 Claude Code에 규정 공급  ·  5</h3><p class="val">사내 개발자로서 내 로컬 Claude Code가 팀 규정을 알고 있기를 원한다. 그래야 규정 문서를 찾아 읽지 않아도 코드가 규정에 맞는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U6-02</code> · <code>13-developer-memory-agent.md</code></div></article>
-<article class="story" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-05</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>MCP 토큰 발급·폐기  ·  4.13</h3><p class="val">Admin으로서 누가 규정에 접근할 수 있는지 통제하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U6-03</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U6" data-pri="S"><div class="shead"><span class="sid mono">US-U6-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>규정 시스템 관리  ·  4.13</h3><p class="val">Admin으로서 규정을 담을 시스템 구분을 관리하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · 체크리스트</span></div><div class="refs"><code>FR-U6-01</code> · <code>design/</code></div></article>
-<article class="story" data-unit="U6" data-pri="S"><div class="shead"><span class="sid mono">US-U6-07</span><span class="pri should mono">S</span><span class="pers mono">S2</span></div><h3>Pod에 MCP 주입  ·  2</h3><p class="val">SDLC Pod로서 실행 중인 Claude Code가 개발 규정을 참조할 수 있기를 원한다. 그래야 AI가 만든 코드도 팀 규정을 따른다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U6-05</code> · <code>00-overview.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-01</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>개발 규정 등록·수정</h3><p class="val">개발자로서 우리 팀 개발 규정을 등록하고 최신으로 유지하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-02</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>규정 개정 이력</h3><p class="val">개발자로서 규정이 언제 왜 바뀌었는지 추적하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 2 · GWT</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-03</span><span class="pri must mono">M</span><span class="pers mono">P2·P3</span></div><h3>규정 탐색과 검색  ·  4.10·4.11</h3><p class="val">개발자·Admin으로서 필요한 규정을 빨리 찾고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · 체크리스트</span></div><div class="refs"><code>FR-U6-04</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-04</span><span class="pri must mono">M</span><span class="pers mono">P4</span></div><h3>로컬 Claude Code에 규정 공급  ·  5</h3><p class="val">사내 개발자로서 내 로컬 Claude Code가 팀 규정을 알고 있기를 원한다. 그래야 규정 문서를 찾아 읽지 않아도 코드가 규정에 맞는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U6-02</code> · <code>13-developer-memory-agent.md</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-05</span><span class="pri must mono">M</span><span class="pers mono">P3</span></div><h3>MCP 토큰 발급·폐기  ·  4.13</h3><p class="val">Admin으로서 누가 규정에 접근할 수 있는지 통제하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span></div><div class="refs"><code>FR-U6-03</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="S"><div class="shead"><span class="sid mono">US-U6-06</span><span class="pri should mono">S</span><span class="pers mono">P3</span></div><h3>규정 시스템 관리  ·  4.13</h3><p class="val">Admin으로서 규정을 담을 시스템 구분을 관리하고 싶다.</p><div class="meta"><span class="ac mono">인수조건 3 · 체크리스트</span></div><div class="refs"><code>FR-U6-01</code> · <code>design/</code></div></article>
+<article class="story" data-ver="v1" data-unit="U6" data-pri="S"><div class="shead"><span class="sid mono">US-U6-07</span><span class="pri should mono">S</span><span class="pers mono">S2</span></div><h3>Pod에 MCP 주입  ·  2</h3><p class="val">SDLC Pod로서 실행 중인 Claude Code가 개발 규정을 참조할 수 있기를 원한다. 그래야 AI가 만든 코드도 팀 규정을 따른다.</p><div class="meta"><span class="ac mono">인수조건 3 · GWT</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U6-05</code> · <code>00-overview.md</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-08</span><span class="pri must mono">M</span><span class="pers mono">P2</span></div><h3>규정 5종 체계와 불변 이력</h3><p class="val">개발자로서 MCP가 AI에게 넘기는 지식이 종류별로 정리되어 있기를 원한다. 금지사항·비즈니스 흐름·DB 구조·장애 이력·개발 규칙이 5종 category에 모두 수용된다.</p><div class="meta"><span class="ac mono">인수조건 5 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md §1.2·§2.1</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U6" data-pri="M"><div class="shead"><span class="sid mono">US-U6-09</span><span class="pri must mono">M</span><span class="pers mono">S2</span></div><h3>Pod agent 토큰 주입과 범위 제한</h3><p class="val">SDLC Pod로서 내가 받은 MCP 권한이 이 SR에만 유효하고 곧 만료되기를 원한다. 그래야 Pod 하나가 뚫려도 규정 저장소 전체가 노출되지 않는다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span><span class="b no">⚠️ 경계(U3)</span></div><div class="refs"><code>FR-U6-03, 05</code> · <code>13-developer-memory-agent.md §1.3·§8.1</code></div></article>
+<article class="story v2" data-ver="v2" data-unit="U6" data-pri="S"><div class="shead"><span class="sid mono">US-U6-10</span><span class="pri should mono">S</span><span class="pers mono">S2</span></div><h3>실패사례 자동 축적</h3><p class="val">SDLC Pod로서 잘못된 접근으로 실패한 경험을 남겨 다음 에이전트가 같은 길로 가지 않기를 원한다.</p><div class="meta"><span class="ac mono">인수조건 4 · GWT</span><span class="b v2">v2</span></div><div class="refs"><code>FR-U6-01</code> · <code>13-developer-memory-agent.md §1.2</code></div></article>
 </div></section>
   <div class="divider"></div>
 
   <section>
     <p class="eyebrow">Cross-cutting</p>
-    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">착수 전 합의가 필요한 경계 9건</h2>
+    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">착수 전 합의가 필요한 경계 12건</h2>
     <p class="lede" style="font-size:13px">두 유닛 담당자가 인터페이스를 먼저 맞춰야 하는 스토리다. 맞추지 않으면 양쪽이 서로 다른 계약을 가정하고 만든다.</p>
     <div class="tw"><table>
       <thead><tr><th>스토리</th><th>경계</th><th>합의할 것</th></tr></thead>
@@ -254,6 +299,9 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
         <tr><td>US-U4-02</td><td>U4 ↔ U3</td><td><code>pipelineProfile='incident'</code> SR 생성 인터페이스</td></tr>
         <tr><td>US-U5-01</td><td>U5 ↔ U1</td><td>스캔 트리거 엔드포인트</td></tr>
         <tr><td>US-U5-04</td><td>U5 ↔ U6</td><td>finding → 개발규정 생성 인터페이스</td></tr>
+        <tr><td>US-U4-10 <span class="b v2">v2</span></td><td>U4 ↔ U6</td><td><code>memory_append_incident_lesson</code> 호출 규약 · 불변 이력 정책</td></tr>
+        <tr><td>US-U5-08 <span class="b v2">v2</span></td><td>U5 ↔ U6</td><td>규정 승격 시 admin 승인 게이트를 어느 쪽이 강제하는가</td></tr>
+        <tr><td>US-U6-09 <span class="b v2">v2</span></td><td>U6 ↔ U3</td><td>per-SR agent 토큰 발급·TTL과 <code>mcp_servers</code> 주입 시점</td></tr>
         <tr><td>US-U6-07</td><td>U6 ↔ U3</td><td>Pod spec에 MCP 연결 정보를 전달하는 방식</td></tr>
       </tbody>
     </table></div>
@@ -287,9 +335,134 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
     </div>
   </section>
 
+
+  <div class="divider"></div>
+
+  <section>
+    <p class="eyebrow">v2 · Traceability</p>
+    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">내러티브가 요구한 것 ↔ 스토리</h2>
+    <p class="lede" style="font-size:13px">비즈니스 내러티브의 각 문단이 어느 스토리로 떨어지는지, 그리고 어디가 아직 비어 있는지. <strong>굵은 ID</strong>가 v2에서 새로 만든 것이다.</p>
+    <div class="tw"><table>
+      <thead><tr><th>내러티브 문단</th><th>커버하는 스토리</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>Repo Clone 후 코드 분석</td><td>US-U3-08 · <strong>US-U3-19</strong></td><td><span class="b gap">부분 · GAP-01</span></td></tr>
+        <tr><td>A와 요구사항 인터뷰 (6축)</td><td><strong>US-U3-20</strong> · US-U3-10</td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>요구사항 정의서 + 승인</td><td><strong>US-U3-21</strong> · <strong>US-U2-11</strong></td><td><span class="b ok">커버 · D-30</span></td></tr>
+        <tr><td>B와 기술 인터뷰 (6항목)</td><td><strong>US-U3-22</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>상세 설계서 작성</td><td><strong>US-U3-23</strong></td><td><span class="b ok">커버 · 게이트 미신설</span></td></tr>
+        <tr><td>바이브 코딩 개발 + 테스트</td><td>US-U3-09 · US-U3-06</td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>Git Commit/Push + PR 생성</td><td>US-U3-11 · US-U2-06</td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>B의 Merge / 조건부 자동 Merge</td><td><strong>US-U2-09</strong> · <strong>US-U2-10</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>MCP로 금지사항·흐름·DB·장애이력 공급</td><td><strong>US-U6-08</strong> · US-U6-04 · US-U6-07 · <strong>US-U6-09</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>장애 원인 추적 (MCP 참조)</td><td><strong>US-U4-08</strong> · US-U4-03</td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>장애 리포트 (원인·소스·영향·대응)</td><td><strong>US-U4-09</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>장애 분석 → 수정 개발 연결</td><td>US-U4-09 (조건부 패치)</td><td><span class="b gap">부분 · GAP-06</span></td></tr>
+        <tr><td>주기 스캔으로 개선점 발굴</td><td>US-U5-01 · <strong>US-U5-07</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>OWNER 리포팅 → 개발 과제 전환</td><td>US-U5-03 · US-U5-04 · <strong>US-U5-08</strong></td><td><span class="b ok">커버</span></td></tr>
+        <tr><td>메신저 중심 개발·운영 (12개 작업)</td><td><strong>US-U3-25</strong> · US-U3-12 · US-U3-13</td><td><span class="b gap">부분 · GAP-02</span></td></tr>
+        <tr><td>사내 메신저 전환</td><td>US-U3-25 (추상화만)</td><td><span class="b gap">부분 · GAP-03</span></td></tr>
+        <tr><td>사람 노력 최소화 / 생산성 극대화</td><td>—</td><td><span class="b no">미커버 · GAP-07</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <p class="eyebrow">v2 · Gaps</p>
+    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">명세에 근거가 없어 스토리로 만들지 않은 것 7건 — 2건 종결 · 5건 미결</h2>
+    <p class="lede" style="font-size:13px">내러티브에는 있으나 <code>requirements/</code>에 근거가 없다. 스토리로 지어내면 승인되지 않은 범위가 조용히 들어오므로, 요구사항 단계로 되돌려 결정할 항목으로 남긴다.</p>
+    <div class="tw"><table>
+      <thead><tr><th>GAP</th><th>내러티브가 기대한 것</th><th>현재 명세</th><th>권고</th></tr></thead>
+      <tbody>
+        <tr><td>GAP-01</td><td>기존 소스코드 구조·동작 분석 산출물</td><td><code>CLAUDE.md</code> 컨텍스트 구성 + conda 셋업까지</td><td><code>system_profile</code> 규정 자동 생성으로 대체 가능한지 검토</td></tr>
+        <tr><td>GAP-02</td><td>메신저 안에서 PR 승인·머지</td><td>완료 요약에 PR 링크 제공, 승인은 GitHub</td><td>v1 범위 유지 권고 — 메신저 승인은 GitHub 권한 위임 문제가 딸림</td></tr>
+        <tr><td>GAP-03</td><td>사내 메신저 어댑터 구현체</td><td>어댑터 추상화 + Slack 구현체</td><td>v2 과제. NFR-25가 교체 경로를 보장</td></tr>
+        <tr><td>GAP-04 <span class="b ok">해소</span></td><td>요구사항 정의서에 대한 명시적 승인</td><td><s>AI의 <code>end</code> 판정</s> → <strong>admin 승인 게이트 (fail-closed)</strong></td><td><strong>D-30 결정.</strong> 기존 <code>confirm-requirements</code>를 게이트로 승격하고 <code>requireAdmin</code>으로 축소 · FR-U2-08 · FR-U3-14 · US-U2-11</td></tr>
+        <tr><td>GAP-05 <span class="b ok">종결</span></td><td>상세 설계서에 대한 OWNER의 명시적 승인</td><td>게시 후 곧바로 개발 진행</td><td><strong>신설하지 않음(D-30).</strong> OWNER의 <code>design</code> 채널 상시 개입 + 입구 게이트로 갈음</td></tr>
+        <tr><td>GAP-06</td><td>장애 분석 → 수정 개발 자동 연결</td><td>조건부 코드 패치까지</td><td>내러티브도 "향후 확장" — v1 범위 밖 확정 권고</td></tr>
+        <tr><td>GAP-07</td><td>리드타임 성과 지표 계측·리포트</td><td>FR·NFR 없음</td><td>효과 입증 수단이 없다. <code>audit_events</code> 기반 산출 가능성 검토 후 FR 신설</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="note calm">
+      <h3>GAP-04 · GAP-05 — 해소됨 (D-30 · 2026-09-08)</h3>
+      <p>
+        내러티브는 인간 승인 게이트를 <strong>2회</strong> 전제했고, 당시 명세의 게이트는 목업 확정 1회뿐이라
+        <code>autoPrMerge=true</code> repo에서 <strong>접수부터 main 머지까지 승인 0회</strong> 경로가 성립했다.
+        <strong>D-30</strong>으로 요구사항 단계에 <strong>admin 승인 게이트(fail-closed, 무기한 대기)</strong>를 신설해 그 경로를 차단했다.
+        설계 게이트는 신설하지 않는다 — OWNER가 <code>design</code> 채널에서 상시 개입할 수 있고 입구가 막혔기 때문이다.
+      </p>
+      <p>
+        <strong>정정</strong> — 이 GAP의 초판은 "승인 액션이 정의되어 있지 않다"고 기술했으나,
+        <code>05-portal-api.md</code> §2.6에 <code>POST /requests/{id}/confirm-requirements</code>("요구사항 확정" 버튼)가
+        <strong>이미 존재했다</strong>. 다만 그것은 게이트가 아니라 n8n 재발화 <strong>트리거</strong>였고(진행 판정은 여전히 <code>end</code>),
+        FR·스토리·구현 어디에도 반영되지 않았다. D-30은 이를 게이트로 승격하고 권한을 <code>requireAdmin</code>으로 확정한 것이다.
+      </p>
+      <p>
+        <strong>수용한 잔존 위험</strong> — self-approval은 금지하지 않기로 결정했다(사용자 판단).
+        <code>autoPrMerge</code>를 켜는 사람과 승인하는 사람이 같을 수 있으므로 게이트의 <em>독립성</em>은 확보되지 않으며,
+        <code>audit_events</code>의 승인자·시각 기록으로 사후 추적만 가능하다.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <p class="eyebrow">v2 · Personas</p>
+    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">액터 A·B는 페르소나 몇 명인가</h2>
+    <p class="lede" style="font-size:13px">A는 P1과 1:1로 맞지만, <strong>B는 한 사람이 아니다</strong>. 명세가 B의 권한을 repo 기술 판단(P2)과 플랫폼 설정 권한(P3)으로 나눈다. 새 페르소나를 만들면 권한 매트릭스와 어긋나므로 분해로 기록했다.</p>
+    <div class="tw"><table>
+      <thead><tr><th>내러티브가 B에게 준 책임</th><th>실제 수행자</th><th>근거 스토리</th></tr></thead>
+      <tbody>
+        <tr><td>기술 인터뷰 상대 (설계 결정)</td><td>P2 — Stage 3 <code>design</code> 채널</td><td>US-U3-22</td></tr>
+        <tr><td>상세 설계서 확인</td><td>P2</td><td>US-U3-23</td></tr>
+        <tr><td>PR 검토·머지</td><td>P2 — GitHub에서 수행</td><td>US-U2-09</td></tr>
+        <tr><td><strong>자동 머지 허용 조건 사전 설정</strong></td><td><strong>P3</strong> — <code>/admin/repos</code>의 <code>autoPrMerge</code></td><td>US-U2-10</td></tr>
+        <tr><td>데이터 노출 권한 범위 판단</td><td>P2가 설계에서 결정, P3가 플랫폼에서 강제</td><td>US-U3-22 · US-U1-02</td></tr>
+        <tr><td>운영 정책 (장애·개선 승격)</td><td>P3</td><td>US-U4-02 · US-U5-04</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="note calm">
+      <h3>왜 권한을 나눠 두는가</h3>
+      <p>
+        한 조직에서 P2와 P3가 같은 사람일 수 있다. 그래도 권한은 분리해 설계한다 —
+        <code>autoPrMerge</code>를 켜는 행위는 "이 repo에서는 AI가 사람 없이 머지해도 된다"는
+        <strong>플랫폼 수준의 결정</strong>이지 한 건의 기술 판단이 아니기 때문이다.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <p class="eyebrow">v2 · Baseline</p>
+    <h2 style="font-size:1.15rem;font-weight:700;letter-spacing:-.02em">무엇을 줄이려는 것인가</h2>
+    <p class="lede" style="font-size:13px">페르소나의 불만을 뒷받침하는 정량 근거다. 다만 이 수치는 내러티브에서 온 관찰값이며 FR·NFR로 편입되어 있지 않다 — 계측 수단이 곧 GAP-07이다.</p>
+    <dl class="strip">
+      <div><dt>개선 요청</dt><dd>20건 / 월</dd></div>
+      <div><dt>요구사항 파악</dt><dd>약 1일</dd></div>
+      <div><dt>실제 개발</dt><dd>2~3일</dd></div>
+      <div><dt>총 리드타임</dt><dd>약 1주</dd></div>
+      <div><dt>계측 FR</dt><dd>없음</dd></div>
+    </dl>
+
+    <div class="note warn">
+      <h3>v2 관찰 — U3 집중이 더 심해졌다</h3>
+      <p>
+        v1에서 이미 U3가 18건(32%)으로 최대였는데, 내러티브의 SDLC 진행 서사가 대부분 U3에 떨어져
+        <strong>25건(34%)</strong>이 됐다. 완화 후보: <strong>US-U3-20~23</strong> 4건은 산출물의
+        <em>게시·확인 창구</em> 성격이라 관리(U2)에 가깝다. 이동 여부는 Units Generation에서 판단한다.
+      </p>
+    </div>
+  </section>
+
   <p class="foot">
-    출처 · <code>aidlc-docs/inception/user-stories/stories.md</code> (56 스토리) ·
-    <code>personas.md</code> (사람 4종 + 시스템 액터 3종)<br>
+    출처 · <code>aidlc-docs/inception/user-stories/stories.md</code> (73 스토리 = v1 56 + v2 보강 17) ·
+    <code>personas.md</code> (사람 4종 + 시스템 액터 3종 · v2 액터 매핑 포함)<br>
+    v2 보강은 비즈니스 내러티브를 <code>requirements/</code> 명세와 대조해 작성했다. 신규 FR 0건, GAP 7건 기록.<br>
     인수 조건 형식 — UI는 체크리스트, API·상태머신·시스템 액터는 Given-When-Then.
     섞인 경우 분리 가능하면 분리하고, 불가하면 GWT(TDD에서 테스트 가능한 형식 우선).
   </p>
@@ -298,8 +471,8 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
 
 <script>
 (function(){
-  var state={unit:"all",pri:"all"};
-  try{var v=localStorage.getItem("aow-story-filter");if(v)state=JSON.parse(v);}catch(e){}
+  var state={unit:"all",pri:"all",ver:"all"};
+  try{var v=localStorage.getItem("aow-story-filter-v2");if(v)state=JSON.parse(v);}catch(e){}
   var stories=[].slice.call(document.querySelectorAll(".story"));
   var units=[].slice.call(document.querySelectorAll(".unit"));
   var empty=document.getElementById("empty");
@@ -307,7 +480,8 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
     var shown=0;
     stories.forEach(function(s){
       var ok=(state.unit==="all"||s.dataset.unit===state.unit)&&
-             (state.pri==="all"||s.dataset.pri===state.pri);
+             (state.pri==="all"||s.dataset.pri===state.pri)&&
+             (state.ver==="all"||s.dataset.ver===state.ver);
       s.hidden=!ok; if(ok)shown++;
     });
     units.forEach(function(u){
@@ -317,7 +491,7 @@ td:first-child{color:var(--ink);font-family:var(--font-m);font-size:11px;font-we
     [].forEach.call(document.querySelectorAll(".fbtn"),function(b){
       b.classList.toggle("on",state[b.dataset.f]===b.dataset.v);
     });
-    try{localStorage.setItem("aow-story-filter",JSON.stringify(state));}catch(e){}
+    try{localStorage.setItem("aow-story-filter-v2",JSON.stringify(state));}catch(e){}
   }
   [].forEach.call(document.querySelectorAll(".fbtn"),function(b){
     b.addEventListener("click",function(){state[b.dataset.f]=b.dataset.v;apply();});

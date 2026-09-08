@@ -11,7 +11,9 @@
     "./domain": "./src/domain/index.ts",
     "./auth/next-auth": "./src/auth/next-auth.ts",
     "./ui/tokens.css": "./src/ui/tokens.css",
-    "./auth/guard": "./src/auth/guard.ts"
+    "./auth/guard": "./src/auth/guard.ts",
+    "./crypto": "./src/crypto/index.ts",
+    "./http": "./src/http/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"
